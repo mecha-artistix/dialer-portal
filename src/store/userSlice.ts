@@ -21,21 +21,6 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // login: {
-    //   prepare(data: LoginSchemaType) {
-    //     const validatedFields = LoginSchema.safeParse(data);
-    //     if (!validatedFields.success) {
-    //       return { payload: { error: "Invalid fields!" } };
-    //     }
-    //     console.log({ valid: validatedFields.data });
-    //     const { username, password } = validatedFields.data;
-    //     return { payload: { username, password } };
-    //   },
-    //   reducer(state, action) {
-    //     console.log(action.payload);
-    //     state.isAuthenticated = true;
-    //   },
-    // },
     logout: (state) => {
       state.isAuthenticated = false;
     },

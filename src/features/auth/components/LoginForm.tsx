@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 import { LinkBtn } from "@/components/styled/LinkBtn";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TServerResponse } from "@/types/server_response";
 
 type Inputs = {
@@ -51,9 +51,13 @@ function LoginForm() {
     await dispatch(login(data));
     setStatus({ status: "success", message: "logged in" });
     console.log({ userState });
-
-    // navigate(from, { replace: true });
   };
+
+  useEffect(() => {
+    if (userState.isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [userState.isAuthenticated]);
 
   return (
     <CardWrapper

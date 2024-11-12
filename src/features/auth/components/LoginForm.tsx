@@ -2,7 +2,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { login } from "@/store/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { delay } from "@/utils/delay";
 import { LoginSchema, LoginSchemaType } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CardWrapper from "@/components/styled/CardWrapper";
@@ -13,17 +12,14 @@ import { LinkBtn } from "@/components/styled/LinkBtn";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { TServerResponse } from "@/types/server_response";
+import { store } from "@/store/store";
 
-type Inputs = {
-  username: string;
-  password: string;
-};
 /*
 {
-           "username": "john_doe",
-           "email": "john@example.com",
-           "password": "securepassword123"
-         }
+  "username": "john_doe",
+  "email": "john@example.com",
+  "password": "securepassword123"
+}
 */
 function LoginForm() {
   const [status, setStatus] = useState<TServerResponse>({ status: "", message: "" });
@@ -37,7 +33,7 @@ function LoginForm() {
 
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
-    defaultValues: { username: "", password: "" },
+    defaultValues: { username: "john_doe", password: "securepassword123" },
   });
 
   const {
@@ -48,16 +44,20 @@ function LoginForm() {
     console.log(data);
     console.log({ userState });
     // await delay(2000);
-    await dispatch(login(data));
-    setStatus({ status: "success", message: "logged in" });
-    console.log({ userState });
+
+    dispatch(login(data)).then(() => {
+      const updatedIsAuthenticated = userState.isAuthenticated;
+      console.log("Updated isAuthenticated:", updatedIsAuthenticated);
+      navigate(from, { replace: true });
+    });
   };
 
-  useEffect(() => {
-    if (userState.isAuthenticated) {
-      navigate(from, { replace: true });
-    }
-  }, [userState.isAuthenticated]);
+  // useEffect(() => {
+  //   console.log(userState.isAuthenticated);
+  //   if (userState.isAuthenticated) {
+  //     navigate(from, { replace: true });
+  //   }
+  // }, [userState.isAuthenticated]);
 
   return (
     <CardWrapper

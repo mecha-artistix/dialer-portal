@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction, Dispatch } from "@reduxjs/toolkit";
-import { RootState } from "@/store/store";
-import { LoginSchema, LoginSchemaType } from "@/schemas";
+import { LoginSchemaType } from "@/schemas";
+import { apiFlask } from "@/lib/interceptors";
 import axios from "axios";
 
 // Define a type for the slice state
@@ -9,6 +9,27 @@ interface UserSlice {
   error: any;
   isAuthenticated: boolean;
 }
+
+// Thunk for logging in
+
+export const login = createAsyncThunk("user/login", async (data: LoginSchemaType, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(import.meta.env.VITE_FLASK_API + "/login", data);
+    console.log({ response });
+    // Check if login was successful based on the API response
+    if (response.status === 200) {
+      console.log({ thunk: response.data });
+      localStorage.setItem("token", response.data.token);
+      return response.data; // Return full response data for use in the reducer
+    } else {
+      // Return a rejection if login fails
+      return rejectWithValue("Login failed. Please check your credentials.");
+    }
+  } catch (error) {
+    // Handle network or server errors
+    return rejectWithValue("An error occurred while trying to log in.");
+  }
+});
 
 // Define the initial state using that type
 const initialState: UserSlice = {
@@ -21,6 +42,7 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    setIsAuthenticated: (state, action) => (state.isAuthenticated = action.payload),
     logout: (state) => {
       state.isAuthenticated = false;
     },
@@ -46,40 +68,7 @@ export const userSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 // export const { login, logout } = userSlice.actions;
-export const { logout } = userSlice.actions;
 
-// Thunk for logging in
-
-export const login = createAsyncThunk("user/login", async (data: LoginSchemaType, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(import.meta.env.VITE_FLASK_API + "/auth/login", data);
-    console.log(response);
-    // Check if login was successful based on the API response
-    if (response.status === 200) {
-      return response.data; // Return full response data for use in the reducer
-    } else {
-      // Return a rejection if login fails
-      return rejectWithValue("Login failed. Please check your credentials.");
-    }
-  } catch (error) {
-    // Handle network or server errors
-    return rejectWithValue("An error occurred while trying to log in.");
-  }
-});
-
-// export function loginUser(data: LoginSchemaType) {
-//   return async (dispatch: Dispatch) => {
-//     try {
-//       const response = await axios.post(import.meta.env.VITE_FLASK_API + "/auth/login", data);
-//       console.log({ response });
-//       if (response.data.staus == 200) dispatch({ type: "user/login" });
-//     } catch (error) {
-//       dispatch(dispatch({ type: "user/logout" }));
-//     }
-//   };
-// }
-
-// Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.counter.value;
-
+export const { logout, setIsAuthenticated } = userSlice.actions;
+export const userReducer = userSlice.reducer;
 export default userSlice.reducer;

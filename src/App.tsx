@@ -3,12 +3,18 @@ import Dashboard from "./features/dashboard/Dashboard";
 import Auth from "./features/auth/Auth";
 import ProtectedAppLayout from "./ui/ProtectedAppLayout";
 import "./index.css";
+import Account from "./features/account/Account";
+import Recordings from "./features/recordings/Recordings";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Auth /> },
   {
     element: <ProtectedAppLayout />,
-    children: [{ path: "/", element: <Dashboard /> }],
+    children: [
+      { path: "/", element: <Dashboard /> },
+      { path: "/account", element: <Account /> },
+      { path: "/recordings", element: <Recordings /> },
+    ],
   },
 ]);
 

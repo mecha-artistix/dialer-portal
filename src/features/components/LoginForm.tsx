@@ -57,7 +57,7 @@ function LoginForm() {
 
   return (
     <CardWrapper
-      headerLabel="Welcome Back to Portal"
+      headerLabel="Welcome Back"
       backButtonLabel="Dont have an account? Click here to get registered now"
       backButtonHref="/auth/register"
       showSocial

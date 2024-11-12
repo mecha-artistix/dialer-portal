@@ -20,5 +20,4 @@ jobs:
             cd /root/monorepo/projects/dialer-portal
             git pull origin main
             pnpm install
-            pnpm dev
           EOF

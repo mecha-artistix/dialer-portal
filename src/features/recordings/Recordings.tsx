@@ -1,9 +1,9 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { apiFlask } from "@/lib/interceptors";
-import { useEffect } from "react";
-import { setRecordings } from "./recordingsSlice";
+import { useAppSelector } from "@/hooks/reduxHooks";
+
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import ApiQueryForm from "./components/ApiQueryForm";
+
+import { Actions } from "./components/Actions";
 
 interface LeadData {
   lead_id: string;
@@ -21,20 +21,11 @@ const columns = [
   { key: "start_time", title: "Start Time" },
   { key: "url", title: "Url", className: "w-10" },
   { key: "user", title: "User" },
+  { key: "actions", title: "Actions" },
 ];
 
 function Recordings() {
   const recordingsState = useAppSelector((state) => state.recordings);
-  const dispatch = useAppDispatch();
-
-  // useEffect(() => {
-  //   const getRecordings = async () => {
-  //     const response = await apiFlask("/recordings");
-  //     console.log(response);
-  //     dispatch(setRecordings(response));
-  //   };
-  //   getRecordings();
-  // }, []);
 
   return (
     <div>
@@ -51,11 +42,17 @@ function Recordings() {
         <TableBody>
           {recordingsState.recordings.map((row, i) => (
             <TableRow key={i}>
-              {columns.map((col, i) => (
-                <TableCell key={i} className={col?.className}>
-                  {row[col.key]}
-                </TableCell>
-              ))}
+              {columns.map((col, i) =>
+                col.key === "actions" ? (
+                  <TableCell>
+                    <Actions url={row.url as string} />
+                  </TableCell>
+                ) : (
+                  <TableCell key={i} className={col?.className}>
+                    {row[col.key]}
+                  </TableCell>
+                )
+              )}
             </TableRow>
           ))}
         </TableBody>

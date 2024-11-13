@@ -224,7 +224,7 @@ function ApiQueryForm() {
             {/* SUBMIT BUTTON */}
             <div className="flex items-center justify-center">
               <Button type="submit" disabled={isSubmitting}>
-                Submit
+                {isSubmitting ? "Fetching Data" : "Submit"}
               </Button>
             </div>
           </div>

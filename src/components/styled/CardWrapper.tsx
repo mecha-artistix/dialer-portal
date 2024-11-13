@@ -23,7 +23,7 @@ export const CardWrapper: React.FC<CardWrapperProps> = ({
     <Card className="w-[400px] shadow-md">
       <CardHeader>{headerLabel}</CardHeader>
       <CardContent>{children}</CardContent>
-      {showSocial && <CardFooter>all rights reserved</CardFooter>}
+      {/* {showSocial && <CardFooter>all rights reserved</CardFooter>} */}
       <CardFooter>
         <LinkBtn href={backButtonHref} label={backButtonLabel} />
       </CardFooter>

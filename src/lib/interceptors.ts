@@ -39,7 +39,7 @@ apiFlask.interceptors.response.use(
       if (error.response.status === 401) {
         console.log("Unauthorized - redirecting to login");
         // store.dispatch(logout());
-        // window.location.href = `/login?from=${encodeURIComponent(window.location.pathname)}`;
+        window.location.href = `/login?from=${encodeURIComponent(window.location.pathname)}`;
       } else if (error.response.status === 500) {
         console.log("Server error - try again later");
         // e.g., show a notification for server issues

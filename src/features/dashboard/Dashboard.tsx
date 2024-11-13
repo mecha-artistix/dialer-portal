@@ -1,11 +1,5 @@
-import { Counter } from "@/components/Counter";
-
 function Dashboard() {
-  return (
-    <div>
-      <Counter />
-    </div>
-  );
+  return <div>DASHBOARD</div>;
 }
 
 export default Dashboard;

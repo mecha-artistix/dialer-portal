@@ -52,13 +52,6 @@ function LoginForm() {
     });
   };
 
-  // useEffect(() => {
-  //   console.log(userState.isAuthenticated);
-  //   if (userState.isAuthenticated) {
-  //     navigate(from, { replace: true });
-  //   }
-  // }, [userState.isAuthenticated]);
-
   return (
     <CardWrapper
       headerLabel="Welcome Back"

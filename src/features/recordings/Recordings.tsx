@@ -3,6 +3,7 @@ import { apiFlask } from "@/lib/interceptors";
 import { useEffect } from "react";
 import { setRecordings } from "./recordingsSlice";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import ApiQueryForm from "./components/ApiQueryForm";
 
 interface LeadData {
   lead_id: string;
@@ -26,37 +27,40 @@ function Recordings() {
   const recordingsState = useAppSelector((state) => state.recordings);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    const getRecordings = async () => {
-      const response = await apiFlask("/recordings");
-      console.log(response);
-      dispatch(setRecordings(response));
-    };
-    getRecordings();
-  }, []);
+  // useEffect(() => {
+  //   const getRecordings = async () => {
+  //     const response = await apiFlask("/recordings");
+  //     console.log(response);
+  //     dispatch(setRecordings(response));
+  //   };
+  //   getRecordings();
+  // }, []);
 
   return (
-    <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          {columns.map((col) => (
-            <TableHead key={col.key}>{col.title}</TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {recordingsState.recordings.map((row, i) => (
-          <TableRow key={i}>
-            {columns.map((col, i) => (
-              <TableCell key={i} className={col?.className}>
-                {row[col.key]}
-              </TableCell>
+    <div>
+      <ApiQueryForm />
+      <Table>
+        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            {columns.map((col) => (
+              <TableHead key={col.key}>{col.title}</TableHead>
             ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {recordingsState.recordings.map((row, i) => (
+            <TableRow key={i}>
+              {columns.map((col, i) => (
+                <TableCell key={i} className={col?.className}>
+                  {row[col.key]}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 

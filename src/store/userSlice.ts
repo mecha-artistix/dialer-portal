@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction, Dispatch } from "@reduxjs/toolkit";
 import { LoginSchemaType } from "@/schemas";
-import { apiFlask } from "@/lib/interceptors";
 import axios from "axios";
 
 // Define a type for the slice state

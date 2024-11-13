@@ -27,7 +27,7 @@ apiFlask.interceptors.response.use(
     // Handle and modify successful response data
     if (response.data) {
       // Assume the API wraps actual data in a `data` field
-      return response.data.data; // Return the "data" object directly
+      return response.data; // Return the "data" object directly
     }
     return response; // Return the whole response if no modifications are needed
   },

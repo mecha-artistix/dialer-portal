@@ -47,7 +47,7 @@ function ApiQueryForm() {
       try {
         const response = await apiFlask.post("/recordings", parsedData);
         console.log(response);
-
+        dispatch(setRecordings([]));
         // Check if response contains data and handle accordingly
         if (response && response.length > 0) {
           dispatch(setRecordings(response));

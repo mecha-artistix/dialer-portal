@@ -31,7 +31,7 @@ function Recordings() {
     <div>
       <ApiQueryForm />
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableCaption>A list of recordings.</TableCaption>
         <TableHeader>
           <TableRow>
             {columns.map((col) => (

@@ -9,20 +9,23 @@ import { NonAgentApiSchema, NonAgentApiSchemaType } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { setRecordings } from "../recordingsSlice";
+import { ServerResponse } from "@/components/styled/ServerResponse";
+import { useState } from "react";
+import { TServerResponse } from "@/types/server_response";
 
 function ApiQueryForm() {
   const dispatch = useAppDispatch();
-
+  const [status, setStatus] = useState<TServerResponse>({ status: "", message: "" });
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(NonAgentApiSchema),
     defaultValues: {
-      dialer_url: "stsolution.i5.tel",
+      dialer_url: "78.46.61.254",
       source: "test",
-      user: "6666",
-      pass: "hIzIJx2ZdU1Zk",
-      agent_user: "1013",
+      user: "superadmin",
+      pass: "NMm8397hjdbcs",
+      agent_user: "7001",
       stage: "tab",
-      date: "2024-10-24",
+      date: "2024-11-13",
     },
   });
 
@@ -35,14 +38,20 @@ function ApiQueryForm() {
     console.log(parsedData);
 
     const getRecordings = async () => {
-      const response = await apiFlask.post("/recordings", parsedData);
-      console.log(response);
+      try {
+        const response = await apiFlask.post("/recordings", parsedData);
+        console.log(response);
+      } catch (error) {
+        setStatus({ status: "error", message: error.response.data.error });
+      }
+
       dispatch(setRecordings(response));
     };
     getRecordings();
   };
   return (
     <Card className="p-4">
+      <ServerResponse type={status.status} message={status.message} />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

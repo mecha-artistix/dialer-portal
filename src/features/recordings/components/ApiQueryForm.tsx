@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@/components/ui/select";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { apiFlask } from "@/lib/interceptors";
 import { NonAgentApiSchema, NonAgentApiSchemaType } from "@/schemas";
@@ -12,6 +11,16 @@ import { setRecordings } from "../recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 import { useState } from "react";
 import { TServerResponse } from "@/types/server_response";
+import { AxiosError } from "axios";
+
+const defaultValues = {
+  dialer_url: "stsolution.i5.tel",
+  user: "6666",
+  pass: "hIzIJx2ZdU1Zk",
+  agent_user: "1013",
+  stage: "tab",
+  date: "2024-11-13",
+};
 
 function ApiQueryForm() {
   const dispatch = useAppDispatch();
@@ -19,12 +28,10 @@ function ApiQueryForm() {
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(NonAgentApiSchema),
     defaultValues: {
-      dialer_url: "78.46.61.254",
-      source: "test",
-      user: "superadmin",
-      pass: "NMm8397hjdbcs",
-      agent_user: "7001",
-      stage: "tab",
+      dialer_url: "stsolution.i5.tel",
+      user: "6666",
+      pass: "hIzIJx2ZdU1Zk",
+      agent_user: "1013",
       date: "2024-11-13",
     },
   });
@@ -36,17 +43,39 @@ function ApiQueryForm() {
   const onSubmit = (data) => {
     const parsedData = NonAgentApiSchema.parse(data);
     console.log(parsedData);
-
     const getRecordings = async () => {
       try {
         const response = await apiFlask.post("/recordings", parsedData);
         console.log(response);
-      } catch (error) {
-        setStatus({ status: "error", message: error.response.data.error });
-      }
 
-      dispatch(setRecordings(response));
+        // Check if response contains data and handle accordingly
+        if (response && response.length > 0) {
+          dispatch(setRecordings(response));
+          setStatus({ status: "success", message: "Recordings found" });
+        } else {
+          setStatus({ status: "error", message: "No recordings found" });
+        }
+      } catch (error: unknown) {
+        // Handle network errors or no response from server
+        if (!error.response) {
+          setStatus({ status: "error", message: "Network error. Please check your connection." });
+        } else if (error.response.status === 404) {
+          setStatus({ status: "error", message: "Endpoint not found (404)." });
+        } else if (error.response.status === 500) {
+          setStatus({
+            status: "error",
+            message: error.response.data?.error || "Server error (500). Please try again later.",
+          });
+        } else {
+          // Default error handling for other response errors
+          setStatus({
+            status: "error",
+            message: error.response.data?.error || "An unknown error occurred.",
+          });
+        }
+      }
     };
+
     getRecordings();
   };
   return (
@@ -64,21 +93,6 @@ function ApiQueryForm() {
                   <FormLabel>Dialer Url</FormLabel>
                   <FormControl>
                     <Input {...field} disabled={isSubmitting} placeholder="stsolution.i5.tel" type="text" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* SOURCE */}
-            <FormField
-              control={form.control}
-              name="source"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Source</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={isSubmitting} placeholder="test" type="text" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,91 +153,6 @@ function ApiQueryForm() {
                   <FormLabel>Date</FormLabel>
                   <FormControl>
                     <Input {...field} disabled={isSubmitting} placeholder="YYYY-MM-DD" type="date" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* DURATION */}
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue="Y">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Duration" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Y">Yes</SelectItem>
-                        <SelectItem value="N">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* HEADER */}
-            <FormField
-              control={form.control}
-              name="header"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Header</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue="YES">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Include Header?" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="YES">Yes</SelectItem>
-                        <SelectItem value="NO">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* STAGE */}
-            <FormField
-              control={form.control}
-              name="stage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Stage</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue="tab">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Stage" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="tab">Tab</SelectItem>
-                        <SelectItem value="json">JSON</SelectItem>
-                        <SelectItem value="csv">CSV</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* PHONE (Optional) */}
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone (Optional)</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={isSubmitting} placeholder="Phone Number" type="text" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

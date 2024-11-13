@@ -36,7 +36,7 @@ export const ServerResponse: React.FC<ServerResponseProps> = ({ type, message })
 
   return (
     <div className={`${classNames} rounded-md flex items-center gap-x-2 text-sm  p-2`}>
-      {IconComponent}
+      <div>{IconComponent}</div>
       <p>{message}</p>
     </div>
   );

@@ -19,7 +19,7 @@ export const recordingsSlice = createSlice({
   initialState,
   reducers: {
     setRecordings: (state, action: PayloadAction<any[]>) => {
-      state.recordings = [...state.recordings, ...action.payload];
+      state.recordings = [...action.payload];
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;

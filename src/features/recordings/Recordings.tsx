@@ -1,5 +1,4 @@
 import { useAppSelector } from "@/hooks/reduxHooks";
-
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import ApiQueryForm from "./components/ApiQueryForm";
 
@@ -44,11 +43,11 @@ function Recordings() {
             <TableRow key={i}>
               {columns.map((col, i) =>
                 col.key === "actions" ? (
-                  <TableCell>
+                  <TableCell key={`${col.key}i`}>
                     <Actions url={row.url as string} />
                   </TableCell>
                 ) : (
-                  <TableCell key={i} className={col?.className}>
+                  <TableCell key={`${col.key}i`} className={col?.className}>
                     {row[col.key]}
                   </TableCell>
                 )

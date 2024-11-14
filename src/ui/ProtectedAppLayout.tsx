@@ -1,12 +1,16 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import SideBar from "./SideBar";
 import TopBar from "./TopBar";
 import { useEffect } from "react";
 import { validateSession } from "@/lib/utils";
 import { logout } from "@/store/userSlice";
+import { LinearProgress } from "@/components/ui/LinearProgress";
 
 function AppLayout() {
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+
   const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -33,9 +37,7 @@ function AppLayout() {
         <aside className="w-64 bg-gray-900 text-gray-100 p-4 hidden md:block">
           <SideBar />
         </aside>
-        <main className="flex-1 bg-gray-100 p-6 overflow-y-auto">
-          <Outlet />
-        </main>
+        <main className="flex-1 bg-gray-100 p-6 overflow-y-auto">{isLoading ? <LinearProgress /> : <Outlet />}</main>
       </div>
     </div>
   ) : (

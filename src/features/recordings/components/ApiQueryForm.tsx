@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { Input } from "@/components/ui/input";
-import { useAppDispatch } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { apiFlask } from "@/lib/interceptors";
 import { NonAgentApiSchema, NonAgentApiSchemaType } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,26 +13,20 @@ import { setRecordings } from "../recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 import { useState } from "react";
 import { TServerResponse } from "@/types/server_response";
-import { AxiosError } from "axios";
-
-const defaultValues = {
-  dialer_url: "stsolution.i5.tel",
-  user: "6666",
-  pass: "hIzIJx2ZdU1Zk",
-  agent_user: "1013",
-  stage: "tab",
-  date: "2024-11-13",
-};
+import { useLocation } from "react-router-dom";
 
 function ApiQueryForm() {
+  const location = useLocation();
   const dispatch = useAppDispatch();
+  const selector = useAppSelector((state) => state.dialers);
+
   const [status, setStatus] = useState<TServerResponse>({ status: "", message: "" });
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(NonAgentApiSchema),
     defaultValues: {
-      dialer_url: "stsolution.i5.tel",
-      user: "6666",
-      pass: "hIzIJx2ZdU1Zk",
+      dialer_url: location.state.dialer_url || "stsolution.i5.tel",
+      user: location.state.user || "6666",
+      pass: location.state.pass || "hIzIJx2ZdU1Zk",
       agent_user: "1013",
       date: "2024-11-13",
     },
@@ -45,7 +41,7 @@ function ApiQueryForm() {
     console.log(parsedData);
     const getRecordings = async () => {
       try {
-        const response = await apiFlask.post("/recordings", parsedData);
+        const response = await apiFlask.post("/portal/recordings", parsedData);
         console.log(response);
         dispatch(setRecordings([]));
         // Check if response contains data and handle accordingly
@@ -92,12 +88,36 @@ function ApiQueryForm() {
                 <FormItem>
                   <FormLabel>Dialer Url</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isSubmitting} placeholder="stsolution.i5.tel" type="text" />
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="stsolution.i5.tel" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selector.dialers.map((el, i) => (
+                          <SelectItem key={i} value={el.dialer_url}>
+                            {el.dialer_url}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            {/* <FormField
+              control={form.control}
+              name="dialer_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dialer Url</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isSubmitting} placeholder="stsolution.i5.tel" type="text" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
 
             {/* USER */}
             <FormField

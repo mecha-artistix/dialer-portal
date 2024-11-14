@@ -1,3 +1,5 @@
+import { apiFlask } from "./interceptors";
+
 export const sendTranscribeRequest = (url) => {
   return new Promise((resolve, reject) => {
     try {
@@ -31,4 +33,15 @@ export const sendTranscribeRequest = (url) => {
       reject(error); // Reject promise on any error
     }
   });
+};
+
+export const getDialerConfig = async () => {
+  try {
+    const response = await apiFlask("/portal/configure-dialer");
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

@@ -7,13 +7,14 @@ interface UserSlice {
   loading: boolean;
   error: any;
   isAuthenticated: boolean;
+  userId: string | null;
 }
 
 // Thunk for logging in
 
 export const login = createAsyncThunk("user/login", async (data: LoginSchemaType, { rejectWithValue }) => {
   try {
-    const response = await axios.post(import.meta.env.VITE_FLASK_API + "/login", data);
+    const response = await axios.post(import.meta.env.VITE_FLASK_API + "/auth/login", data);
     console.log({ response });
     // Check if login was successful based on the API response
     if (response.status === 200) {
@@ -35,6 +36,7 @@ const initialState: UserSlice = {
   loading: false,
   error: false,
   isAuthenticated: false,
+  userId: null,
 };
 
 export const userSlice = createSlice({
@@ -52,10 +54,11 @@ export const userSlice = createSlice({
         state.loading = true;
         state.error = undefined;
       })
-      .addCase(login.fulfilled, (state) => {
+      .addCase(login.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.loading = false;
         state.error = undefined;
+        state.userId = action.payload.user_id;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;

@@ -3,7 +3,7 @@ import Dashboard from "./features/dashboard/Dashboard";
 import Auth from "./features/auth/Auth";
 import ProtectedAppLayout from "./ui/ProtectedAppLayout";
 import "./index.css";
-import Account from "./features/account/Account";
+import { Account } from "./features/account/Account";
 import Recordings from "./features/recordings/Recordings";
 
 const router = createBrowserRouter([

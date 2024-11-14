@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import counterReducer from "./counterSlice";
 import { userReducer } from "./userSlice";
 import { recordingsReducer } from "@/features/recordings/recordingsSlice";
+import { dialersReducer } from "@/features/account/dialerSlice";
 // Configure persist settings
 const persistConfig = {
   key: "root",
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   counter: counterReducer,
   user: userReducer,
   recordings: recordingsReducer,
+  dialers: dialersReducer,
 });
 
 // Apply persistence to rootReducer

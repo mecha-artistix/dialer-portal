@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { setRecordings } from "../recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TServerResponse } from "@/types/server_response";
 import { useLocation } from "react-router-dom";
 
@@ -21,16 +21,31 @@ function ApiQueryForm() {
   const selector = useAppSelector((state) => state.dialers);
 
   const [status, setStatus] = useState<TServerResponse>({ status: "", message: "" });
+  const { formData } = location.state || {};
+  console.log(formData);
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(NonAgentApiSchema),
     defaultValues: {
-      dialer_url: location.state?.dialer_url || "stsolution.i5.tel",
-      user: location.state?.user || "6666",
-      pass: location.state?.pass || "hIzIJx2ZdU1Zk",
+      dialer_url: formData?.dialer_url || "stsolution.i5.tel",
+      user: formData?.user || "6666",
+      pass: formData?.pass || "hIzIJx2ZdU1Zk",
       agent_user: "1013",
       date: "2024-11-13",
     },
   });
+
+  // Update form values when formData changes
+  useEffect(() => {
+    if (formData) {
+      form.reset({
+        dialer_url: formData.dialer_url || "stsolution.i5.tel",
+        user: formData.user || "6666",
+        pass: formData.pass || "hIzIJx2ZdU1Zk",
+        agent_user: formData.agent_user || "1013",
+        date: formData.date || "2024-11-13",
+      });
+    }
+  }, [formData, form]);
 
   const {
     formState: { isSubmitting },
@@ -88,7 +103,7 @@ function ApiQueryForm() {
                 <FormItem>
                   <FormLabel>Dialer Url</FormLabel>
                   <FormControl>
-                    <Select>
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="stsolution.i5.tel" />
                       </SelectTrigger>

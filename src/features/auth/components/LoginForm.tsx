@@ -12,7 +12,6 @@ import { LinkBtn } from "@/components/styled/LinkBtn";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { TServerResponse } from "@/types/server_response";
-import { store } from "@/store/store";
 
 /*
 {

@@ -46,7 +46,7 @@ export function DialersTable() {
                 {columns.map((col, i) =>
                   col.key === "actions" ? (
                     <TableCell>
-                      <Button size="sm" onClick={() => navigate("/recordings", { state: row })}>
+                      <Button size="sm" onClick={() => navigate("/recordings", { state: { formData: row } })}>
                         Get Recordings
                       </Button>
                     </TableCell>

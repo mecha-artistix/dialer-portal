@@ -24,9 +24,9 @@ function ApiQueryForm() {
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(NonAgentApiSchema),
     defaultValues: {
-      dialer_url: location.state.dialer_url || "stsolution.i5.tel",
-      user: location.state.user || "6666",
-      pass: location.state.pass || "hIzIJx2ZdU1Zk",
+      dialer_url: location.state?.dialer_url || "stsolution.i5.tel",
+      user: location.state?.user || "6666",
+      pass: location.state?.pass || "hIzIJx2ZdU1Zk",
       agent_user: "1013",
       date: "2024-11-13",
     },

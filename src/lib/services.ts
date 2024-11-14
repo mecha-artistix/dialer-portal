@@ -45,3 +45,13 @@ export const getDialerConfig = async () => {
     throw error;
   }
 };
+
+export const patchDialer = async (dialer_id, body) => {
+  try {
+    const response = await apiFlask.put(`/portal/configure-dialer/${dialer_id}`, body);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

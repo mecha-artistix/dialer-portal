@@ -26,7 +26,7 @@ function ApiQueryForm() {
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(NonAgentApiSchema),
     defaultValues: {
-      dialer_url: formData?.dialer_url || "stsolution.i5.tel",
+      dialer_url: formData?.url || "stsolution.i5.tel",
       user: formData?.user || "6666",
       pass: formData?.pass || "hIzIJx2ZdU1Zk",
       agent_user: "1013",
@@ -38,7 +38,7 @@ function ApiQueryForm() {
   useEffect(() => {
     if (formData) {
       form.reset({
-        dialer_url: formData.dialer_url || "stsolution.i5.tel",
+        dialer_url: formData.url || "stsolution.i5.tel",
         user: formData.user || "6666",
         pass: formData.pass || "hIzIJx2ZdU1Zk",
         agent_user: formData.agent_user || "1013",
@@ -109,8 +109,8 @@ function ApiQueryForm() {
                       </SelectTrigger>
                       <SelectContent>
                         {selector.dialers.map((el, i) => (
-                          <SelectItem key={i} value={el.dialer_url}>
-                            {el.dialer_url}
+                          <SelectItem key={i} value={el.url}>
+                            {el.url}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -120,19 +120,6 @@ function ApiQueryForm() {
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="dialer_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dialer Url</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={isSubmitting} placeholder="stsolution.i5.tel" type="text" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
 
             {/* USER */}
             <FormField

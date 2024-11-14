@@ -10,9 +10,7 @@ export function Account() {
       <div className="relative">
         <Collapsible>
           <ActionBar>
-            <CollapsibleTrigger>
-              <Button>Add Dialer</Button>
-            </CollapsibleTrigger>
+            <CollapsibleTrigger className="bg-black p-2 text-white rounded-sm">Add Dialer</CollapsibleTrigger>
           </ActionBar>
           <CollapsibleContent className="absolute top-full left-0 z-50 mt-2 w-full max-w-md">
             <AddDialerForm />

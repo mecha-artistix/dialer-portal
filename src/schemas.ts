@@ -18,7 +18,8 @@ export const NonAgentApiSchema = z.object({
 export type NonAgentApiSchemaType = z.infer<typeof NonAgentApiSchema>;
 
 export const AddDialerSchema = z.object({
-  dialer_url: z.string({ message: "url is required" }),
+  name: z.string({ message: "name is required" }),
+  url: z.string({ message: "url is required" }),
   user: z.string().min(1, "User is required"),
   pass: z.string().min(1, "Password is required"),
 });

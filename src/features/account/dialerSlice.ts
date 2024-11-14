@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface DialerSlice {
   loading: boolean;
   error: any;
+  isSelected: null | string;
   dialers: any[];
 }
 
@@ -12,6 +13,7 @@ const initialState: DialerSlice = {
   loading: false,
   error: false,
   dialers: [],
+  isSelected: null,
 };
 
 export const dialerSlice = createSlice({
@@ -20,6 +22,9 @@ export const dialerSlice = createSlice({
   reducers: {
     setDialers: (state, action: PayloadAction<any[]>) => {
       state.dialers = [...action.payload];
+    },
+    setIsSelected: (state, action) => {
+      state.isSelected = action.payload;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -30,5 +35,5 @@ export const dialerSlice = createSlice({
   },
 });
 
-export const { setDialers } = dialerSlice.actions;
+export const { setDialers, setIsSelected } = dialerSlice.actions;
 export const dialersReducer = dialerSlice.reducer;

@@ -11,8 +11,15 @@ import { useForm } from "react-hook-form";
 
 export function AddDialerForm() {
   const dispatch = useAppDispatch();
+
   const form = useForm<AddDialerFormType>({
     resolver: zodResolver(AddDialerSchema),
+    defaultValues: {
+      name: "",
+      url: "",
+      user: "",
+      pass: "",
+    },
   });
   const {
     formState: { isSubmitting },
@@ -20,6 +27,7 @@ export function AddDialerForm() {
 
   const onSubmit = async (data) => {
     const parsedData = AddDialerSchema.parse(data);
+    console.log(parsedData);
     try {
       const response = await apiFlask.post("/portal/configure-dialer", parsedData);
       console.log(response);
@@ -35,10 +43,25 @@ export function AddDialerForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-end">
+            {/* DIALER NAME */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dialer Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isSubmitting} placeholder="solutions" type="text" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {/* DIALER URL */}
             <FormField
               control={form.control}
-              name="dialer_url"
+              name="url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dialer Url</FormLabel>

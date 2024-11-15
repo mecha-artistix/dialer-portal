@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface DialerSlice {
   loading: boolean;
   error: any;
-  isSelected: null | string;
+  isSelected: null | number;
   dialers: any[];
 }
 

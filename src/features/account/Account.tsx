@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import ActionBar from "./components/ActionBar";
 import { AddDialerForm } from "./components/AddDialerForm";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";

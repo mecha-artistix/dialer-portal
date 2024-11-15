@@ -3,9 +3,9 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import SideBar from "./SideBar";
 import TopBar from "./TopBar";
 import { useEffect } from "react";
-import { validateSession } from "@/lib/utils";
 import { logout } from "@/store/userSlice";
 import { LinearProgress } from "@/components/ui/LinearProgress";
+import { validateSession } from "@/lib/services";
 
 function AppLayout() {
   const navigation = useNavigation();

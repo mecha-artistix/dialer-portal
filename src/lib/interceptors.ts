@@ -8,14 +8,13 @@ const apiFlask = axios.create({
 // Request interceptor to add token to each request
 apiFlask.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Attach the token to the Authorization header
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
-    // Handle any errors in request setup
     return Promise.reject(error);
   }
 );
@@ -23,16 +22,11 @@ apiFlask.interceptors.request.use(
 // Middleware-like interceptor for handling responses
 apiFlask.interceptors.response.use(
   (response) => {
-    console.log("log from interceptor", response.data);
-    // Handle and modify successful response data
-    if (response.data) {
-      // Assume the API wraps actual data in a `data` field
-      return response.data; // Return the "data" object directly
-    }
-    return response; // Return the whole response if no modifications are needed
+    console.log("log from interceptor - DATA", response.data);
+    return response;
   },
   (error) => {
-    console.log(error);
+    console.log("log from interceptor - ERROR", error);
     // Handle errors globally
     if (error.response) {
       // Customize based on status code, for example
@@ -42,13 +36,11 @@ apiFlask.interceptors.response.use(
         window.location.href = `/login?from=${encodeURIComponent(window.location.pathname)}`;
       } else if (error.response.status === 500) {
         console.log("Server error - try again later");
-        // e.g., show a notification for server issues
       }
     } else if (error.request) {
-      // The request was made but no response received
       console.log("Network error - please check your connection");
     }
-    return Promise.reject(error); // Pass the error to the calling code
+    return Promise.reject(error);
   }
 );
 

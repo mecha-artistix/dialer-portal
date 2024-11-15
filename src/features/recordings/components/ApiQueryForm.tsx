@@ -2,18 +2,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { apiFlask } from "@/lib/interceptors";
 import { NonAgentApiSchema, NonAgentApiSchemaType } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { setRecordings } from "../recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 import { useEffect, useState } from "react";
 import { TServerResponse } from "@/types/server_response";
 import { useLocation } from "react-router-dom";
+import { getRecordings } from "@/lib/services";
 
 function ApiQueryForm() {
   const location = useLocation();
@@ -22,7 +21,6 @@ function ApiQueryForm() {
 
   const [status, setStatus] = useState<TServerResponse>({ status: "", message: "" });
   const { formData } = location.state || {};
-  console.log(formData);
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(NonAgentApiSchema),
     defaultValues: {
@@ -30,7 +28,7 @@ function ApiQueryForm() {
       user: formData?.user || "6666",
       pass: formData?.pass || "hIzIJx2ZdU1Zk",
       agent_user: "1013",
-      date: "2024-11-13",
+      date: "2024-10-24",
     },
   });
 
@@ -42,7 +40,7 @@ function ApiQueryForm() {
         user: formData.user || "6666",
         pass: formData.pass || "hIzIJx2ZdU1Zk",
         agent_user: formData.agent_user || "1013",
-        date: formData.date || "2024-11-13",
+        date: formData.date || "2024-10-24",
       });
     }
   }, [formData, form]);
@@ -51,43 +49,24 @@ function ApiQueryForm() {
     formState: { isSubmitting },
   } = form;
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<NonAgentApiSchemaType> = async (data) => {
     const parsedData = NonAgentApiSchema.parse(data);
     console.log(parsedData);
-    const getRecordings = async () => {
-      try {
-        const response = await apiFlask.post("/portal/recordings", parsedData);
-        console.log(response);
-        dispatch(setRecordings([]));
-        // Check if response contains data and handle accordingly
-        if (response && response.length > 0) {
-          dispatch(setRecordings(response));
-          setStatus({ status: "success", message: "Recordings found" });
-        } else {
-          setStatus({ status: "error", message: "No recordings found" });
-        }
-      } catch (error: unknown) {
-        // Handle network errors or no response from server
-        if (!error.response) {
-          setStatus({ status: "error", message: "Network error. Please check your connection." });
-        } else if (error.response.status === 404) {
-          setStatus({ status: "error", message: "Endpoint not found (404)." });
-        } else if (error.response.status === 500) {
-          setStatus({
-            status: "error",
-            message: error.response.data?.error || "Server error (500). Please try again later.",
-          });
-        } else {
-          // Default error handling for other response errors
-          setStatus({
-            status: "error",
-            message: error.response.data?.error || "An unknown error occurred.",
-          });
-        }
+    try {
+      const response = await getRecordings(parsedData);
+      if (response && response.length > 0) {
+        dispatch(setRecordings(response));
+        setStatus({ status: "success", message: "Recordings found" });
+      } else {
+        setStatus({ status: "error", message: "No recordings found" });
       }
-    };
-
-    getRecordings();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setStatus({ status: "error", message: error.message });
+      } else {
+        setStatus({ status: "error", message: "An unexpected error occurred." });
+      }
+    }
   };
   return (
     <Card className="p-4">
@@ -195,3 +174,43 @@ function ApiQueryForm() {
 }
 
 export default ApiQueryForm;
+
+/*
+
+    const getRecordings = async () => {
+      try {
+        const response = await apiFlask.post("/portal/recordings", parsedData);
+        console.log(response);
+        dispatch(setRecordings([]));
+        // Check if response contains data and handle accordingly
+        if (response && response.length > 0) {
+          dispatch(setRecordings(response));
+          setStatus({ status: "success", message: "Recordings found" });
+        } else {
+          setStatus({ status: "error", message: "No recordings found" });
+        }
+      } catch (error: unknown) {
+        // Handle network errors or no response from server
+        if (!error.response) {
+          setStatus({ status: "error", message: "Network error. Please check your connection." });
+        } else if (error.response.status === 404) {
+          setStatus({ status: "error", message: "Endpoint not found (404)." });
+        } else if (error.response.status === 500) {
+          setStatus({
+            status: "error",
+            message: error.response.data?.error || "Server error (500). Please try again later.",
+          });
+        } else {
+          // Default error handling for other response errors
+          setStatus({
+            status: "error",
+            message: error.response.data?.error || "An unknown error occurred.",
+          });
+        }
+      }
+    };
+
+    getRecordings();
+
+
+*/

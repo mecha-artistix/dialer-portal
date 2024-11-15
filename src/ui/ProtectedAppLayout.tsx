@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { logout } from "@/store/userSlice";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 import { validateSession } from "@/lib/services";
+import { Toaster } from "@/components/ui/toaster";
 
 function AppLayout() {
   const navigation = useNavigation();
@@ -38,6 +39,7 @@ function AppLayout() {
           <SideBar />
         </aside>
         <main className="flex-1 bg-gray-100 p-6 overflow-y-auto">{isLoading ? <LinearProgress /> : <Outlet />}</main>
+        <Toaster />
       </div>
     </div>
   ) : (

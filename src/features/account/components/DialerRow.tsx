@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setIsSelected } from "../dialerSlice";
 import { patchDialer } from "@/lib/services";
@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { dialerColumns } from "@/lib/constants";
 import { TDialer } from "@/types/types";
 import { AddDialerFormType } from "@/schemas";
+import { Pencil, Voicemail, CheckCheck } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
 
 interface DialerProps {
   data: TDialer;
@@ -18,11 +21,13 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
   const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [inputVals, setInputVals] = useState<Omit<AddDialerFormType, "pass">>({
     name: data.name,
     url: data.url,
     user: data.user,
   });
+  const { toast } = useToast();
 
   const editHandler = () => {
     setIsEditing(true);
@@ -38,23 +43,76 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
   };
 
   const handleSave: React.MouseEventHandler<HTMLButtonElement> = async () => {
+    toast({
+      title: "Updating!",
+      description: "Your request has been submitted.",
+      variant: "default",
+    });
     try {
+      setIsSubmitting(true);
       const response = await patchDialer(data.id, inputVals);
       console.log(response);
+      toast({
+        title: "Updated!",
+        description: "Your request was successfully submitted.",
+        variant: "success",
+      });
+      setIsSubmitting(false);
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Failed!",
+        description: "Your request was failed to update.",
+        variant: "destructive",
+      });
     }
+    setIsSubmitting(false);
   };
+
+  useEffect(() => {
+    setIsEditing((prev) => Boolean(selector.isSelected === data.id));
+  }, [selector.isSelected, data.id]);
+
   return (
     <TableRow>
       {dialerColumns.map((col, i) =>
         col.key === "actions" ? (
-          <TableCell key={i} className="flex">
-            <Button size="sm" onClick={() => navigate("/recordings", { state: { formData: data } })}>
-              Get Recordings
-            </Button>
-            <Button onClick={editHandler}>Edit</Button>
-            {isEditing && <Button onClick={handleSave}>Save</Button>}
+          <TableCell key={i} className="flex gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => navigate("/recordings", { state: { formData: data } })}
+                  >
+                    <Voicemail />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Get Recordings</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {isEditing ? (
+                    <Button variant="outline" onClick={handleSave} size="icon" disabled={isSubmitting}>
+                      <CheckCheck />
+                    </Button>
+                  ) : (
+                    <Button variant="outline" onClick={editHandler} size="icon">
+                      <Pencil />
+                    </Button>
+                  )}
+                </TooltipTrigger>
+                <TooltipContent>{isEditing ? <p>Save Changes</p> : <p>Edit Dialer</p>}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            {/* {isEditing && <Button onClick={handleSave}>Save</Button>} */}
           </TableCell>
         ) : (
           <TableCell key={i}>

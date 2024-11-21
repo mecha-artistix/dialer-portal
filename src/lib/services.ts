@@ -100,3 +100,13 @@ export const patchDialer = async (dialer_id: number, body: Omit<AddDialerFormTyp
     throw error;
   }
 };
+
+export const deleteDialerReq = async (dialer_id: number) => {
+  try {
+    const response = await apiFlask.delete(`/portal/configure-dialer/${dialer_id}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

@@ -7,11 +7,11 @@ import { useAppDispatch } from "@/hooks/reduxHooks";
 import { apiFlask } from "@/lib/interceptors";
 import { AddDialerFormType, AddDialerSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { addDialer } from "../dialerSlice";
 
 export function AddDialerForm() {
   const dispatch = useAppDispatch();
-
   const form = useForm<AddDialerFormType>({
     resolver: zodResolver(AddDialerSchema),
     defaultValues: {
@@ -25,16 +25,15 @@ export function AddDialerForm() {
     formState: { isSubmitting },
   } = form;
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<AddDialerFormType> = async (data) => {
     const parsedData = AddDialerSchema.parse(data);
-    console.log(parsedData);
     try {
       const response = await apiFlask.post("/portal/configure-dialer", parsedData);
-      console.log(response);
+      console.log(response.data.dialer);
+      dispatch(addDialer(response.data.dialer));
     } catch (error) {
       console.log(error);
     }
-    console.log(onSubmit);
   };
 
   return (

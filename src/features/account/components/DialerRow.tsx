@@ -1,46 +1,28 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppSelector } from "@/hooks/reduxHooks";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { setIsSelected } from "../dialerSlice";
 import { patchDialer } from "@/lib/services";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { dialerColumns } from "@/lib/constants";
 import { TDialer } from "@/types/types";
 import { AddDialerFormType } from "@/schemas";
-import { Pencil, Voicemail, CheckCheck } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import ActionBtns from "./ActionBtns";
 
 interface DialerProps {
   data: TDialer;
 }
 
 export const DialerRow: React.FC<DialerProps> = ({ data }) => {
-  const selector = useAppSelector((state) => state.dialers);
-  const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
-  const navigate = useNavigate();
+  const selector = useAppSelector((state) => state.dialers);
+  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [inputVals, setInputVals] = useState<Omit<AddDialerFormType, "pass">>({
     name: data.name,
     url: data.url,
     user: data.user,
   });
-  const { toast } = useToast();
-
-  const editHandler = () => {
-    setIsEditing(true);
-    dispatch(setIsSelected(data.id));
-  };
-
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const { name, value } = e.target;
-    setInputVals((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
 
   const handleSave: React.MouseEventHandler<HTMLButtonElement> = async () => {
     toast({
@@ -66,54 +48,34 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
         variant: "destructive",
       });
     }
+    setIsEditing(false);
     setIsSubmitting(false);
   };
 
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const { name, value } = e.target;
+    setInputVals((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
   useEffect(() => {
-    setIsEditing((prev) => Boolean(selector.isSelected === data.id));
+    setIsEditing(() => Boolean(selector.isSelected === data.id));
   }, [selector.isSelected, data.id]);
 
   return (
     <TableRow>
       {dialerColumns.map((col, i) =>
         col.key === "actions" ? (
-          <TableCell key={i} className="flex gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => navigate("/recordings", { state: { formData: data } })}
-                  >
-                    <Voicemail />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Get Recordings</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  {isEditing ? (
-                    <Button variant="outline" onClick={handleSave} size="icon" disabled={isSubmitting}>
-                      <CheckCheck />
-                    </Button>
-                  ) : (
-                    <Button variant="outline" onClick={editHandler} size="icon">
-                      <Pencil />
-                    </Button>
-                  )}
-                </TooltipTrigger>
-                <TooltipContent>{isEditing ? <p>Save Changes</p> : <p>Edit Dialer</p>}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            {/* {isEditing && <Button onClick={handleSave}>Save</Button>} */}
-          </TableCell>
+          <ActionBtns
+            key={i}
+            data={data}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            handleSave={handleSave}
+            isSubmitting={isSubmitting}
+          />
         ) : (
           <TableCell key={i}>
             <input

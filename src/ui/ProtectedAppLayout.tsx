@@ -31,7 +31,7 @@ function AppLayout() {
 
   return isAuthenticated ? (
     <div className="grid grid-cols-[auto_1fr] grid-rows-[auto_1fr] h-screen">
-      <header className="p-4 shadow-md">
+      <header className="p-2">
         <TopBar />
       </header>
       <aside className="p-4 row-span-full px-8 flex flex-col gap-4">

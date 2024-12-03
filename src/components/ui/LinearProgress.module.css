@@ -2,8 +2,8 @@
 .loader {
   height: 4px;
   width: 100%;
-  --c: no-repeat linear-gradient(#6100ee 0 0);
-  background: var(--c), var(--c), #d7b8fc;
+  --c: no-repeat linear-gradient(hsl(var(--primary)) 0 0);
+  background: var(--c), var(--c), #e4e4e4;
   background-size: 60% 100%;
   animation: l16 3s infinite;
 }

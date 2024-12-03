@@ -30,8 +30,6 @@ interface LeadData {
 //   "user": "1013"
 // }
 
-
-
 function Recordings() {
   // const recordingsState = useAppSelector((state) => state.recordings);
   const location = useLocation();
@@ -57,18 +55,12 @@ function Recordings() {
     // return <ServerResponse type="error" message={error.message}/>
   }
 
-
-
   return (
     <div className="flex flex-col gap-2 relative">
-      <h1 className="text-3xl font-bold mb-2">
-        {location.pathname === "/recordings-all-agents"
-          ? "Get Recordings For All Agents"
-          : "Get Recordings For Single Agent"}
-      </h1>
+      <h1 className="text-3xl font-bold mb-2">Get Recordings For Single Agent</h1>
       <VicidialApiForm />
       <Pagination
-        className="my-4 sticky top-0"
+        className="my-4 sticky top-0 bg-gray-200 rounded-sm p-2 z-50"
         meta={{
           total: data?.total_records,
           pages: data?.total_pages,

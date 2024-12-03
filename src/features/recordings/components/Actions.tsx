@@ -10,7 +10,7 @@ export const Actions: React.FC<IActions> = ({ url }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<null | string>(null);
 
   const handleTranscribe = async (url) => {
     setLoading(true);

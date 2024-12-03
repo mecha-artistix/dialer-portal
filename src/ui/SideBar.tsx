@@ -7,7 +7,10 @@ function SideBar() {
         <Link to="/">Dashboard</Link>
       </li>
       <li>
-        <Link to="/recordings">Recordings</Link>
+        <Link to="/recordings-single-agent">Recordings By Agent</Link>
+      </li>
+      <li>
+        <Link to="/recordings-all-agents">Recordings All Agents</Link>
       </li>
       <li>
         <Link to="/account">Account</Link>

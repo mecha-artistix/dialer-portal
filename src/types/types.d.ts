@@ -8,9 +8,11 @@ export type TDialer = {
   url: string;
   user: string;
   user_id: number;
+  folder_name: string;
 };
 
-export type InputKeys = keyof Omit<AddDialerFormType, "pass">;
+// export type InputKeys = keyof Omit<AddDialerFormType, "pass">;
+export type InputKeys = keyof AddDialerFormType;
 
 interface InputColumn {
   key: InputKeys;

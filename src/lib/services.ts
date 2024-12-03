@@ -61,23 +61,33 @@ export const sendTranscribeRequest = (url: string) => {
     }
   });
 };
-
-export const getRecordings = async (data: NonAgentApiSchemaType) => {
+function removeNullUndefinedWithReduce(obj) {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+      if (value !== null && value !== undefined && value !=="") {
+          acc[key] = typeof value === 'object' ? removeNullUndefinedWithReduce(value) : value;
+      }
+      return acc;
+  }, {});
+}
+export const getRecordings = async (
+  data: NonAgentApiSchemaType,
+  pagination: { page: number; per_page: number } = { page: 1, per_page: 150 },
+  filter: string[],
+) => {
+  const params = removeNullUndefinedWithReduce({...data,...pagination, status: filter.join(",")})
+  console.log({params})
   try {
-    const response: AxiosResponse = await apiFlask.post("/portal/recordings", data);
-    // Check if response contains data and handle accordingly
+    const response: AxiosResponse = await apiFlask.post("/portal/recordings", params);
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       if (error.response) {
-        // const status = error.response.status;
-        const message = error.response.data.message || error.response.data.error || "An error occurred";
-        throw new Error(`${message}`);
+        throw error.response.data; // Throw full error response
       } else if (error.request) {
-        throw new Error("No response received from server.");
+        throw { message: "No response received from server." };
       }
     }
-    throw new Error("An unexpected error occurred.");
+    throw { message: "An unexpected error occurred." };
   }
 };
 

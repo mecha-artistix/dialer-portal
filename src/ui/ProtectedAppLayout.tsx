@@ -35,10 +35,18 @@ function AppLayout() {
         <TopBar />
       </header>
       <div className="flex flex-1">
-        <aside className="w-64 bg-gray-900 text-gray-100 p-4 hidden md:block">
+        <aside className="w-48 bg-gray-900 text-gray-100 p-4 hidden md:block">
           <SideBar />
         </aside>
-        <main className="flex-1 bg-gray-100 p-6 overflow-y-auto">{isLoading ? <LinearProgress /> : <Outlet />}</main>
+        <main className="flex-1 bg-gray-100 p-6 overflow-y-auto">
+          {isLoading ? (
+            <LinearProgress />
+          ) : (
+            <div className="container mx-auto">
+              <Outlet />
+            </div>
+          )}
+        </main>
         <Toaster />
       </div>
     </div>

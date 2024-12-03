@@ -16,13 +16,13 @@ apiFlask.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Middleware-like interceptor for handling responses
 apiFlask.interceptors.response.use(
   (response) => {
-    console.log("log from interceptor - DATA", response.data);
+    // console.log("log from interceptor - DATA", response.data);
     return response;
   },
   (error) => {
@@ -41,7 +41,7 @@ apiFlask.interceptors.response.use(
       console.log("Network error - please check your connection");
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export { apiFlask };

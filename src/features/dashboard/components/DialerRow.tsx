@@ -1,55 +1,65 @@
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { useEffect, useState } from "react";
-import { patchDialer } from "@/lib/services";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { dialerColumns } from "@/lib/constants";
 import { TDialer } from "@/types/types";
 import { AddDialerFormType } from "@/schemas";
 import { useToast } from "@/hooks/use-toast";
 import ActionBtns from "./ActionBtns";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiFlask } from "@/lib/interceptors";
 
 interface DialerProps {
   data: TDialer;
 }
 
 export const DialerRow: React.FC<DialerProps> = ({ data }) => {
+  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const selector = useAppSelector((state) => state.dialers);
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [inputVals, setInputVals] = useState<Omit<AddDialerFormType, "pass">>({
+  // const [inputVals, setInputVals] = useState<Omit<AddDialerFormType, "pass">>({
+  const [inputVals, setInputVals] = useState<AddDialerFormType>({
     name: data.name,
     url: data.url,
     user: data.user,
+    folder_name: data.folder_name,
+    pass: data.pass,
+  });
+
+  // Update mutation
+  const updateMutation = useMutation({
+    mutationFn: (updatedData: AddDialerFormType) => apiFlask.put(`/portal/configure-dialer/${data.id}`, updatedData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["dialers"] });
+    },
+    onMutate() {
+      toast({
+        title: "Updating...",
+        description: "Your request is being processed.",
+        variant: "default",
+      });
+    },
+    onSettled(data, error, variables, context) {
+      if (error) {
+        toast({
+          title: "Failed!",
+          description: "Your request was failed to update.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Updated!",
+          description: "Your request was successfully submitted.",
+          variant: "success",
+        });
+      }
+    },
   });
 
   const handleSave: React.MouseEventHandler<HTMLButtonElement> = async () => {
-    toast({
-      title: "Updating!",
-      description: "Your request has been submitted.",
-      variant: "default",
-    });
-    try {
-      setIsSubmitting(true);
-      const response = await patchDialer(data.id, inputVals);
-      console.log(response);
-      toast({
-        title: "Updated!",
-        description: "Your request was successfully submitted.",
-        variant: "success",
-      });
-      setIsSubmitting(false);
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Failed!",
-        description: "Your request was failed to update.",
-        variant: "destructive",
-      });
-    }
-    setIsEditing(false);
-    setIsSubmitting(false);
+    updateMutation.mutate(inputVals);
   };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -74,14 +84,14 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
             isEditing={isEditing}
             setIsEditing={setIsEditing}
             handleSave={handleSave}
-            isSubmitting={isSubmitting}
+            isSubmitting={updateMutation.isPending}
           />
         ) : (
           <TableCell key={i}>
             <input
-              type="text"
+              type={col.key === "pass" ? "password" : "text"}
               onChange={handleChange}
-              value={inputVals[col.key]}
+              value={inputVals[col.key] || ""}
               name={col.key}
               disabled={Boolean(data.id !== selector.isSelected)}
               className={`w-full px-3 py-1 rounded transition-colors ${
@@ -91,7 +101,7 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
               }`}
             />
           </TableCell>
-        )
+        ),
       )}
     </TableRow>
   );

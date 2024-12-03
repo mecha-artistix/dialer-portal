@@ -7,72 +7,82 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { NonAgentApiSchema, NonAgentApiSchemaType } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { setRecordings } from "../recordingsSlice";
+import { setRecordings, setQueryData } from "../recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TServerResponse } from "@/types/server_response";
 import { useLocation } from "react-router-dom";
 import { getRecordings } from "@/lib/services";
+import { formatDate } from "@/lib/utils";
+import { z } from "zod";
 
-function ApiQueryForm() {
-  const location = useLocation();
+const testValues = {
+  dialer_url: "stsolution.i5.tel",
+  user: "6666",
+  pass: "hIzIJx2ZdU1Zk",
+  date: "2024-10-24",
+  folder_name: "vicidial",
+};
+
+function VicidialApiForm() {
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const selector = useAppSelector((state) => state.dialers);
-
-  const [status, setStatus] = useState<TServerResponse>({ status: "", message: "" });
+  // const [isAllAgents, setIsAllAgents] = useState(location.pathname === "/recordings-all-agents");
+  const isAllAgents = location.pathname === "/recordings-all-agents";
   const { formData } = location.state || {};
+
   const form = useForm<NonAgentApiSchemaType>({
-    resolver: zodResolver(NonAgentApiSchema),
-    defaultValues: {
-      dialer_url: formData?.url || "stsolution.i5.tel",
-      user: formData?.user || "6666",
-      pass: formData?.pass || "hIzIJx2ZdU1Zk",
-      agent_user: "1013",
-      date: "2024-10-24",
-    },
+    resolver: zodResolver(
+      useMemo(() => {
+        return NonAgentApiSchema.extend({
+          agent_user: isAllAgents
+            ? z.string().nullable().optional().or(z.literal('')) 
+            : z.string().min(1,"agent is required"), 
+        });
+      }, [isAllAgents]) // Update schema when isAllAgents changes
+    ),
+    defaultValues: { ...testValues, agent_user: isAllAgents ? "" : "" },
   });
+
+  // useEffect(() => {
+  //   setIsAllAgents(() => location.pathname === "/recordings-all-agents");
+  // }, []);
 
   // Update form values when formData changes
   useEffect(() => {
     if (formData) {
       form.reset({
-        dialer_url: formData.url || "stsolution.i5.tel",
-        user: formData.user || "6666",
-        pass: formData.pass || "hIzIJx2ZdU1Zk",
-        agent_user: formData.agent_user || "1013",
-        date: formData.date || "2024-10-24",
+        dialer_url: formData.url || "",
+        user: formData.user || "",
+        pass: formData.pass || "",
+        folder_name: formData.folder_name || "",
+        agent_user: isAllAgents ? "" : "1013",
+        date: formatDate(new Date()),
       });
+      console.log(isAllAgents);
     }
   }, [formData, form]);
-
+  console.log({ location, isAllAgents });
+  console.log({ formData });
   const {
     formState: { isSubmitting },
   } = form;
 
   const onSubmit: SubmitHandler<NonAgentApiSchemaType> = async (data) => {
     const parsedData = NonAgentApiSchema.parse(data);
-    console.log(parsedData);
-    try {
-      const response = await getRecordings(parsedData);
-      if (response && response.length > 0) {
-        dispatch(setRecordings(response));
-        setStatus({ status: "success", message: "Recordings found" });
-      } else {
-        setStatus({ status: "error", message: "No recordings found" });
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setStatus({ status: "error", message: error.message });
-      } else {
-        setStatus({ status: "error", message: "An unexpected error occurred." });
-      }
-    }
+    console.log({ parsed_data: parsedData });
+    dispatch(setQueryData(parsedData));
+  };
+
+  const onError = (err) => {
+    console.log({ err });
   };
   return (
     <Card className="p-4">
-      <ServerResponse type={status.status} message={status.message} />
+      {/* <ServerResponse type={status.status} message={status.message} /> */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit, onError)}>
           <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-end">
             {/* DIALER URL */}
             <FormField
@@ -87,8 +97,8 @@ function ApiQueryForm() {
                         <SelectValue placeholder="stsolution.i5.tel" />
                       </SelectTrigger>
                       <SelectContent>
-                        {selector.dialers.map((el, i) => (
-                          <SelectItem key={i} value={el.url}>
+                        {selector.dialers.map((el) => (
+                          <SelectItem key={el.id} value={el.url}>
                             {el.url}
                           </SelectItem>
                         ))}
@@ -108,7 +118,7 @@ function ApiQueryForm() {
                 <FormItem>
                   <FormLabel>User</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isSubmitting} placeholder="User ID" type="text" />
+                    <Input {...field} disabled={isSubmitting} placeholder="User ID" type="text" required />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -123,7 +133,7 @@ function ApiQueryForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isSubmitting} placeholder="Password" type="password" />
+                    <Input {...field} disabled={isSubmitting} placeholder="Password" type="text" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,14 +141,36 @@ function ApiQueryForm() {
             />
 
             {/* AGENT USER */}
+
             <FormField
+              
               control={form.control}
               name="agent_user"
               render={({ field }) => (
-                <FormItem>
+                <FormItem  className={`${isAllAgents && 'hidden'}`}>
                   <FormLabel>Agent User</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isSubmitting} placeholder="Agent User ID" type="text" />
+                    <Input
+                      {...field}
+                      disabled={isSubmitting}
+                      placeholder="Agent User ID"
+                      type="text"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* FOLDER NAME */}
+            <FormField
+              control={form.control}
+              name="folder_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Folder Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isSubmitting} placeholder="vicidial" type="text" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -173,7 +205,7 @@ function ApiQueryForm() {
   );
 }
 
-export default ApiQueryForm;
+export default VicidialApiForm;
 
 /*
 

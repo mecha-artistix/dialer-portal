@@ -8,9 +8,11 @@ import { apiFlask } from "@/lib/interceptors";
 import { AddDialerFormType, AddDialerSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { addDialer } from "../dialerSlice";
+import { setIsAddingDialer } from "../dialerSlice";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function AddDialerForm() {
+  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const form = useForm<AddDialerFormType>({
     resolver: zodResolver(AddDialerSchema),
@@ -19,20 +21,41 @@ export function AddDialerForm() {
       url: "",
       user: "",
       pass: "",
+      folder_name: "",
     },
   });
   const {
     formState: { isSubmitting },
   } = form;
 
+  // Create mutation
+  const createMutation = useMutation({
+    mutationFn: async (parsedData: AddDialerFormType) => {
+      const response = await apiFlask.post("/portal/configure-dialer", parsedData);
+      console.log(response);
+      return response.data.dialer; // Return the new item
+    },
+    // onMutate: async (id) => {
+    // const prev = queryClient.getQueryData(["dialers"])
+    // console.log(prev)
+    // },
+    onSettled: () => {},
+    onSuccess: (newDialer) => {
+      dispatch(setIsAddingDialer(false));
+
+      queryClient.setQueryData(["dialers"], (oldData: AddDialerFormType[] | undefined) => {
+        return oldData ? [...oldData, newDialer] : [newDialer];
+      });
+    },
+  });
   const onSubmit: SubmitHandler<AddDialerFormType> = async (data) => {
     const parsedData = AddDialerSchema.parse(data);
+    console.log(parsedData);
+    createMutation.mutate(parsedData);
+
     try {
-      const response = await apiFlask.post("/portal/configure-dialer", parsedData);
-      console.log(response.data.dialer);
-      dispatch(addDialer(response.data.dialer));
     } catch (error) {
-      console.log(error);
+      console.log({ error });
     }
   };
 
@@ -51,6 +74,20 @@ export function AddDialerForm() {
                   <FormLabel>Dialer Name</FormLabel>
                   <FormControl>
                     <Input {...field} disabled={isSubmitting} placeholder="solutions" type="text" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* Folder NAME */}
+            <FormField
+              control={form.control}
+              name="folder_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Folder Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isSubmitting} placeholder="vicidial" type="text" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

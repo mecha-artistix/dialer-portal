@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction, Dispatch } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { LoginSchemaType } from "@/schemas";
 import axios from "axios";
 
@@ -8,6 +8,7 @@ interface UserSlice {
   error: any;
   isAuthenticated: boolean;
   userId: string | null;
+  username: string | null;
 }
 
 // Thunk for logging in
@@ -37,6 +38,7 @@ const initialState: UserSlice = {
   error: false,
   isAuthenticated: false,
   userId: null,
+  username: null,
 };
 
 export const userSlice = createSlice({
@@ -58,7 +60,8 @@ export const userSlice = createSlice({
         state.isAuthenticated = true;
         state.loading = false;
         state.error = undefined;
-        state.userId = action.payload.user_id;
+        state.userId = action.payload.user.user_id;
+        state.username = action.payload.user.username;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;

@@ -1,14 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { TableCell } from "@/components/ui/table";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppDispatch } from "@/hooks/reduxHooks";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CheckCheck, Pencil, Voicemail, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { setDialers, setIsSelected } from "../dialerSlice";
+import { setIsSelected } from "../dialerSlice";
 import { TDialer } from "@/types/types";
-import { deleteDialerReq } from "@/lib/services";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiFlask } from "@/lib/interceptors";
 
 interface ActionBtnsProps {
   data: TDialer;
@@ -19,42 +20,49 @@ interface ActionBtnsProps {
 }
 
 const ActionBtns: React.FC<ActionBtnsProps> = ({ data, isEditing, setIsEditing, handleSave, isSubmitting }) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const selector = useAppSelector((state) => state.dialers);
   const { toast } = useToast();
-
-  const [isDeleting, setIsDeleting] = useState(false);
   const editHandler = () => {
     setIsEditing(true);
     dispatch(setIsSelected(data.id));
   };
 
-  const handleDelete = async () => {
-    toast({
-      title: "Deleting!",
-      description: "Your request has been submitted.",
-      variant: "default",
-    });
-    try {
-      setIsDeleting(true);
-      await deleteDialerReq(data.id);
-      dispatch(setDialers(selector.dialers.filter((dialer) => dialer.id !== data.id)));
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiFlask.delete(`/portal/configure-dialer/${id}`);
+      console.log(response);
+      return id;
+    },
+    onMutate: async (id: number) => {
+      toast({
+        title: "Deleting!",
+        description: "Your request has been submitted.",
+        variant: "default",
+      });
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["dialers"] });
       toast({
         title: "Updated!",
         description: "Your request was successfully submitted.",
         variant: "success",
       });
-      setIsDeleting(false);
-    } catch (error) {
-      console.log(error);
+    },
+    onError() {
       toast({
-        title: "Updated!",
-        description: "Your request was successfully submitted.",
-        variant: "success",
+        title: "Failed!",
+        description: "Your  request failed.",
+        variant: "destructive",
+        duration: 3000,
       });
-    }
-    setIsDeleting(false);
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(data.id);
   };
 
   return (
@@ -65,13 +73,32 @@ const ActionBtns: React.FC<ActionBtnsProps> = ({ data, isEditing, setIsEditing, 
             <Button
               size="icon"
               variant="outline"
-              onClick={() => navigate("/recordings", { state: { formData: data } })}
+              onClick={() => navigate("/recordings-single-agent", { state: { formData: data } })}
             >
-              <Voicemail />
+              {/* <Voicemail /> */}
+              Sing
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Get Recordings</p>
+            <p>Get Agent Recordings</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => navigate("/recordings-all-agents", { state: { formData: data } })}
+            >
+              {/* <Voicemail /> */}
+              All
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Get All Recordings</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -96,7 +123,7 @@ const ActionBtns: React.FC<ActionBtnsProps> = ({ data, isEditing, setIsEditing, 
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="outline" size="icon" onClick={handleDelete} disabled={isDeleting}>
+            <Button variant="outline" size="icon" onClick={handleDelete} disabled={deleteMutation.isPending}>
               <Trash2 />
             </Button>
           </TooltipTrigger>

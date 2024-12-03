@@ -11,28 +11,7 @@ import { useEffect } from "react";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 import { useLocation } from "react-router-dom";
 import { columns } from "./constants";
-
-interface LeadData {
-  lead_id: string;
-  location: string;
-  recording_id: string;
-  start_time: string;
-  status: string;
-  user: string;
-}
-
-// {
-//   "lead_id": "12112285",
-//   "location": "http://49.13.132.97/RECORDINGS/MP3/20241024-115453_9856370652-all.mp3",
-//   "recording_id": "414425",
-//   "start_time": "2024-10-24 11:54:53",
-//   "status": "A",
-//   "user": "1013"
-// }
-
-
-
-function Recordings() {
+function RecordingsAllAgent() {
   // const recordingsState = useAppSelector((state) => state.recordings);
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -41,7 +20,7 @@ function Recordings() {
 
   const { data, error, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["recordings", selector.queryData, selector.pagination, selector.filter, location.pathname],
-    queryFn: () => getRecordings(selector.queryData, selector.pagination, selector.filter),
+    queryFn: () => getRecordings({...selector.queryData,agent_user:""}, selector.pagination, selector.filter),
     enabled: isQueryDataValid,
     retry: 0,
     // keepPreviousData: true,
@@ -53,22 +32,15 @@ function Recordings() {
     }
   }, [isSuccess, data, dispatch]);
 
-  if (isError) {
-    // return <ServerResponse type="error" message={error.message}/>
-  }
-
-
 
   return (
-    <div className="flex flex-col gap-2 relative">
+    <div className="flex flex-col gap-2">
       <h1 className="text-3xl font-bold mb-2">
-        {location.pathname === "/recordings-all-agents"
-          ? "Get Recordings For All Agents"
-          : "Get Recordings For Single Agent"}
+        Get Recordings For AllAgents
       </h1>
       <VicidialApiForm />
       <Pagination
-        className="my-4 sticky top-0"
+        className="my-4"
         meta={{
           total: data?.total_records,
           pages: data?.total_pages,
@@ -112,4 +84,4 @@ function Recordings() {
   );
 }
 
-export default Recordings;
+export default RecordingsAllAgent;

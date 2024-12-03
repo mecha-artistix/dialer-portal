@@ -1,5 +1,5 @@
 import { TDialer } from "@/types/types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 // Define a type for the slice state
 interface DialerSlice {
@@ -49,5 +49,5 @@ export const dialerSlice = createSlice({
   },
 });
 
-export const { setDialers, setIsSelected, setIsEditing, addDialer } = dialerSlice.actions;
+export const { setDialers, setIsSelected, setIsEditing, addDialer, setIsAddingDialer } = dialerSlice.actions;
 export const dialersReducer = dialerSlice.reducer;

@@ -4,8 +4,9 @@ import Auth from "./features/auth/Auth";
 import ProtectedAppLayout from "./ui/ProtectedAppLayout";
 import "./index.css";
 import { Account } from "./features/account/Account";
-import Recordings from "./features/recordings/Recordings";
-
+import RecordingsSingleAgent from "./features/recordings/Recordings";
+import RecordingsAllAgent from "./features/recordings/RecordingsAllAgent";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const router = createBrowserRouter([
   { path: "/login", element: <Auth /> },
   {
@@ -13,15 +14,19 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Dashboard /> },
       { path: "/account", element: <Account /> },
-      { path: "/recordings", element: <Recordings /> },
+      { path: "/recordings-single-agent", element: <RecordingsSingleAgent /> },
+      { path: "/recordings-all-agents", element: <RecordingsAllAgent /> },
+      // { path: "/recordings-all-agents", element: <RecordingsSingleAgent /> },
     ],
   },
 ]);
-
+const queryClient = new QueryClient();
 function App() {
   return (
     <div>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </div>
   );
 }

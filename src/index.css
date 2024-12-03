@@ -115,3 +115,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .navLink {
+    @apply p-2 rounded-md;
+  }
+  .navLink.active {
+    @apply bg-gray-100;
+  }
+}

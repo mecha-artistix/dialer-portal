@@ -1,22 +1,21 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function SideBar() {
   return (
-    <ul>
-      <li>
-        <Link to="/">Dashboard</Link>
-      </li>
-      <li>
-        <Link to="/recordings-single-agent">Recordings By Agent</Link>
-      </li>
-      <li>
-        <Link to="/recordings-all-agents">Recordings All Agents</Link>
-      </li>
-      <li>
-        <Link to="/account">Account</Link>
-      </li>
-    </ul>
+    <div className="flex flex-col gap-2">
+      <NavLink className="navLink" to="/">
+        Dashboard
+      </NavLink>
+      <NavLink className="navLink" to="/recordings-single-agent">
+        Recordings By Agent
+      </NavLink>
+      <NavLink className="navLink" to="/recordings-all-agents">
+        Recordings All Agents
+      </NavLink>
+      <NavLink className="navLink" to="/account">
+        Account
+      </NavLink>
+    </div>
   );
 }
-
 export default SideBar;

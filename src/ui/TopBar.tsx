@@ -6,8 +6,14 @@ function TopBar() {
   const userState = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   return (
-    <div>
-      {userState.isAuthenticated ? <Button onClick={() => dispatch(logout())}>Logout</Button> : <Button>Login</Button>}
+    <div className="flex items-center justify-between">
+      {userState.isAuthenticated ? (
+        <Button className="ml-auto" onClick={() => dispatch(logout())}>
+          Logout
+        </Button>
+      ) : (
+        <Button>Login</Button>
+      )}
     </div>
   );
 }

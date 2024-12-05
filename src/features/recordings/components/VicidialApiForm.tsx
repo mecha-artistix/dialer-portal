@@ -91,6 +91,7 @@ function VicidialApiForm() {
     console.log(dialers);
     // form.setValue("user", "hello");
     form.reset({
+      dialer_url: field,
       user: dialers.find((dialer) => dialer.url === field).user,
       pass: dialers.find((dialer) => dialer.url === field).pass,
       folder_name: dialers.find((dialer) => dialer.url === field).folder_name,

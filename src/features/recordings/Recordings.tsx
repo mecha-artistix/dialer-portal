@@ -60,7 +60,7 @@ function Recordings() {
       <h1 className="text-3xl font-bold mb-2">Get Recordings For Single Agent</h1>
       <VicidialApiForm />
       <Pagination
-        className="my-4 sticky top-0 bg-gray-200 rounded-sm p-2 z-50"
+        className="my-4"
         meta={{
           total: data?.total_records,
           pages: data?.total_pages,

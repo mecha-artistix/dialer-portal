@@ -14,7 +14,7 @@ export default function Pagination({ className, meta }: Props) {
   const dispatch = useAppDispatch();
 
   return (
-    <div className={cn("flex gap-2", className)}>
+    <div className={cn("flex gap-2 sticky top-0 bg-gray-200 rounded-sm p-2 z-50", className)}>
       <Button
         size="sm"
         variant="outline"

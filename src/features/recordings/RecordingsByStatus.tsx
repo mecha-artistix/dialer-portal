@@ -50,7 +50,7 @@ function RecordingsByStatus() {
           current: data?.current_page,
         }}
       />
-      {isError && <ServerResponse type="error" message={JSON.stringify(error)} />}
+      {isError && <ServerResponse type="error" message={error.message || JSON.stringify(error)} />}
       {isLoading ? (
         <LinearProgress />
       ) : (

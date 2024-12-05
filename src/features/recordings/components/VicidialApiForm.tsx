@@ -28,28 +28,23 @@ function VicidialApiForm() {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const selector = useAppSelector((state) => state.dialers);
-  // const [isAllAgents, setIsAllAgents] = useState(location.pathname === "/recordings-all-agents");
-  const isAllAgents = location.pathname === "/recordings-all-agents";
+  // const [isSingleAgent, setisSingleAgent] = useState(location.pathname === "/recordings-all-agents");
+  const isSingleAgent = location.pathname === "/recordings-single-agent";
   const { formData } = location.state || {};
 
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(
       useMemo(() => {
         return NonAgentApiSchema.extend({
-          agent_user: isAllAgents
-            ? z.string().nullable().optional().or(z.literal('')) 
-            : z.string().min(1,"agent is required"), 
+          agent_user: isSingleAgent
+            ? z.string().min(1, "agent is required")
+            : z.string().nullable().optional().or(z.literal("")),
         });
-      }, [isAllAgents]) // Update schema when isAllAgents changes
+      }, [isSingleAgent]), // Update schema when isSingleAgent changes
     ),
-    defaultValues: { ...testValues, agent_user: isAllAgents ? "" : "" },
+    defaultValues: { ...testValues, agent_user: isSingleAgent ? "" : "" },
   });
 
-  // useEffect(() => {
-  //   setIsAllAgents(() => location.pathname === "/recordings-all-agents");
-  // }, []);
-
-  // Update form values when formData changes
   useEffect(() => {
     if (formData) {
       form.reset({
@@ -57,13 +52,13 @@ function VicidialApiForm() {
         user: formData.user || "",
         pass: formData.pass || "",
         folder_name: formData.folder_name || "",
-        agent_user: isAllAgents ? "" : "1013",
+        agent_user: isSingleAgent ? "" : "1013",
         date: formatDate(new Date()),
       });
-      console.log(isAllAgents);
+      console.log(isSingleAgent);
     }
   }, [formData, form]);
-  console.log({ location, isAllAgents });
+  console.log({ location, isSingleAgent });
   console.log({ formData });
   const {
     formState: { isSubmitting },
@@ -143,19 +138,13 @@ function VicidialApiForm() {
             {/* AGENT USER */}
 
             <FormField
-              
               control={form.control}
               name="agent_user"
               render={({ field }) => (
-                <FormItem  className={`${isAllAgents && 'hidden'}`}>
+                <FormItem className={`${!isSingleAgent && "hidden"}`}>
                   <FormLabel>Agent User</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isSubmitting}
-                      placeholder="Agent User ID"
-                      type="text"
-                    />
+                    <Input {...field} disabled={isSubmitting} placeholder="Agent User ID" type="text" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

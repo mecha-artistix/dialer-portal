@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import { getRecordings } from "@/lib/services";
 import VicidialApiForm from "./components/VicidialApiForm";
 import { Actions } from "./components/Actions";
@@ -11,7 +11,8 @@ import { useEffect } from "react";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 import { useLocation } from "react-router-dom";
 import { columns } from "./constants";
-function RecordingsAllAgent() {
+
+function RecordingsByStatus() {
   // const recordingsState = useAppSelector((state) => state.recordings);
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -20,10 +21,14 @@ function RecordingsAllAgent() {
 
   const { data, error, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["recordings", selector.queryData, selector.pagination, selector.filter, location.pathname],
-    queryFn: () => getRecordings({ ...selector.queryData, agent_user: "" }, selector.pagination, selector.filter),
+    queryFn: async () => {
+      if (selector.filter.length < 1) throw new Error("Please Provide atleast one filter");
+      return getRecordings({ ...selector.queryData, agent_user: "" }, selector.pagination, selector.filter);
+    },
     enabled: isQueryDataValid,
     retry: 0,
-    // keepPreviousData: true,
+    refetchOnMount: "always",
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -45,7 +50,7 @@ function RecordingsAllAgent() {
           current: data?.current_page,
         }}
       />
-      {isError && <ServerResponse type="error" message={JSON.stringify(error)} />}
+      {isError && <ServerResponse type="error" message={error.message} />}
       {isLoading ? (
         <LinearProgress />
       ) : (
@@ -81,4 +86,4 @@ function RecordingsAllAgent() {
   );
 }
 
-export default RecordingsAllAgent;
+export default RecordingsByStatus;

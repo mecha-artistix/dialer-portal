@@ -12,6 +12,9 @@ function SideBar() {
       <NavLink className="navLink" to="/recordings-all-agents">
         Recordings All Agents
       </NavLink>
+      <NavLink className="navLink" to="/recordings-by-status">
+        Recordings By Status
+      </NavLink>
       <NavLink className="navLink" to="/account">
         Account
       </NavLink>

@@ -2,11 +2,10 @@ import { Button } from "@/components/ui/button";
 import { TableCell } from "@/components/ui/table";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { CheckCheck, Pencil, Voicemail, Trash2 } from "lucide-react";
+import { CheckCheck, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { setIsSelected } from "../dialerSlice";
 import { TDialer } from "@/types/types";
-import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFlask } from "@/lib/interceptors";
@@ -36,7 +35,7 @@ const ActionBtns: React.FC<ActionBtnsProps> = ({ data, isEditing, setIsEditing, 
       console.log(response);
       return id;
     },
-    onMutate: async (id: number) => {
+    onMutate: async () => {
       toast({
         title: "Deleting!",
         description: "Your request has been submitted.",

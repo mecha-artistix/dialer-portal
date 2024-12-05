@@ -7,6 +7,7 @@ import { Account } from "./features/account/Account";
 import RecordingsSingleAgent from "./features/recordings/Recordings";
 import RecordingsAllAgent from "./features/recordings/RecordingsAllAgent";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import RecordingsByStatus from "./features/recordings/RecordingsByStatus";
 const router = createBrowserRouter([
   { path: "/login", element: <Auth /> },
   {
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
       { path: "/account", element: <Account /> },
       { path: "/recordings-single-agent", element: <RecordingsSingleAgent /> },
       { path: "/recordings-all-agents", element: <RecordingsAllAgent /> },
-      // { path: "/recordings-all-agents", element: <RecordingsSingleAgent /> },
+      { path: "/recordings-by-status", element: <RecordingsByStatus /> },
     ],
   },
 ]);

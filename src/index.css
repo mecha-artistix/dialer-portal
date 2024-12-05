@@ -120,7 +120,8 @@
   .navLink {
     @apply p-2 rounded-md;
   }
-  .navLink.active {
+  .navLink.active,
+  .navLink:hover {
     @apply bg-gray-100;
   }
 }

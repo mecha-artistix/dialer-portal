@@ -34,17 +34,22 @@ function VicidialApiForm() {
   const isSingleAgent = location.pathname === "/recordings-single-agent";
   const { formData } = location.state || {};
 
-  const { data, isSuccess, isError, error } = useQuery({
+  const {
+    data: dialers,
+    isSuccess,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["dialers"],
     queryFn: getDialerConfig,
     enabled: true,
   });
 
   useEffect(() => {
-    if (isSuccess && data) {
-      dispatch(setDialers(data));
+    if (isSuccess && dialers) {
+      dispatch(setDialers(dialers));
     }
-  }, [isSuccess, data, dispatch]);
+  }, [isSuccess, dialers, dispatch]);
 
   const form = useForm<NonAgentApiSchemaType>({
     resolver: zodResolver(
@@ -82,7 +87,15 @@ function VicidialApiForm() {
     console.log({ parsed_data: parsedData });
     dispatch(setQueryData(parsedData));
   };
-
+  function onDialerSelectChange(field) {
+    console.log(dialers);
+    // form.setValue("user", "hello");
+    form.reset({
+      user: dialers.find((dialer) => dialer.url === field).user,
+      pass: dialers.find((dialer) => dialer.url === field).pass,
+      folder_name: dialers.find((dialer) => dialer.url === field).folder_name,
+    });
+  }
   return (
     <>
       <Card className="p-4">
@@ -98,7 +111,7 @@ function VicidialApiForm() {
                   <FormItem>
                     <FormLabel>Dialer Url</FormLabel>
                     <FormControl>
-                      <Select value={field.value} onValueChange={field.onChange}>
+                      <Select value={field.value} onValueChange={(field) => onDialerSelectChange(field)}>
                         <SelectTrigger>
                           <SelectValue placeholder="stsolution.i5.tel" />
                         </SelectTrigger>

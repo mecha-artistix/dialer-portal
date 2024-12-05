@@ -30,7 +30,7 @@ function RecordingsByStatus() {
     refetchOnMount: "always",
     staleTime: 0,
   });
-
+  if (isError) console.log("error in status records", error);
   useEffect(() => {
     if (isSuccess && data) {
       dispatch(setPageCount(data.total_pages));
@@ -50,7 +50,7 @@ function RecordingsByStatus() {
           current: data?.current_page,
         }}
       />
-      {isError && <ServerResponse type="error" message={error.message} />}
+      {isError && <ServerResponse type="error" message={JSON.stringify(error)} />}
       {isLoading ? (
         <LinearProgress />
       ) : (

@@ -17,7 +17,6 @@ function AppLayout() {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("protected effect");
     const validate = async () => {
       try {
         await validateSession();

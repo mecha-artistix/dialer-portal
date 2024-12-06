@@ -19,10 +19,10 @@ function RecordingsAllAgent() {
   const isQueryDataValid = selector.queryData !== null;
 
   const { data, error, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ["recordingsAllAgent", selector.queryData, selector.pagination, selector.statusFilter, location.pathname],
+    queryKey: ["recordingsAllAgent"],
     queryFn: () => getRecordings({ ...selector.queryData, agent_user: "" }, selector.pagination, selector.statusFilter),
-    enabled: isQueryDataValid,
-    // enabled: false,
+    // enabled: isQueryDataValid,
+    enabled: false,
     retry: 0,
     // keepPreviousData: true,
   });
@@ -36,8 +36,9 @@ function RecordingsAllAgent() {
   return (
     <div className="flex flex-col gap-2">
       <h1 className="text-3xl font-bold mb-2">Get Recordings For AllAgents</h1>
-      <VicidialApiForm />
+      <VicidialApiForm queryType="allRecordings" />
       <Pagination
+        queryType="allRecordings"
         className="my-4"
         meta={{
           total: data?.total_records,

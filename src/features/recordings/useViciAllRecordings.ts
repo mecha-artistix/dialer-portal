@@ -2,13 +2,14 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { getRecordings } from "@/lib/services";
 import { ViciRecordsByAgentSchema } from "@/schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { number, z } from "zod";
-export function useViciAgentFilter() {
+import { z } from "zod";
+
+export function useViciAllRecordings() {
   const { queryData } = useAppSelector((state) => state.recordings);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
-  const { mutate: mutateAgent, isPending } = useMutation({
+  const { mutate: mutateAllRecordings, isPending } = useMutation({
     mutationFn: async ({
       formData,
       pagination,
@@ -18,19 +19,19 @@ export function useViciAgentFilter() {
     }) => {
       const data = formData || queryData;
       const response = await getRecordings(data, pagination);
-      console.log({ agentHookResoponse: response });
+      console.log({ allHookResoponse: response });
       return response;
     },
     onSuccess: (newData) => {
-      queryClient.invalidateQueries({ queryKey: ["recordingsByAgent"] });
-      queryClient.setQueryData(["recordingsByAgent"], newData);
+      queryClient.invalidateQueries({ queryKey: ["recordingsAllAgent"] });
+      queryClient.setQueryData(["recordingsAllAgent"], newData);
       //   dispatch()
     },
     onError: (error) => {
       // Set the error in the query cache
-      queryClient.setQueryData(["recordingsByAgent"], { error });
+      queryClient.setQueryData(["recordingsAllAgent"], { error });
     },
   });
 
-  return { mutateAgent, isPending };
+  return { mutateAllRecordings, isPending };
 }

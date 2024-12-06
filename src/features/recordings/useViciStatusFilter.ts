@@ -9,7 +9,7 @@ export function useViciStatusFilter() {
   //   const { pagination } = useAppSelector((state) => state.recordings);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
-  const { queryData, pagination } = useAppSelector((state) => state.recordings);
+  const { queryData } = useAppSelector((state) => state.recordings);
   const {
     mutate: mutateStatus,
     isPending,
@@ -20,7 +20,7 @@ export function useViciStatusFilter() {
       formData,
       pagination,
     }: {
-      formData: z.infer<typeof ViciRecordsByStatusSchema>;
+      formData?: z.infer<typeof ViciRecordsByStatusSchema>;
       pagination?: { page: number; per_page: number };
     }) => {
       const data = formData || queryData;

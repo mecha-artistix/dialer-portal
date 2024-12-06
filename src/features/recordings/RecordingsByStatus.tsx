@@ -52,6 +52,7 @@ function RecordingsByStatus() {
       <h1 className="text-3xl font-bold mb-2">Get Recordings By Status</h1>
       <VicidialApiForm queryType="recordingsByStatus" />
       <Pagination
+        queryType="recordingsByStatus"
         className="my-4"
         meta={{
           total: data?.total_records,

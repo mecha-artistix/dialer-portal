@@ -29,6 +29,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { apiFlask } from "@/lib/interceptors";
 import { useViciStatusFilter } from "../useViciStatusFilter";
 import { useViciAgentFilter } from "../useViciAgentFilter";
+import { useViciAllRecordings } from "../useViciAllRecordings";
 
 const testValues = {
   dialer_url: "stsolution.i5.tel",
@@ -105,7 +106,7 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
 
   const { mutateStatus, isPending, isError, error } = useViciStatusFilter();
   const { mutateAgent } = useViciAgentFilter();
-
+  const { mutateAllRecordings } = useViciAllRecordings();
   function onDialerSelectChange(field) {
     // form.setValue("user", "hello");
     form.reset({
@@ -124,6 +125,9 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
     }
     if (queryType === "recordingsByAgent") {
       mutateAgent({ data: parsedData });
+    }
+    if (queryType === "allRecordings") {
+      mutateAllRecordings({ data: parsedData });
     }
   };
 
@@ -289,8 +293,8 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
 
               {/* SUBMIT BUTTON */}
               {/* <div className="flex items-center justify-center"> */}
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Fetching Data" : "Submit"}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Fetching Data" : "Submit"}
               </Button>
               {/* </div> */}
             </div>

@@ -55,16 +55,6 @@ function Recordings() {
     },
   });
 
-  // useEffect(() => {
-  //   if (isSuccess && data) {
-  //     dispatch(setPageCount(data.total_pages));
-  //   }
-  // }, [isSuccess, data, dispatch]);
-
-  if (isError) {
-    // return <ServerResponse type="error" message={error.message}/>
-  }
-
   if (isSuccess) console.log({ query_success: data });
 
   return (
@@ -72,6 +62,7 @@ function Recordings() {
       <h1 className="text-3xl font-bold mb-2">Get Recordings For Single Agent</h1>
       <VicidialApiForm queryType="recordingsByAgent" />
       <Pagination
+        queryType="recordingsByAgent"
         className="my-4"
         meta={{
           total: data?.total_records,

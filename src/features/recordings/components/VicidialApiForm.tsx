@@ -4,19 +4,29 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { NonAgentApiSchema, NonAgentApiSchemaType } from "@/schemas";
+import {
+  NonAgentApiSchema,
+  NonAgentApiSchemaType,
+  ViciAllRecordsSchema,
+  ViciRecordsByAgentSchema,
+  ViciRecordsByStatusSchema,
+} from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { setRecordings, setQueryData } from "../recordingsSlice";
+import { setQueryData } from "../recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
-import { useEffect, useMemo, useState } from "react";
-import { TServerResponse } from "@/types/server_response";
+import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { getDialerConfig, getRecordings } from "@/lib/services";
+import { getDialerConfig } from "@/lib/services";
 import { formatDate } from "@/lib/utils";
-import { z } from "zod";
-import { useQuery } from "@tanstack/react-query";
+import { z, ZodObject } from "zod";
+import { QueryObserverResult, RefetchOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import { setDialers } from "@/features/account/dialerSlice";
+import { statusOptions } from "../constants";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Checkbox } from "@/components/ui/checkbox";
+import { apiFlask } from "@/lib/interceptors";
 
 const testValues = {
   dialer_url: "stsolution.i5.tel",
@@ -26,13 +36,35 @@ const testValues = {
   folder_name: "vicidial",
 };
 
-function VicidialApiForm() {
+type VicidialApiFormProps = {
+  refetch?: (options?: RefetchOptions) => Promise<QueryObserverResult>;
+  queryKey?: any[];
+};
+
+const formResolver: Record<string, z.ZodObject<any>> = {
+  "/recordings-by-status": ViciRecordsByStatusSchema,
+  "/recordings-single-agent": ViciRecordsByAgentSchema,
+};
+
+type FormFields = z.infer<typeof ViciAllRecordsSchema> &
+  Partial<z.infer<typeof ViciRecordsByAgentSchema>> &
+  Partial<z.infer<typeof ViciRecordsByStatusSchema>>;
+
+function VicidialApiForm({ refetch, queryKey }: VicidialApiFormProps) {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const selector = useAppSelector((state) => state.dialers);
+  const dialerSelector = useAppSelector((state) => state.dialers);
+  const recordingsSelector = useAppSelector((state) => state.recordings);
   // const [isSingleAgent, setisSingleAgent] = useState(location.pathname === "/recordings-all-agents");
   const isSingleAgent = location.pathname === "/recordings-single-agent";
+  const isRecordingsByStatus = location.pathname === "/recordings-by-status";
   const { formData } = location.state || {};
+
+  const form = useForm<FormFields>({
+    resolver: zodResolver(formResolver[location.pathname] || ViciAllRecordsSchema),
+    defaultValues: { statusFilter: [], agent_user: "" },
+  });
+  // console.log({ pathname: location.pathname, resolverShape: formResolver[location.pathname]?.shape });
 
   const {
     data: dialers,
@@ -51,19 +83,6 @@ function VicidialApiForm() {
     }
   }, [isSuccess, dialers, dispatch]);
 
-  const form = useForm<NonAgentApiSchemaType>({
-    resolver: zodResolver(
-      useMemo(() => {
-        return NonAgentApiSchema.extend({
-          agent_user: isSingleAgent
-            ? z.string().min(1, "agent is required")
-            : z.string().nullable().optional().or(z.literal("")),
-        });
-      }, [isSingleAgent]), // Update schema when isSingleAgent changes
-    ),
-    defaultValues: { ...testValues, agent_user: isSingleAgent ? "" : "" },
-  });
-
   useEffect(() => {
     if (formData) {
       form.reset({
@@ -71,10 +90,9 @@ function VicidialApiForm() {
         user: formData.user || "",
         pass: formData.pass || "",
         folder_name: formData.folder_name || "",
-        agent_user: isSingleAgent ? "" : "1013",
+        // agent_user: isSingleAgent ? "" : "1013",
         date: formatDate(new Date()),
       });
-      console.log(isSingleAgent);
     }
   }, [formData, form]);
 
@@ -82,13 +100,42 @@ function VicidialApiForm() {
     formState: { isSubmitting },
   } = form;
 
-  const onSubmit: SubmitHandler<NonAgentApiSchemaType> = async (data) => {
+  const queryClient = useQueryClient();
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
     const parsedData = NonAgentApiSchema.parse(data);
-    console.log({ parsed_data: parsedData });
     dispatch(setQueryData(parsedData));
+    try {
+      const res = await queryClient.fetchQuery({
+        queryKey: ["recordingsByStatus", parsedData, recordingsSelector],
+        queryFn: async () => {
+          const response = await apiFlask.post("/portal/recordings", {
+            ...data,
+            agent_user: "",
+            pagination: recordingsSelector.pagination,
+          });
+          return response.data;
+        },
+      });
+
+      // Manually set the query data
+      queryClient.setQueryData(
+        ["recordingsByStatus", recordingsSelector.queryData, recordingsSelector.pagination],
+        res,
+      );
+
+      return res;
+    } catch (error) {
+      // Manually set the query error
+      queryClient.setQueryData(
+        ["recordingsByStatus", recordingsSelector.queryData, recordingsSelector.pagination],
+        error,
+      );
+      throw error;
+    }
   };
+
   function onDialerSelectChange(field) {
-    console.log(dialers);
     // form.setValue("user", "hello");
     form.reset({
       dialer_url: field,
@@ -100,7 +147,6 @@ function VicidialApiForm() {
   return (
     <>
       <Card className="p-4">
-        {/* <ServerResponse type={status.status} message={status.message} /> */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-end">
@@ -117,7 +163,7 @@ function VicidialApiForm() {
                           <SelectValue placeholder="stsolution.i5.tel" />
                         </SelectTrigger>
                         <SelectContent>
-                          {selector.dialers.map((el) => (
+                          {dialerSelector.dialers.map((el) => (
                             <SelectItem key={el.id} value={el.url}>
                               {el.url}
                             </SelectItem>
@@ -154,6 +200,58 @@ function VicidialApiForm() {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isSubmitting} placeholder="Password" type="text" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Status Filter */}
+
+              <FormField
+                control={form.control}
+                name="statusFilter"
+                render={({ field }) => (
+                  <FormItem className={`${!isRecordingsByStatus && "hidden"}`}>
+                    <FormLabel>Select Filter</FormLabel>
+                    <FormControl>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <div className="relative w-full">
+                            <Input
+                              {...field}
+                              value={
+                                field.value?.length ? field.value.map((status) => status).join(", ") : "Select status"
+                              }
+                              disabled={isSubmitting}
+                              placeholder="Filters ..."
+                              type="text"
+                            />
+                          </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full">
+                          <Command>
+                            <CommandInput placeholder="Search..." />
+                            <CommandList>
+                              {statusOptions.map((option) => (
+                                <CommandItem key={option}>
+                                  <Checkbox
+                                    checked={field.value?.includes(option)}
+                                    onCheckedChange={(checked) => {
+                                      const newValue = checked
+                                        ? [...(field.value || []), option]
+                                        : field.value?.filter((v) => v !== option) || [];
+                                      field.onChange(newValue);
+                                    }}
+                                    className="mr-2"
+                                  />
+                                  <span>{option}</span>
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,40 +323,22 @@ export default VicidialApiForm;
 
 /*
 
-    const getRecordings = async () => {
-      try {
-        const response = await apiFlask.post("/portal/recordings", parsedData);
-        console.log(response);
-        dispatch(setRecordings([]));
-        // Check if response contains data and handle accordingly
-        if (response && response.length > 0) {
-          dispatch(setRecordings(response));
-          setStatus({ status: "success", message: "Recordings found" });
-        } else {
-          setStatus({ status: "error", message: "No recordings found" });
-        }
-      } catch (error: unknown) {
-        // Handle network errors or no response from server
-        if (!error.response) {
-          setStatus({ status: "error", message: "Network error. Please check your connection." });
-        } else if (error.response.status === 404) {
-          setStatus({ status: "error", message: "Endpoint not found (404)." });
-        } else if (error.response.status === 500) {
-          setStatus({
-            status: "error",
-            message: error.response.data?.error || "Server error (500). Please try again later.",
-          });
-        } else {
-          // Default error handling for other response errors
-          setStatus({
-            status: "error",
-            message: error.response.data?.error || "An unknown error occurred.",
-          });
-        }
-      }
-    };
+  const form = useForm<NonAgentApiSchemaType>({
+    resolver: zodResolver(
+      useMemo(() => {
+        return NonAgentApiSchema.extend({
+          agent_user: isSingleAgent
+            ? z.string().min(1, "agent is required")
+            : z.string().nullable().optional().or(z.literal("")),
+          // statusfilter: isRecordingsByStatus
+          //   ? z.array(z.string()).min(1, "At least one status must be selected")
+          //   : z.array(z.string()).nullable().optional(),
+        });
+      }, [isSingleAgent, isRecordingsByStatus]), // Update schema when isSingleAgent changes
+    ),
+    defaultValues: { ...testValues, agent_user: "" },
+  });
 
-    getRecordings();
 
 
 */

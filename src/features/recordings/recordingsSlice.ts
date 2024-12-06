@@ -7,7 +7,7 @@ interface RecordingsSlice {
   error: any;
   queryData: NonAgentApiSchemaType | null;
   pagination: { page: number; per_page: number };
-  filter: string[];
+  statusFilter: string[];
   recordings: any[];
   pageCount: number;
 }
@@ -18,7 +18,7 @@ const initialState: RecordingsSlice = {
   error: false,
   queryData: null,
   pagination: { page: 1, per_page: 50 },
-  filter: [],
+  statusFilter: [],
   recordings: [],
   pageCount: 0,
 };
@@ -53,24 +53,24 @@ export const recordingsSlice = createSlice({
     setPageCount: (state, action) => {
       state.pageCount = action.payload;
     },
-    addFilterOption: (state, action) => {
-      if (!state.filter.includes(action.payload)) {
-        state.filter.push(action.payload);
+    addStatusFilterOption: (state, action) => {
+      if (!state.statusFilter.includes(action.payload)) {
+        state.statusFilter.push(action.payload);
       }
     },
-    removeFilterOption: (state, action) => {
-      state.filter = state.filter.filter((option) => option !== action.payload);
+    removeStatusFilterOption: (state, action) => {
+      state.statusFilter = state.statusFilter.filter((option) => option !== action.payload);
     },
-    setFilterOptions: (state, action) => {
-      state.filter = action.payload;
+    setStatusFilterOptions: (state, action) => {
+      state.statusFilter = action.payload;
     },
   },
 });
 
 export const {
-  addFilterOption,
-  removeFilterOption,
-  setFilterOptions,
+  addStatusFilterOption,
+  removeStatusFilterOption,
+  setStatusFilterOptions,
   setRecordings,
   setQueryData,
   setPerPage,

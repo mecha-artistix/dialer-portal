@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { QueryClient, useQuery } from "@tanstack/react-query";
-import { getRecordings } from "@/lib/services";
+import { useQuery } from "@tanstack/react-query";
 import VicidialApiForm from "./components/VicidialApiForm";
 import { Actions } from "./components/Actions";
 import Pagination from "./components/Pagination";
@@ -11,6 +10,7 @@ import { useEffect } from "react";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 import { useLocation } from "react-router-dom";
 import { columns } from "./constants";
+import { apiFlask } from "@/lib/interceptors";
 
 function RecordingsByStatus() {
   // const recordingsState = useAppSelector((state) => state.recordings);
@@ -19,13 +19,15 @@ function RecordingsByStatus() {
   const selector = useAppSelector((state) => state.recordings);
   const isQueryDataValid = selector.queryData !== null;
 
-  const { data, error, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ["recordings", selector.queryData, selector.pagination, selector.filter, location.pathname],
-    queryFn: async () => {
-      if (selector.filter.length < 1) throw new Error("Please Provide atleast one filter");
-      return getRecordings({ ...selector.queryData, agent_user: "" }, selector.pagination, selector.filter);
+  const { data, error, isLoading, isError, isSuccess, refetch } = useQuery({
+    queryKey: ["recordingsByStatus", selector.queryData, selector.pagination],
+    queryFn: async ({ queryKey }) => {
+      const [_key, queryData, pagination] = queryKey;
+      // return getRecordings({ ...queryData, agent_user: "" }, pagination);
+      const response = await apiFlask.post("/portal/recordings", { ...queryData, agent_user: "", pagination });
+      return response.data;
     },
-    enabled: isQueryDataValid,
+    enabled: false,
     retry: 0,
     refetchOnMount: "always",
     staleTime: 0,
@@ -37,10 +39,12 @@ function RecordingsByStatus() {
     }
   }, [isSuccess, data, dispatch]);
 
+  if (isSuccess) console.log({ success: data });
+
   return (
     <div className="flex flex-col gap-2">
       <h1 className="text-3xl font-bold mb-2">Get Recordings By Status</h1>
-      <VicidialApiForm />
+      <VicidialApiForm refetch={refetch} />
       <Pagination
         className="my-4"
         meta={{
@@ -50,7 +54,9 @@ function RecordingsByStatus() {
           current: data?.current_page,
         }}
       />
-      {isError && <ServerResponse type="error" message={error.message || JSON.stringify(error)} />}
+      {isError && (
+        <ServerResponse type="error" message={error?.response?.data?.error || error.message || JSON.stringify(error)} />
+      )}
       {isLoading ? (
         <LinearProgress />
       ) : (

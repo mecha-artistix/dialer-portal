@@ -4,7 +4,7 @@ import Auth from "./features/auth/Auth";
 import ProtectedAppLayout from "./ui/ProtectedAppLayout";
 import "./index.css";
 import { Account } from "./features/account/Account";
-import RecordingsSingleAgent from "./features/recordings/Recordings";
+import RecordingsSingleAgent from "./features/recordings/RecordingsByAgent";
 import RecordingsAllAgent from "./features/recordings/RecordingsAllAgent";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import RecordingsByStatus from "./features/recordings/RecordingsByStatus";

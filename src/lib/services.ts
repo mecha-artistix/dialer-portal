@@ -63,21 +63,25 @@ export const sendTranscribeRequest = (url: string) => {
 };
 function removeNullUndefinedWithReduce(obj) {
   return Object.entries(obj).reduce((acc, [key, value]) => {
-      if (value !== null && value !== undefined && value !=="") {
-          acc[key] = typeof value === 'object' ? removeNullUndefinedWithReduce(value) : value;
-      }
-      return acc;
+    if (value !== null && value !== undefined && value !== "") {
+      acc[key] = typeof value === "object" ? removeNullUndefinedWithReduce(value) : value;
+    }
+    return acc;
   }, {});
 }
 export const getRecordings = async (
-  data: NonAgentApiSchemaType,
+  data: NonAgentApiSchemaType | null,
   pagination: { page: number; per_page: number } = { page: 1, per_page: 150 },
-  filter: string[],
+  filter?: string[],
 ) => {
-  const params = removeNullUndefinedWithReduce({...data,...pagination, status: filter.join(",")})
-  console.log({params})
+  const params = removeNullUndefinedWithReduce({ ...data });
+  console.log({ params });
   try {
-    const response: AxiosResponse = await apiFlask.post("/portal/recordings", params);
+    const response: AxiosResponse = await apiFlask.post("/portal/recordings", {
+      ...params,
+      ...pagination,
+      statusFilter: filter,
+    });
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

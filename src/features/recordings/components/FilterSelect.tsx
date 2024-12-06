@@ -3,70 +3,18 @@ import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { addFilterOption, removeFilterOption } from "../recordingsSlice";
-
-const options = [
-  "A",
-  "AA",
-  "AB",
-  "ADAIR",
-  "ADC",
-  "ADCT",
-  "AFAX",
-  "AFTHRS",
-  "AL",
-  "AM",
-  "B",
-  "CALLBK",
-  "CBHOLD",
-  "DAIR",
-  "DC",
-  "DEC",
-  "DNC",
-  "DNCC",
-  "DNCL",
-  "DROP",
-  "ERI",
-  "INCALL",
-  "IQNANQ",
-  "IVRXFR",
-  "LRERR",
-  "LSMERG",
-  "MAXCAL",
-  "MLINAT",
-  "N",
-  "NA",
-  "NANQUE",
-  "NEW",
-  "NI",
-  "NP",
-  "PDROP",
-  "PM",
-  "PU",
-  "QCFAIL",
-  "QUEUE",
-  "QVMAIL",
-  "RQXFER",
-  "SALE",
-  "SVYCLM",
-  "SVYEXT",
-  "SVYHU",
-  "SVYREC",
-  "SVYVM",
-  "TIMEOT",
-  "XDROP",
-  "XFER",
-];
+import { addStatusFilterOption, removeStatusFilterOption } from "../recordingsSlice";
+import { statusOptions } from "../constants";
 
 const FilterSelect = ({ placeholder = "Select options" }) => {
   const dispatch = useAppDispatch();
-  const { filter } = useAppSelector((state) => state.recordings);
+  const { statusFilter } = useAppSelector((state) => state.recordings);
 
   const toggleOption = (option) => {
-    if (filter.includes(option)) {
-      dispatch(removeFilterOption(option));
+    if (statusFilter.includes(option)) {
+      dispatch(removeStatusFilterOption(option));
     } else {
-      dispatch(addFilterOption(option));
+      dispatch(addStatusFilterOption(option));
     }
   };
 
@@ -81,10 +29,10 @@ const FilterSelect = ({ placeholder = "Select options" }) => {
         <Command>
           <CommandInput placeholder="Search..." />
           <CommandList>
-            {options.map((option) => (
+            {statusOptions.map((option) => (
               <CommandItem key={option} onSelect={() => toggleOption(option)}>
                 <Checkbox
-                  checked={filter.includes(option)}
+                  checked={statusFilter.includes(option)}
                   onCheckedChange={() => toggleOption(option)}
                   className="mr-2"
                 />

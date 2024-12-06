@@ -19,9 +19,10 @@ function RecordingsAllAgent() {
   const isQueryDataValid = selector.queryData !== null;
 
   const { data, error, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ["recordings", selector.queryData, selector.pagination, selector.filter, location.pathname],
-    queryFn: () => getRecordings({ ...selector.queryData, agent_user: "" }, selector.pagination, selector.filter),
+    queryKey: ["recordingsAllAgent", selector.queryData, selector.pagination, selector.statusFilter, location.pathname],
+    queryFn: () => getRecordings({ ...selector.queryData, agent_user: "" }, selector.pagination, selector.statusFilter),
     enabled: isQueryDataValid,
+    // enabled: false,
     retry: 0,
     // keepPreviousData: true,
   });

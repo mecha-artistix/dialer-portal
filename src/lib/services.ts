@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { apiFlask } from "./interceptors";
-import { AddDialerFormType, NonAgentApiSchemaType } from "@/schemas";
+import { AddDialerFormType, NonAgentApiSchemaType, ViciAllRecordsSchema } from "@/schemas";
 
 export const validateSession = async (): Promise<AxiosResponse> => {
   try {
@@ -69,16 +69,17 @@ function removeNullUndefinedWithReduce(obj) {
     return acc;
   }, {});
 }
+
 export const getRecordings = async (
-  data: NonAgentApiSchemaType | null,
+  data: typeof ViciAllRecordsSchema | null,
   pagination: { page: number; per_page: number } = { page: 1, per_page: 150 },
   filter?: string[],
 ) => {
-  const params = removeNullUndefinedWithReduce({ ...data });
-  console.log({ params });
+  // const params = removeNullUndefinedWithReduce({ ...data });
+  // console.log({ params });
   try {
     const response: AxiosResponse = await apiFlask.post("/portal/recordings", {
-      ...params,
+      ...data,
       ...pagination,
       statusFilter: filter,
     });

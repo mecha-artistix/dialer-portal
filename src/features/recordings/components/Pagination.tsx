@@ -5,13 +5,22 @@ import { cn } from "@/lib/utils";
 import { setPerPage, setPrevPage, setNextPage } from "../recordingsSlice";
 import { Input } from "@/components/ui/input";
 import FilterSelect from "./FilterSelect";
+import { useEffect } from "react";
+import { useViciStatusFilter } from "../useViciStatusFilter";
+import { useViciAgentFilter } from "../useViciAgentFilter";
 // import { useQuery } from '@tanstack/react-query';
 
 type Props = { className: string; meta: Record<string, any> };
 
 export default function Pagination({ className, meta }: Props) {
-  const selector = useAppSelector((state) => state.recordings);
+  const { pagination } = useAppSelector((state) => state.recordings);
   const dispatch = useAppDispatch();
+  const { mutateStatus } = useViciStatusFilter();
+  const { mutateAgent } = useViciAgentFilter();
+
+  useEffect(() => {
+    mutateStatus({ pagination });
+  }, [pagination]);
 
   return (
     <div className={cn("flex gap-2 sticky top-0 bg-gray-200 rounded-sm p-2 z-50", className)}>
@@ -19,7 +28,7 @@ export default function Pagination({ className, meta }: Props) {
         size="sm"
         variant="outline"
         onClick={() => dispatch(setPrevPage())}
-        disabled={Boolean(selector.pagination.page == 1)}
+        disabled={Boolean(pagination.page == 1)}
       >
         Previous
       </Button>
@@ -27,7 +36,7 @@ export default function Pagination({ className, meta }: Props) {
         size="sm"
         variant="outline"
         onClick={() => dispatch(setNextPage())}
-        disabled={Boolean(selector.pagination.page == selector.pageCount)}
+        disabled={Boolean(pagination.page == meta.total)}
       >
         Next
       </Button>
@@ -36,14 +45,14 @@ export default function Pagination({ className, meta }: Props) {
         <div>
           <Input
             type="number"
-            value={selector.pagination.per_page}
+            value={pagination.per_page}
             onChange={(e) => dispatch(setPerPage(e.target.value))}
             name="per_page"
           />
         </div>
-        <div>
+        {/* <div>
           <FilterSelect />
-        </div>
+        </div> */}
       </div>
       {meta && (
         <p>

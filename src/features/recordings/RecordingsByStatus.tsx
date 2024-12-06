@@ -11,26 +11,32 @@ import { LinearProgress } from "@/components/ui/LinearProgress";
 import { useLocation } from "react-router-dom";
 import { columns } from "./constants";
 import { apiFlask } from "@/lib/interceptors";
+import { getRecordings } from "@/lib/services";
 
 function RecordingsByStatus() {
   // const recordingsState = useAppSelector((state) => state.recordings);
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const selector = useAppSelector((state) => state.recordings);
-  const isQueryDataValid = selector.queryData !== null;
+  const { pagination, queryData } = useAppSelector((state) => state.recordings);
+  const isQueryDataValid = queryData !== null && queryData.statusFilter.length > 1;
 
-  const { data, error, isLoading, isError, isSuccess, refetch } = useQuery({
-    queryKey: ["recordingsByStatus", selector.queryData, selector.pagination],
-    queryFn: async ({ queryKey }) => {
-      const [_key, queryData, pagination] = queryKey;
-      // return getRecordings({ ...queryData, agent_user: "" }, pagination);
-      const response = await apiFlask.post("/portal/recordings", { ...queryData, agent_user: "", pagination });
+  const { data, error, isLoading, isError, isSuccess } = useQuery({
+    // queryKey: ["recordingsByStatus", selector.queryData, selector.pagination],
+    queryKey: ["recordingsByStatus"],
+    queryFn: async () => {
+      const data = { ...queryData, agent_user: "" };
+      const response = await apiFlask.post("/portal/recordings", { ...data, ...pagination });
+      // const response = await apiFlask.post("/portal/recordings", { ...queryData, agent_user: "", pagination });
       return response.data;
     },
     enabled: false,
     retry: 0,
-    refetchOnMount: "always",
-    staleTime: 0,
+    select: (data) => {
+      if (data?.error) {
+        throw data.error;
+      }
+      return data;
+    },
   });
   if (isError) console.log("error in status records", error);
   useEffect(() => {
@@ -39,12 +45,12 @@ function RecordingsByStatus() {
     }
   }, [isSuccess, data, dispatch]);
 
-  if (isSuccess) console.log({ success: data });
+  // if (isSuccess) console.log({ query_success: data });
 
   return (
     <div className="flex flex-col gap-2">
       <h1 className="text-3xl font-bold mb-2">Get Recordings By Status</h1>
-      <VicidialApiForm refetch={refetch} />
+      <VicidialApiForm queryType="recordingsByStatus" />
       <Pagination
         className="my-4"
         meta={{
@@ -70,7 +76,7 @@ function RecordingsByStatus() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.data.map((row, i) => (
+            {data?.data?.map((row, i) => (
               <TableRow key={i}>
                 {columns.map((col, i) =>
                   col.key === "actions" ? (

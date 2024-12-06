@@ -20,13 +20,15 @@ import { useLocation } from "react-router-dom";
 import { getDialerConfig } from "@/lib/services";
 import { formatDate } from "@/lib/utils";
 import { z, ZodObject } from "zod";
-import { QueryObserverResult, RefetchOptions, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryObserverResult, RefetchOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { setDialers } from "@/features/account/dialerSlice";
 import { statusOptions } from "../constants";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Checkbox } from "@/components/ui/checkbox";
 import { apiFlask } from "@/lib/interceptors";
+import { useViciStatusFilter } from "../useViciStatusFilter";
+import { useViciAgentFilter } from "../useViciAgentFilter";
 
 const testValues = {
   dialer_url: "stsolution.i5.tel",
@@ -39,6 +41,7 @@ const testValues = {
 type VicidialApiFormProps = {
   refetch?: (options?: RefetchOptions) => Promise<QueryObserverResult>;
   queryKey?: any[];
+  queryType: "recordingsByStatus" | "recordingsByAgent" | "allRecordings";
 };
 
 const formResolver: Record<string, z.ZodObject<any>> = {
@@ -50,7 +53,7 @@ type FormFields = z.infer<typeof ViciAllRecordsSchema> &
   Partial<z.infer<typeof ViciRecordsByAgentSchema>> &
   Partial<z.infer<typeof ViciRecordsByStatusSchema>>;
 
-function VicidialApiForm({ refetch, queryKey }: VicidialApiFormProps) {
+function VicidialApiForm({ queryType }: VicidialApiFormProps) {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const dialerSelector = useAppSelector((state) => state.dialers);
@@ -69,8 +72,8 @@ function VicidialApiForm({ refetch, queryKey }: VicidialApiFormProps) {
   const {
     data: dialers,
     isSuccess,
-    isError,
-    error,
+    isError: isDialersError,
+    error: dialersError,
   } = useQuery({
     queryKey: ["dialers"],
     queryFn: getDialerConfig,
@@ -100,40 +103,8 @@ function VicidialApiForm({ refetch, queryKey }: VicidialApiFormProps) {
     formState: { isSubmitting },
   } = form;
 
-  const queryClient = useQueryClient();
-
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    const parsedData = NonAgentApiSchema.parse(data);
-    dispatch(setQueryData(parsedData));
-    try {
-      const res = await queryClient.fetchQuery({
-        queryKey: ["recordingsByStatus", parsedData, recordingsSelector],
-        queryFn: async () => {
-          const response = await apiFlask.post("/portal/recordings", {
-            ...data,
-            agent_user: "",
-            pagination: recordingsSelector.pagination,
-          });
-          return response.data;
-        },
-      });
-
-      // Manually set the query data
-      queryClient.setQueryData(
-        ["recordingsByStatus", recordingsSelector.queryData, recordingsSelector.pagination],
-        res,
-      );
-
-      return res;
-    } catch (error) {
-      // Manually set the query error
-      queryClient.setQueryData(
-        ["recordingsByStatus", recordingsSelector.queryData, recordingsSelector.pagination],
-        error,
-      );
-      throw error;
-    }
-  };
+  const { mutateStatus, isPending, isError, error } = useViciStatusFilter();
+  const { mutateAgent } = useViciAgentFilter();
 
   function onDialerSelectChange(field) {
     // form.setValue("user", "hello");
@@ -144,6 +115,18 @@ function VicidialApiForm({ refetch, queryKey }: VicidialApiFormProps) {
       folder_name: dialers.find((dialer) => dialer.url === field).folder_name,
     });
   }
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    const parsedData = NonAgentApiSchema.parse(data);
+    dispatch(setQueryData(parsedData));
+    if (queryType === "recordingsByStatus") {
+      mutateStatus({ data: parsedData });
+    }
+    if (queryType === "recordingsByAgent") {
+      mutateAgent({ data: parsedData });
+    }
+  };
+
   return (
     <>
       <Card className="p-4">
@@ -306,8 +289,8 @@ function VicidialApiForm({ refetch, queryKey }: VicidialApiFormProps) {
 
               {/* SUBMIT BUTTON */}
               {/* <div className="flex items-center justify-center"> */}
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Fetching Data" : "Submit"}
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Fetching Data" : "Submit"}
               </Button>
               {/* </div> */}
             </div>
@@ -338,7 +321,49 @@ export default VicidialApiForm;
     ),
     defaultValues: { ...testValues, agent_user: "" },
   });
+  const triggerQuery = async (data) => {
+    try {
+      const res = await queryClient.fetchQuery({
+        queryKey: ["recordingsByStatus", data, recordingsSelector],
+        queryFn: async () => {
+          const response = await apiFlask.post("/portal/recordings", {
+            ...data,
+            agent_user: "",
+            pagination: recordingsSelector.pagination,
+          });
+          return response.data;
+        },
+      });
+
+      // Manually set the query data
+      queryClient.setQueryData(
+        ["recordingsByStatus", recordingsSelector.queryData, recordingsSelector.pagination],
+        res,
+      );
+
+      return res;
+    } catch (error) {
+      // Manually set the query error
+      queryClient.setQueryData(
+        ["recordingsByStatus", recordingsSelector.queryData, recordingsSelector.pagination],
+        error,
+      );
+      throw error;
+    }
+  };
 
 
-
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data) => {
+      const response = await apiFlask.post("/portal/recordings", {
+        ...data,
+        agent_user: "",
+        pagination: recordingsSelector.pagination,
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recordingsByStatus"] });
+    },
+  });
 */

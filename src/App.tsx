@@ -8,6 +8,8 @@ import RecordingsSingleAgent from "./features/recordings/RecordingsByAgent";
 import RecordingsAllAgent from "./features/recordings/RecordingsAllAgent";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import RecordingsByStatus from "./features/recordings/RecordingsByStatus";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 const router = createBrowserRouter([
   { path: "/login", element: <Auth /> },
   {
@@ -26,6 +28,7 @@ function App() {
   return (
     <div>
       <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={true} />
         <RouterProvider router={router} />
       </QueryClientProvider>
     </div>

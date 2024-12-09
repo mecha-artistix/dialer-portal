@@ -20,9 +20,9 @@ export function useViciRecords(recordingsQueryKey: RecordingsQueryKey) {
       pagination?: { page: number; per_page: number };
     }) => {
       const data = formData || queryData;
-
+      if (!formData) throw new Error("Submit the form");
       try {
-        const response = await apiFlask.post("/portal/recordings", { ...data, ...pagination });
+        const response = await apiFlask.post("/portal/recordings", { ...formData, ...pagination });
 
         console.log(`---response from useViciRecords ${recordingsQueryKey}---`);
         console.log({ APIdata: response.data });

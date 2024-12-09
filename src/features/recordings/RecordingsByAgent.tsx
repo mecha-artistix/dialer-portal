@@ -60,9 +60,9 @@ function Recordings() {
   return (
     <div className="flex flex-col gap-2 relative">
       <h1 className="text-3xl font-bold mb-2">Get Recordings For Single Agent</h1>
-      <VicidialApiForm queryType="recordingsByAgent" />
+      <VicidialApiForm recordingsQueryKey="recordingsByAgent" />
       <Pagination
-        queryType="recordingsByAgent"
+        recordingsQueryKey="recordingsByAgent"
         className="my-4"
         meta={{
           total: data?.total_records,

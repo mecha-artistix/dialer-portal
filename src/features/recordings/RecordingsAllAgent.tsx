@@ -13,7 +13,6 @@ import { useLocation } from "react-router-dom";
 import { columns } from "./constants";
 function RecordingsAllAgent() {
   // const recordingsState = useAppSelector((state) => state.recordings);
-  const location = useLocation();
   const dispatch = useAppDispatch();
   const selector = useAppSelector((state) => state.recordings);
   const isQueryDataValid = selector.queryData !== null;
@@ -36,9 +35,9 @@ function RecordingsAllAgent() {
   return (
     <div className="flex flex-col gap-2">
       <h1 className="text-3xl font-bold mb-2">Get Recordings For AllAgents</h1>
-      <VicidialApiForm queryType="allRecordings" />
+      <VicidialApiForm recordingsQueryKey="recordingsAllAgent" />
       <Pagination
-        queryType="allRecordings"
+        recordingsQueryKey="recordingsAllAgent"
         className="my-4"
         meta={{
           total: data?.total_records,
@@ -61,7 +60,7 @@ function RecordingsAllAgent() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.data.map((row, i) => (
+            {data?.data?.map((row, i) => (
               <TableRow key={i}>
                 {columns.map((col, i) =>
                   col.key === "actions" ? (

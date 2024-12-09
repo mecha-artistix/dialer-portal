@@ -1,34 +1,27 @@
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppDispatch } from "@/hooks/reduxHooks";
 // import { getRecordings } from "@/lib/services";
 import { cn } from "@/lib/utils";
-import { setPerPage, setPrevPage, setNextPage } from "../recordingsSlice";
+import { setPerPage } from "../recordingsSlice";
 import { Input } from "@/components/ui/input";
-import FilterSelect from "./FilterSelect";
-import { useEffect, useRef, useState } from "react";
-import { useViciStatusFilter } from "../useViciStatusFilter";
-import { useViciAgentFilter } from "../useViciAgentFilter";
-import { useViciAllRecordings } from "../useViciAllRecordings";
+import { useEffect, useState } from "react";
+
+import { RecordingsQueryKey, useViciRecords } from "../useViciRecordings";
 // import { useQuery } from '@tanstack/react-query';
 
 type Props = {
   className: string;
   meta: Record<string, any>;
-  queryType: "recordingsByStatus" | "recordingsByAgent" | "allRecordings";
+  recordingsQueryKey: RecordingsQueryKey;
 };
 
-export default function Pagination({ className, meta, queryType }: Props) {
-  const { queryData } = useAppSelector((state) => state.recordings);
+export default function Pagination({ className, meta, recordingsQueryKey }: Props) {
+  const mutation = useViciRecords(recordingsQueryKey);
   const [pagination, setPagination] = useState({ page: 1, per_page: 50 });
   const dispatch = useAppDispatch();
-  const { mutateStatus } = useViciStatusFilter();
-  const { mutateAgent } = useViciAgentFilter();
-  const { mutateAllRecordings } = useViciAllRecordings();
 
   useEffect(() => {
-    if (queryType === "recordingsByStatus") mutateStatus({ pagination });
-    if (queryType === "recordingsByAgent") mutateAgent({ pagination });
-    if (queryType === "allRecordings") mutateAllRecordings({ pagination });
+    mutation.mutate({ pagination });
   }, [pagination]);
 
   return (
@@ -37,7 +30,7 @@ export default function Pagination({ className, meta, queryType }: Props) {
         size="sm"
         variant="outline"
         onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
-        disabled={Boolean(pagination.page == 1)}
+        disabled={mutation.isPending || Boolean(pagination.page == 1)}
       >
         Previous
       </Button>
@@ -46,7 +39,7 @@ export default function Pagination({ className, meta, queryType }: Props) {
         variant="outline"
         // onClick={() => dispatch(setNextPage())}
         onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
-        disabled={Boolean(pagination.page == meta.total)}
+        disabled={mutation.isPending || Boolean(pagination.page == meta.total)}
       >
         Next
       </Button>

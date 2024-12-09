@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import {
   NonAgentApiSchema,
-  NonAgentApiSchemaType,
   ViciAllRecordsSchema,
   ViciRecordsByAgentSchema,
   ViciRecordsByStatusSchema,
@@ -15,21 +14,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { setQueryData } from "../recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { getDialerConfig } from "@/lib/services";
 import { formatDate } from "@/lib/utils";
-import { z, ZodObject } from "zod";
-import { QueryObserverResult, RefetchOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
+import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
 import { setDialers } from "@/features/account/dialerSlice";
 import { statusOptions } from "../constants";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Checkbox } from "@/components/ui/checkbox";
-import { apiFlask } from "@/lib/interceptors";
-import { useViciStatusFilter } from "../useViciStatusFilter";
-import { useViciAgentFilter } from "../useViciAgentFilter";
-import { useViciAllRecordings } from "../useViciAllRecordings";
+import { RecordingsQueryKey, useViciRecords } from "../useViciRecordings";
 
 const testValues = {
   dialer_url: "stsolution.i5.tel",
@@ -42,7 +38,7 @@ const testValues = {
 type VicidialApiFormProps = {
   refetch?: (options?: RefetchOptions) => Promise<QueryObserverResult>;
   queryKey?: any[];
-  queryType: "recordingsByStatus" | "recordingsByAgent" | "allRecordings";
+  recordingsQueryKey: RecordingsQueryKey;
 };
 
 const formResolver: Record<string, z.ZodObject<any>> = {
@@ -54,7 +50,7 @@ type FormFields = z.infer<typeof ViciAllRecordsSchema> &
   Partial<z.infer<typeof ViciRecordsByAgentSchema>> &
   Partial<z.infer<typeof ViciRecordsByStatusSchema>>;
 
-function VicidialApiForm({ queryType }: VicidialApiFormProps) {
+function VicidialApiForm({ recordingsQueryKey }: VicidialApiFormProps) {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const dialerSelector = useAppSelector((state) => state.dialers);
@@ -104,9 +100,6 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
     formState: { isSubmitting },
   } = form;
 
-  const { mutateStatus, isPending, isError, error } = useViciStatusFilter();
-  const { mutateAgent } = useViciAgentFilter();
-  const { mutateAllRecordings } = useViciAllRecordings();
   function onDialerSelectChange(field) {
     // form.setValue("user", "hello");
     form.reset({
@@ -117,18 +110,13 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
     });
   }
 
+  const mutation = useViciRecords(recordingsQueryKey);
+
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    console.log("on submit called");
     const parsedData = NonAgentApiSchema.parse(data);
     dispatch(setQueryData(parsedData));
-    if (queryType === "recordingsByStatus") {
-      mutateStatus({ data: parsedData });
-    }
-    if (queryType === "recordingsByAgent") {
-      mutateAgent({ data: parsedData });
-    }
-    if (queryType === "allRecordings") {
-      mutateAllRecordings({ data: parsedData });
-    }
+    mutation.mutate({ formData: parsedData });
   };
 
   return (
@@ -171,7 +159,7 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
                   <FormItem>
                     <FormLabel>User</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isSubmitting} placeholder="User ID" type="text" required />
+                      <Input {...field} disabled={mutation.isPending} placeholder="User ID" type="text" required />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -186,7 +174,7 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isSubmitting} placeholder="Password" type="text" />
+                      <Input {...field} disabled={mutation.isPending} placeholder="Password" type="text" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -210,7 +198,7 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
                               value={
                                 field.value?.length ? field.value.map((status) => status).join(", ") : "Select status"
                               }
-                              disabled={isSubmitting}
+                              disabled={mutation.isPending}
                               placeholder="Filters ..."
                               type="text"
                             />
@@ -254,7 +242,7 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
                   <FormItem className={`${!isSingleAgent && "hidden"}`}>
                     <FormLabel>Agent User</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isSubmitting} placeholder="Agent User ID" type="text" />
+                      <Input {...field} disabled={mutation.isPending} placeholder="Agent User ID" type="text" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -269,7 +257,7 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
                   <FormItem>
                     <FormLabel>Folder Name</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isSubmitting} placeholder="vicidial" type="text" />
+                      <Input {...field} disabled={mutation.isPending} placeholder="vicidial" type="text" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -284,7 +272,7 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
                   <FormItem>
                     <FormLabel>Date</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isSubmitting} placeholder="YYYY-MM-DD" type="date" />
+                      <Input {...field} disabled={mutation.isPending} placeholder="YYYY-MM-DD" type="date" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -293,15 +281,15 @@ function VicidialApiForm({ queryType }: VicidialApiFormProps) {
 
               {/* SUBMIT BUTTON */}
               {/* <div className="flex items-center justify-center"> */}
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Fetching Data" : "Submit"}
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? "Fetching Data" : "Submit"}
               </Button>
               {/* </div> */}
             </div>
           </form>
         </Form>
       </Card>
-      {isError && <ServerResponse type="error" message={error.message} />}
+      {mutation.isError && <ServerResponse type="error" message={mutation.error.message} />}
     </>
   );
 }

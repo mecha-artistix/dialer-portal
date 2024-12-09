@@ -7,22 +7,6 @@ export const LoginSchema = z.object({
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
 
-type VicidialBaseSchema = {
-  dialer_url: z.ZodString;
-  folder_name: z.ZodString;
-  user: z.ZodString;
-  pass: z.ZodString;
-  date: z.ZodString;
-};
-
-type VicidialFilterSchema = VicidialBaseSchema & {
-  statusFilter: z.ZodArray<z.ZodString>;
-};
-
-type VicidialSingleAgentSchema = VicidialBaseSchema & {
-  agent_user: z.ZodString;
-};
-
 export const ViciAllRecordsSchema = z.object({
   dialer_url: z.string(),
   folder_name: z.string(),

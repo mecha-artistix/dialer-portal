@@ -50,9 +50,9 @@ function RecordingsByStatus() {
   return (
     <div className="flex flex-col gap-2">
       <h1 className="text-3xl font-bold mb-2">Get Recordings By Status</h1>
-      <VicidialApiForm queryType="recordingsByStatus" />
+      <VicidialApiForm recordingsQueryKey="recordingsByStatus" />
       <Pagination
-        queryType="recordingsByStatus"
+        recordingsQueryKey="recordingsByStatus"
         className="my-4"
         meta={{
           total: data?.total_records,

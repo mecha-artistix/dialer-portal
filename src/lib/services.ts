@@ -101,8 +101,14 @@ export const getDialerConfig = async () => {
     const response = await apiFlask("/portal/configure-dialer");
     return response.data;
   } catch (error) {
-    console.log(error);
-    throw error;
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        throw error.response.data;
+      } else if (error.request) {
+        throw { message: "No Response received from server" };
+      }
+    }
+    throw { message: "An unexpecter error occured" };
   }
 };
 

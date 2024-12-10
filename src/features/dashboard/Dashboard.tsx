@@ -7,6 +7,7 @@ import { setDialers, setIsAddingDialer } from "./dialerSlice";
 import { useQuery } from "@tanstack/react-query";
 import { getDialerConfig } from "@/lib/services";
 import { useEffect } from "react";
+import { ServerResponse } from "@/components/styled/ServerResponse";
 
 function Dashboard() {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ function Dashboard() {
     queryKey: ["dialers"],
     queryFn: () => getDialerConfig(),
     enabled: true,
+    retry: 0,
   });
   // useEffect(()=>{
   //   dispatch(setDialers(data))
@@ -49,7 +51,11 @@ function Dashboard() {
           </CollapsibleContent>
         </Collapsible>
       </div>
-      <DialersTable data={data} isLoading={isLoading} />
+      {isError ? (
+        <ServerResponse type="error" message={JSON.stringify(error)} />
+      ) : (
+        <DialersTable data={data} isLoading={isLoading} />
+      )}
     </div>
   );
 }

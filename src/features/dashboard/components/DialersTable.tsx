@@ -1,7 +1,3 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { getDialerConfig } from "@/lib/services";
-import { useEffect, useState } from "react";
-import { setDialers } from "../dialerSlice";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -27,11 +23,7 @@ export function DialersTable({ data, isLoading }) {
                 ))}
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {data.map((row) => (
-                <DialerRow key={row.id} data={row} />
-              ))}
-            </TableBody>
+            <TableBody>{data?.map((row) => <DialerRow key={row.id} data={row} />)}</TableBody>
           </Table>
         )}
       </CardContent>

@@ -127,7 +127,7 @@ function VicidialApiForm({ recordingsQueryKey }: VicidialApiFormProps) {
                 name="dialer_url"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dialer Url</FormLabel>
+                    <FormLabel>Dialer</FormLabel>
                     <FormControl>
                       <Select value={field.value} onValueChange={(field) => onDialerSelectChange(field)}>
                         <SelectTrigger>

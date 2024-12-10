@@ -104,9 +104,9 @@ function VicidialApiForm({ recordingsQueryKey }: VicidialApiFormProps) {
     // form.setValue("user", "hello");
     form.reset({
       dialer_url: field,
-      user: dialers.find((dialer) => dialer.url === field).user,
-      pass: dialers.find((dialer) => dialer.url === field).pass,
-      folder_name: dialers.find((dialer) => dialer.url === field).folder_name,
+      user: dialers.find((dialer) => dialer.name === field).user,
+      pass: dialers.find((dialer) => dialer.name === field).pass,
+      folder_name: dialers.find((dialer) => dialer.name === field).folder_name,
     });
   }
 
@@ -139,8 +139,8 @@ function VicidialApiForm({ recordingsQueryKey }: VicidialApiFormProps) {
                         </SelectTrigger>
                         <SelectContent>
                           {dialerSelector.dialers.map((el) => (
-                            <SelectItem key={el.id} value={el.url}>
-                              {el.url}
+                            <SelectItem key={el.id} value={el.name}>
+                              {el.name}
                             </SelectItem>
                           ))}
                         </SelectContent>

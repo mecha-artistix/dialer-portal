@@ -5,9 +5,7 @@ import { getRecordings } from "@/lib/services";
 import VicidialApiForm from "./components/VicidialApiForm";
 import { Actions } from "./components/Actions";
 import Pagination from "./components/Pagination";
-import { setPageCount } from "./recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
-import { useEffect } from "react";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 import { useLocation } from "react-router-dom";
 import { columns } from "./constants";
@@ -31,9 +29,6 @@ interface LeadData {
 // }
 
 function Recordings() {
-  // const recordingsState = useAppSelector((state) => state.recordings);
-  const location = useLocation();
-  const dispatch = useAppDispatch();
   const { queryData, pagination, statusFilter } = useAppSelector((state) => state.recordings);
   const isQueryDataValid = queryData !== null;
 

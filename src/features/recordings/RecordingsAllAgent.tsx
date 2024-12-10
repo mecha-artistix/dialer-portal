@@ -9,7 +9,6 @@ import { setPageCount } from "./recordingsSlice";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 import { useEffect } from "react";
 import { LinearProgress } from "@/components/ui/LinearProgress";
-import { useLocation } from "react-router-dom";
 import { columns } from "./constants";
 function RecordingsAllAgent() {
   // const recordingsState = useAppSelector((state) => state.recordings);
@@ -19,11 +18,21 @@ function RecordingsAllAgent() {
 
   const { data, error, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["recordingsAllAgent"],
-    queryFn: () => getRecordings({ ...selector.queryData, agent_user: "" }, selector.pagination, selector.statusFilter),
+    queryFn: async () => {
+      const data = { ...selector.queryData, agent_user: "" };
+      const response = await getRecordings(data);
+      // const response = await apiFlask.post("/portal/recordings", { ...queryData, agent_user: "", pagination });
+      return response;
+    },
     // enabled: isQueryDataValid,
     enabled: false,
     retry: 0,
-    // keepPreviousData: true,
+    select: (data) => {
+      if (data?.error) {
+        throw data.error;
+      }
+      return data;
+    },
   });
 
   useEffect(() => {

@@ -96,10 +96,6 @@ function VicidialApiForm({ recordingsQueryKey }: VicidialApiFormProps) {
     }
   }, [formData, form]);
 
-  const {
-    formState: { isSubmitting },
-  } = form;
-
   function onDialerSelectChange(field) {
     // form.setValue("user", "hello");
     form.reset({

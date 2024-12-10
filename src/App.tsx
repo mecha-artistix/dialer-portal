@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./features/dashboard/Dashboard";
-import Auth from "./features/auth/Auth";
 import ProtectedAppLayout from "./ui/ProtectedAppLayout";
 import "./index.css";
 import { Account } from "./features/account/Account";
@@ -9,9 +8,18 @@ import RecordingsAllAgent from "./features/recordings/RecordingsAllAgent";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import RecordingsByStatus from "./features/recordings/RecordingsByStatus";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import AuthLayout from "./ui/AuthLayout";
+import RegisterForm from "./features/auth/components/RegisterForm";
+import LoginForm from "./features/auth/components/LoginForm";
 
 const router = createBrowserRouter([
-  { path: "/login", element: <Auth /> },
+  {
+    element: <AuthLayout />,
+    children: [
+      { path: "/login", element: <LoginForm /> },
+      { path: "/register", element: <RegisterForm /> },
+    ],
+  },
   {
     element: <ProtectedAppLayout />,
     children: [
@@ -34,7 +42,6 @@ function App() {
     </div>
   );
 }
-
 export default App;
 
 /*

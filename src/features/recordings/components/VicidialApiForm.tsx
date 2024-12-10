@@ -196,7 +196,7 @@ function VicidialApiForm({ recordingsQueryKey }: VicidialApiFormProps) {
                             <Input
                               {...field}
                               value={
-                                field.value?.length ? field.value.map((status) => status).join(", ") : "Select status"
+                                field.value?.length ? field?.value?.map((status) => status).join(", ") : "Select status"
                               }
                               disabled={mutation.isPending}
                               placeholder="Filters ..."

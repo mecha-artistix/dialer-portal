@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { LoginSchemaType } from "@/schemas";
+import { LoginSchemaType, RegisterSchemaType } from "@/schemas";
 import axios from "axios";
 
 // Define a type for the slice state
@@ -10,6 +10,23 @@ interface UserSlice {
   userId: string | null;
   username: string | null;
 }
+
+//  Thunk For Registering
+export const register = createAsyncThunk("user/register", async (data: RegisterSchemaType, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(import.meta.env.VITE_FLASK_API + "/auth/register", data);
+    console.log({ regsiterResponse: response });
+    if (response.status === 201) {
+      localStorage.setItem("token", response.data.token);
+      return response.data;
+    } else {
+      return rejectWithValue("Registering user failed");
+    }
+  } catch (error) {
+    console.log(error);
+    return rejectWithValue("An error occurred while processing request");
+  }
+});
 
 // Thunk for logging in
 
@@ -64,6 +81,22 @@ export const userSlice = createSlice({
         state.username = action.payload.user.username;
       })
       .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.error = action.payload as string;
+      })
+      .addCase(register.pending, (state) => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.loading = false;
+        state.error = undefined;
+        state.userId = action.payload.user.user_id;
+        state.username = action.payload.user.username;
+      })
+      .addCase(register.rejected, (state, action) => {
         state.loading = false;
         state.isAuthenticated = false;
         state.error = action.payload as string;

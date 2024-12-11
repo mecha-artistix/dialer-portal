@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+// import { useAppSelector } from "@/hooks/reduxHooks";
 import { apiFlask } from "@/lib/interceptors";
 import { ViciAllRecordsSchema } from "@/schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ export type RecordingsQueryKey = "recordingsAllAgent" | "recordingsByStatus" | "
 
 export function useViciRecords(recordingsQueryKey: RecordingsQueryKey) {
   const queryClient = useQueryClient();
-  const { queryData } = useAppSelector((state) => state.recordings);
+  // const { queryData } = useAppSelector((state) => state.recordings);
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -19,7 +19,7 @@ export function useViciRecords(recordingsQueryKey: RecordingsQueryKey) {
       formData?: z.infer<typeof ViciAllRecordsSchema>;
       pagination?: { page: number; per_page: number };
     }) => {
-      const data = formData || queryData;
+      // const data = formData || queryData;
       if (!formData) throw new Error("Submit the form");
       try {
         const response = await apiFlask.post("/portal/recordings", { ...formData, ...pagination });

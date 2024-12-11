@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { apiFlask } from "./interceptors";
-import { AddDialerFormType, NonAgentApiSchemaType, ViciAllRecordsSchema } from "@/schemas";
+import { AddDialerFormType } from "@/schemas";
+import { TGetRecordingsFunc } from "@/types/recordings";
 
 export const validateSession = async (): Promise<AxiosResponse> => {
   try {
@@ -61,22 +62,17 @@ export const sendTranscribeRequest = (url: string) => {
     }
   });
 };
-function removeNullUndefinedWithReduce(obj) {
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (value !== null && value !== undefined && value !== "") {
-      acc[key] = typeof value === "object" ? removeNullUndefinedWithReduce(value) : value;
-    }
-    return acc;
-  }, {});
-}
 
-export const getRecordings = async (
-  data: typeof ViciAllRecordsSchema | null,
-  pagination: { page: number; per_page: number } = { page: 1, per_page: 150 },
-  filter?: string[],
-) => {
-  // const params = removeNullUndefinedWithReduce({ ...data });
-  // console.log({ params });
+// function removeNullUndefinedWithReduce(obj) {
+//   return Object.entries(obj).reduce((acc, [key, value]) => {
+//     if (value !== null && value !== undefined && value !== "") {
+//       acc[key] = typeof value === "object" ? removeNullUndefinedWithReduce(value) : value;
+//     }
+//     return acc;
+//   }, {});
+// }
+
+export const getRecordings: TGetRecordingsFunc = async (data, pagination, filter) => {
   try {
     const response: AxiosResponse = await apiFlask.post("/portal/recordings", {
       ...data,

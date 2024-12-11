@@ -27,3 +27,12 @@ interface ActionColumn {
 }
 
 export type DialerColumn = InputColumn | ActionColumn;
+
+export type TLeadData = {
+  lead_id: string;
+  location: string;
+  recording_id: string;
+  start_time: string;
+  status: string;
+  user: string;
+};

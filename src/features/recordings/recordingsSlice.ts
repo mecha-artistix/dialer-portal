@@ -1,11 +1,12 @@
-import { NonAgentApiSchemaType } from "@/schemas";
+import { ViciAllRecordsSchema } from "@/schemas";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { z } from "zod";
 
 // Define a type for the slice state
 interface RecordingsSlice {
   loading: boolean;
   error: any;
-  queryData: NonAgentApiSchemaType | null;
+  queryData: z.infer<typeof ViciAllRecordsSchema> | null;
   pagination: { page: number; per_page: number };
   statusFilter: string[];
   recordings: any[];

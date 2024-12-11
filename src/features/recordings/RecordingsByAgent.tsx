@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppSelector } from "@/hooks/reduxHooks";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { getRecordings } from "@/lib/services";
@@ -7,29 +7,10 @@ import { Actions } from "./components/Actions";
 import Pagination from "./components/Pagination";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 import { LinearProgress } from "@/components/ui/LinearProgress";
-import { useLocation } from "react-router-dom";
 import { columns } from "./constants";
 
-interface LeadData {
-  lead_id: string;
-  location: string;
-  recording_id: string;
-  start_time: string;
-  status: string;
-  user: string;
-}
-
-// {
-//   "lead_id": "12112285",
-//   "location": "http://49.13.132.97/RECORDINGS/MP3/20241024-115453_9856370652-all.mp3",
-//   "recording_id": "414425",
-//   "start_time": "2024-10-24 11:54:53",
-//   "status": "A",
-//   "user": "1013"
-// }
-
 function Recordings() {
-  const { queryData, pagination, statusFilter } = useAppSelector((state) => state.recordings);
+  const { queryData, pagination } = useAppSelector((state) => state.recordings);
   const isQueryDataValid = queryData !== null;
 
   const { data, error, isLoading, isError, isSuccess } = useQuery({
@@ -37,7 +18,6 @@ function Recordings() {
     queryFn: async () => {
       const data = { ...queryData, agent_user: "" };
       const response = await getRecordings(data, pagination);
-      // const response = await apiFlask.post("/portal/recordings", { ...queryData, agent_user: "", pagination });
       return response;
     },
     enabled: false,

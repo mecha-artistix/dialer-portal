@@ -44,9 +44,9 @@ function Recordings() {
         {/* <CardTitle>cardtitle</CardTitle> */}
         {/* <CardHeader>Dialer Name: {dialer}</CardHeader> */}
         <CardDescription>{/* <FilterSheet /> */}</CardDescription>
-        <CardContent>
-          {isLoading && <LinearProgress />}
+        {isLoading && <LinearProgress />}
 
+        <CardContent>
           {isError && <ServerResponse type="error" message={error.message || JSON.stringify(error)} />}
           {recordings?.data?.length && (
             <>

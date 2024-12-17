@@ -22,7 +22,7 @@ export function useViciQueryMutation() {
       if (!viciReqParams.dialer_url || !viciReqParams.user || !viciReqParams.pass)
         throw new Error("Select A Dialer First");
       const viciFiltParams = filterForm || filterParams;
-      const viciPaginParams = paginationForm || pagination;
+      const viciPaginParams = paginationForm || { ...pagination, page: 1 };
       // console.log("====useViciQueryform====");
       // console.log({ viciReqParams, viciFiltParams, viciPaginParams });
       const response = await getRecordingsV1(viciReqParams, viciFiltParams, viciPaginParams);

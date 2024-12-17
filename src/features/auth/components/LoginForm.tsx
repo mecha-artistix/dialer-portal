@@ -40,8 +40,6 @@ function LoginForm() {
   } = form;
 
   const onSubmit: SubmitHandler<LoginSchemaType> = async (data) => {
-    console.log(data);
-    console.log({ userState });
     // await delay(2000);
 
     dispatch(login(data)).then(() => {

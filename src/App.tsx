@@ -11,6 +11,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import AuthLayout from "./ui/AuthLayout";
 import RegisterForm from "./features/auth/components/RegisterForm";
 import LoginForm from "./features/auth/components/LoginForm";
+import Recordings from "./features/recordings/Recordings";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
       { path: "/recordings-single-agent", element: <RecordingsSingleAgent /> },
       { path: "/recordings-all-agents", element: <RecordingsAllAgent /> },
       { path: "/recordings-by-status", element: <RecordingsByStatus /> },
+      { path: "/recordings", element: <Recordings /> },
     ],
   },
 ]);
@@ -36,7 +38,7 @@ function App() {
   return (
     <div>
       <QueryClientProvider client={queryClient}>
-        {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+        <ReactQueryDevtools initialIsOpen={true} />
         <RouterProvider router={router} />
       </QueryClientProvider>
     </div>

@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { apiFlask } from "./interceptors";
 import { AddDialerFormType } from "@/schemas";
-import { TGetRecordingsFunc } from "@/types/recordings";
+import { TGetRecordingsFunc, TGetRecordingsFuncV1 } from "@/types/recordings";
+import { TGetDialerConfigFn } from "@/types/types";
 
 export const validateSession = async (): Promise<AxiosResponse> => {
   try {
@@ -72,6 +73,23 @@ export const sendTranscribeRequest = (url: string) => {
 //   }, {});
 // }
 
+export const getRecordingsV1: TGetRecordingsFuncV1 = async (requiredParams, filterParams, pagination) => {
+  try {
+    console.log({ requiredParams, filterParams, pagination });
+    const response = await apiFlask.post("/portal/recordings", { ...requiredParams, ...filterParams, ...pagination });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        throw error.response.data; // Throw full error response
+      } else if (error.request) {
+        throw { message: "No response received from server." };
+      }
+    }
+    throw { message: "An unexpected error occurred." };
+  }
+};
+
 export const getRecordings: TGetRecordingsFunc = async (data, pagination, filter) => {
   try {
     const response: AxiosResponse = await apiFlask.post("/portal/recordings", {
@@ -92,7 +110,7 @@ export const getRecordings: TGetRecordingsFunc = async (data, pagination, filter
   }
 };
 
-export const getDialerConfig = async () => {
+export const getDialerConfig: TGetDialerConfigFn = async () => {
   try {
     const response = await apiFlask("/portal/configure-dialer");
     return response.data;

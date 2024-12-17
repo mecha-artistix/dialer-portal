@@ -9,7 +9,7 @@ import { ServerResponse } from "@/components/styled/ServerResponse";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 import { columns } from "./constants";
 
-function Recordings() {
+function RecordingsByAgent() {
   const { queryData, pagination } = useAppSelector((state) => state.recordings);
   const isQueryDataValid = queryData !== null;
 
@@ -82,4 +82,4 @@ function Recordings() {
   );
 }
 
-export default Recordings;
+export default RecordingsByAgent;

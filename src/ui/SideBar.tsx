@@ -15,6 +15,9 @@ function SideBar() {
       <NavLink className="navLink" to="/recordings-by-status">
         Recordings By Status
       </NavLink>
+      <NavLink className="navLink" to="/recordings">
+        Recordings V2
+      </NavLink>
       <NavLink className="navLink" to="/account">
         Account
       </NavLink>

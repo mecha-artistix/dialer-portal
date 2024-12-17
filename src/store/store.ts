@@ -6,6 +6,7 @@ import persistedReducer from "./rootReducer";
 import { userReducer } from "./userSlice";
 import { recordingsReducer } from "@/features/recordings/recordingsSlice";
 import { dialersReducer } from "@/features/dashboard/dialerSlice";
+import { recordingsReducerV1 } from "@/features/recordings/recordingsSliceV2";
 // const store = configureStore({
 //   reducer: persistedReducer,
 // });
@@ -17,6 +18,7 @@ export const store = configureStore({
     user: userReducer,
     recordings: recordingsReducer,
     dialers: dialersReducer,
+    recordingsV1: recordingsReducerV1,
   },
 });
 

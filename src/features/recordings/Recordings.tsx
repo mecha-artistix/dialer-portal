@@ -57,7 +57,7 @@ function Recordings() {
           )}
         </CardContent>
 
-        <CardFooter>Pagination</CardFooter>
+        {/* <CardFooter>Pagination</CardFooter> */}
       </Card>
     </div>
   );

@@ -58,7 +58,7 @@ function RequiredParamsForm() {
     try {
       console.log("Parsed Form Data:", parsedData);
       dispatch(setRequiredParams(parsedData));
-      queryMutation.mutate({ requiredForm: data });
+      queryMutation.mutate({ requiredForm: data, filterForm: {} });
     } catch (error) {
       console.error("Form Submission Error:", error);
     }

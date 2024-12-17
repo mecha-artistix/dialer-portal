@@ -50,7 +50,7 @@ function Recordings() {
           {isError && <ServerResponse type="error" message={error.message || JSON.stringify(error)} />}
           {recordings?.data?.length && (
             <>
-              {/* <FilterParamsForm /> */}
+              {/* <FilterParamsForm />   */}
               <PaginationV1 meta={recordings} />
               <RecordingsTable data={recordings.data} dialerName={dialer} />
             </>

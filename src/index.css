@@ -127,4 +127,7 @@
   .input-sm {
     @apply border-0 border-b-2 border-gray-300 focus:outline-none focus:border-gray-500 focus:shadow-[0px_4px_10px_rgba(0,0,0,0.1)] rounded-none;
   }
+  input {
+    @apply text-lg text-gray-800 placeholder:text-gray-400 placeholder:italic;
+  }
 }

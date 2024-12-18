@@ -22,7 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 
 const testValues = {
@@ -49,8 +48,7 @@ function FilterParamsForm() {
   });
 
   const clearFiltersHandler = () => {
-    console.log("clear");
-    form.reset();
+    form.reset({ agent_user: "", date: "", folder_name: "", phone_number: "", status: [] });
   };
 
   const onSubmitHandler = (data: ViciFilterParamsType) => {

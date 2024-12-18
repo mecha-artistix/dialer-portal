@@ -12,7 +12,7 @@ import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui
 import { Checkbox } from "@/components/ui/checkbox";
 import { statusOptions } from "../constants";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { setFilterParams } from "../recordingsSliceV2";
+import { setFilterParams, setIsFilterPopoverOpen } from "../recordingsSliceV2";
 import {
   Dialog,
   DialogContent,
@@ -33,20 +33,25 @@ const testValues = {
 };
 
 function FilterParamsForm() {
-  const { filterParams } = useAppSelector((state) => state.recordingsV1);
+  const { filterParams, isFilterPopoverOpen } = useAppSelector((state) => state.recordingsV1);
   const dispatch = useAppDispatch();
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const filterMutation = useViciQueryMutation();
   const form = useForm<ViciFilterParamsType>({
     resolver: zodResolver(ViciFilterParams),
     defaultValues: {
-      // date: filterParams.date,
+      date: filterParams.date,
       agent_user: filterParams.agent_user,
       status: filterParams.status,
       folder_name: filterParams.folder_name,
       phone_number: filterParams.phone_number,
     },
   });
+
+  const clearFiltersHandler = () => {
+    console.log("clear");
+    form.reset();
+  };
 
   const onSubmitHandler = (data: ViciFilterParamsType) => {
     console.log("Form Submit Triggered", { data });
@@ -59,7 +64,7 @@ function FilterParamsForm() {
         { filterForm: parsedData },
         {
           onSuccess: () => {
-            setOpen(false);
+            dispatch(setIsFilterPopoverOpen(false));
           },
         },
       );
@@ -71,10 +76,13 @@ function FilterParamsForm() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Filter</Button>
-      </DialogTrigger>
+    <Dialog
+      open={isFilterPopoverOpen}
+      onOpenChange={(open) => {
+        dispatch(setIsFilterPopoverOpen(open));
+      }}
+    >
+      <DialogTrigger>{/* <Button>Filter</Button> */}</DialogTrigger>
 
       <DialogContent className="max-w-fit">
         <Form {...form}>
@@ -84,7 +92,7 @@ function FilterParamsForm() {
               <DialogDescription>
                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-end">
                   {/* DATE */}
-                  {/* <FormField
+                  <FormField
                     control={form.control}
                     name="date"
                     render={({ field }) => (
@@ -102,7 +110,7 @@ function FilterParamsForm() {
                         <FormMessage />
                       </FormItem>
                     )}
-                  /> */}
+                  />
 
                   {/* Status Filter */}
 
@@ -181,7 +189,7 @@ function FilterParamsForm() {
                     )}
                   />
 
-                  {/* FOLDER NAME */}
+                  {/* PHONE NUMBER */}
                   <FormField
                     control={form.control}
                     name="phone_number"
@@ -233,7 +241,16 @@ function FilterParamsForm() {
             </DialogHeader>
             {/* SUBMIT BUTTON */}
 
-            <DialogFooter>
+            <DialogFooter className="mt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                disabled={filterMutation.isPending}
+                onClick={clearFiltersHandler}
+              >
+                Clear Filters
+              </Button>
               <Button type="submit" variant="default" size="lg" disabled={filterMutation.isPending}>
                 {filterMutation.isPending ? "Applying..." : "Apply"}
               </Button>

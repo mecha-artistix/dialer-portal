@@ -10,8 +10,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useViciQueryMutation } from "../useViciQueryMutation";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch } from "@/hooks/reduxHooks";
-import { setDialer, setRequiredParams } from "../recordingsSliceV2";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { setDialer, setIsFilterPopoverOpen, setRequiredParams } from "../recordingsSliceV2";
 
 const testValues = {
   dialer_url: "stsolution.i5.tel",
@@ -21,6 +21,7 @@ const testValues = {
   folder_name: "vicidial",
 };
 function RequiredParamsForm() {
+  const { isFilterPopoverOpen } = useAppSelector((state) => state.recordingsV1);
   const queryMutation = useViciQueryMutation();
   const dispatch = useAppDispatch();
 
@@ -30,7 +31,7 @@ function RequiredParamsForm() {
       dialer_url: testValues.dialer_url,
       user: testValues.user,
       pass: testValues.pass,
-      date: "",
+      // date: "",
     },
   });
 
@@ -58,7 +59,8 @@ function RequiredParamsForm() {
     try {
       console.log("Parsed Form Data:", parsedData);
       dispatch(setRequiredParams(parsedData));
-      queryMutation.mutate({ requiredForm: data, filterForm: {} });
+      // queryMutation.mutate({ requiredForm: data, filterForm: {} });
+      dispatch(setIsFilterPopoverOpen(true));
     } catch (error) {
       console.error("Form Submission Error:", error);
     }
@@ -135,7 +137,7 @@ function RequiredParamsForm() {
             )}
           />
           {/* DATE */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="date"
             render={({ field }) => (
@@ -147,10 +149,11 @@ function RequiredParamsForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           {/* SUBMIT BUTTON */}
           <Button type="submit" disabled={queryMutation.isPending}>
-            {queryMutation.isPending ? "Fetching Data" : "Get Recordings"}
+            Apply Filter
+            {/* {queryMutation.isPending ? "Fetching Data" : "Get Recordings"} */}
           </Button>
         </div>
       </form>

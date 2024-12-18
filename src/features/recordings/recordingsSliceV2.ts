@@ -9,6 +9,7 @@ interface RecordingsSlice {
   error: any;
   requiredParams: ViciRequiredParamsType;
   filterParams: ViciFilterParamsType;
+  isFilterPopoverOpen: boolean;
   pagination: TPagination;
   recordings: TRecording[];
   pageCount: number;
@@ -22,6 +23,7 @@ const initialState: RecordingsSlice = {
   requiredParams: { dialer_url: "", user: "", pass: "", date: "" },
   // filterParams: { date: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split("T")[0] },
   filterParams: {},
+  isFilterPopoverOpen: false,
   pagination: { page: 1, per_page: 50 },
   pageCount: 0,
   dialer: null,
@@ -35,7 +37,9 @@ export const recordingsSlice = createSlice({
     setRequiredParams: (state, action) => {
       state.requiredParams = { ...state.requiredParams, ...action.payload };
     },
-
+    setIsFilterPopoverOpen: (state, action: PayloadAction<boolean>) => {
+      state.isFilterPopoverOpen = action.payload;
+    },
     setFilterParams: (state, action) => {
       state.filterParams = { ...state.filterParams, ...action.payload };
     },
@@ -71,7 +75,9 @@ export const recordingsSlice = createSlice({
         state?.filterParams?.status?.push(action.payload);
       }
     },
-
+    setDateFilter: (state, action) => {
+      state.filterParams = { ...state.filterParams };
+    },
     removeStatusFilter: (state, action) => {
       state.filterParams.status = state?.filterParams?.status?.filter((option) => option !== action.payload);
     },
@@ -94,5 +100,7 @@ export const {
   setNextPage,
   setPageCount,
   setDialer,
+  setDateFilter,
+  setIsFilterPopoverOpen,
 } = recordingsSlice.actions;
 export const recordingsReducerV1 = recordingsSlice.reducer;

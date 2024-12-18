@@ -8,7 +8,6 @@ import { LinearProgress } from "@/components/ui/LinearProgress";
 import RequiredParamsForm from "./components/RequiredParamsForm";
 import FilterParamsForm from "./components/FilterParamsForm";
 import PaginationV1 from "./components/PaginationV1";
-import FilterSheet from "./components/FilterSheet";
 
 export const recordsQueryKey = "recordingsV1";
 
@@ -45,6 +44,7 @@ function Recordings() {
         {/* <CardHeader>Dialer Name: {dialer}</CardHeader> */}
         <CardDescription>{/* <FilterSheet /> */}</CardDescription>
         {isLoading && <LinearProgress />}
+        <FilterParamsForm />
 
         <CardContent>
           {isError && <ServerResponse type="error" message={error.message || JSON.stringify(error)} />}

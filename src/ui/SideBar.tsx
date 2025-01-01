@@ -6,17 +6,9 @@ function SideBar() {
       <NavLink className="navLink" to="/">
         Dashboard
       </NavLink>
-      <NavLink className="navLink" to="/recordings-single-agent">
-        Recordings By Agent
-      </NavLink>
-      <NavLink className="navLink" to="/recordings-all-agents">
-        Recordings All Agents
-      </NavLink>
-      <NavLink className="navLink" to="/recordings-by-status">
-        Recordings By Status
-      </NavLink>
+
       <NavLink className="navLink" to="/recordings">
-        Recordings V2
+        Recordings
       </NavLink>
       <NavLink className="navLink" to="/account">
         Account
@@ -25,3 +17,15 @@ function SideBar() {
   );
 }
 export default SideBar;
+
+{
+  /* <NavLink className="navLink" to="/recordings-single-agent">
+        Recordings By Agent
+      </NavLink>
+      <NavLink className="navLink" to="/recordings-all-agents">
+        Recordings All Agents
+      </NavLink>
+      <NavLink className="navLink" to="/recordings-by-status">
+        Recordings By Status
+      </NavLink> */
+}

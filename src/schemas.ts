@@ -30,7 +30,7 @@ export const ViciFilterParams = z.object({
     .optional(),
   agent_user: z.string().optional(),
   status: z.array(z.string()).optional().nullable(),
-  folder_name: z.string().optional(),
+  // folder_name: z.string().optional(),
   phone_number: z.string().optional(),
 });
 

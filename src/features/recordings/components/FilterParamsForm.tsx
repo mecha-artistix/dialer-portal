@@ -209,7 +209,7 @@ function FilterParamsForm() {
                   />
 
                   {/* FOLDER NAME */}
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="folder_name"
                     render={({ field }) => (
@@ -227,7 +227,7 @@ function FilterParamsForm() {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
                 </div>
               </DialogDescription>
               {filterMutation.isError && (

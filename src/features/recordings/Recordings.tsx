@@ -1,8 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import RecordingsTable from "./components/RecordingsTable";
-import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@/hooks/reduxHooks";
-import { getrecordings } from "@/lib/services";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 import RequiredParamsForm from "./components/RequiredParamsForm";

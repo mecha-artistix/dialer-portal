@@ -7,6 +7,7 @@ import { LoginSchemaType } from "@/schemas";
 
 export async function login(data: LoginSchemaType) {
   const response = await axios.post(import.meta.env.VITE_FLASK_API + "/auth/login", data);
+
   return response;
 }
 

@@ -1,6 +1,7 @@
-export const columns = [
+import { TRecording } from "@/types/recordings";
+
+export const columns: { key: keyof TRecording | "actions"; title: string; className?: string }[] = [
   { key: "lead_id", title: "Lead Id", className: "" },
-  // { key: "location", title: "Location", className: "max-w-24 overflow-x-hidden" },
   { key: "recording_id", title: "Recording Id", className: "" },
   { key: "start_time", title: "Start Time", className: "" },
   { key: "length_in_sec", title: "Duration (sec)", className: "" },
@@ -62,3 +63,5 @@ export const statusOptions = [
   "XDROP",
   "XFER",
 ];
+
+// { key: "location", title: "Location", className: "max-w-24 overflow-x-hidden" },

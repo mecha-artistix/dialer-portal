@@ -1,14 +1,15 @@
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { sendTranscribeRequest } from "@/lib/services";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IActions {
   url: string;
 }
 
 export const Actions: React.FC<IActions> = ({ url }) => {
+  const { toast } = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
 
@@ -31,7 +32,16 @@ export const Actions: React.FC<IActions> = ({ url }) => {
     setIsPlaying((prev) => (prev = !prev));
   };
 
-  // useEffect(() => {}, [error]);
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error",
+        description: JSON.stringify(error),
+        variant: "destructive",
+      });
+      console.error("Error:", error);
+    }
+  }, [error, toast]);
 
   return (
     <div className="grid gap-2 grid-cols-2">

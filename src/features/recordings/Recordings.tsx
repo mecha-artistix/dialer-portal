@@ -8,32 +8,14 @@ import { LinearProgress } from "@/components/ui/LinearProgress";
 import RequiredParamsForm from "./components/RequiredParamsForm";
 import FilterParamsForm from "./components/FilterParamsForm";
 import Pagination from "./components/Pagination";
+import useRecordings from "./useRecordings";
 
 export const recordsQueryKey = "recordings";
 
 function Recordings() {
-  const { dialer, requiredParams, filterParams, pagination } = useAppSelector((state) => state.recordings);
-  const {
-    data: recordings,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: [recordsQueryKey],
-    queryFn: async () => {
-      const response = await getrecordings(requiredParams, filterParams, pagination);
-      return response;
-    },
-    enabled: false,
-    retry: 0,
-    select: (data) => {
-      if (data?.error) {
-        throw data.error;
-      }
-      return data;
-    },
-  });
-  // if (isSuccess) console.log({ recordings });
+  const { dialer } = useAppSelector((state) => state.recordings);
+  const { recordings, isLoading, isError, error } = useRecordings();
+
   return (
     <div className="flex flex-col gap-2 mb-2">
       <RequiredParamsForm />
@@ -45,8 +27,8 @@ function Recordings() {
         <FilterParamsForm />
 
         <CardContent>
-          {isError && <ServerResponse type="error" message={error.message || JSON.stringify(error)} />}
-          {recordings?.data?.length && (
+          {isError && <ServerResponse type="error" message={error?.message || JSON.stringify(error)} />}
+          {recordings?.data && (
             <>
               {/* <FilterParamsForm />   */}
               <Pagination meta={recordings} />
@@ -54,8 +36,6 @@ function Recordings() {
             </>
           )}
         </CardContent>
-
-        {/* <CardFooter>Pagination</CardFooter> */}
       </Card>
     </div>
   );

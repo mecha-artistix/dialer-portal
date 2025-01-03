@@ -41,7 +41,7 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
         variant: "default",
       });
     },
-    onSettled(data, error, variables, context) {
+    onSettled(error) {
       if (error) {
         toast({
           title: "Failed!",

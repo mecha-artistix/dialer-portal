@@ -3,6 +3,12 @@ import { apiFlask } from "./interceptors";
 import { AddDialerFormType } from "@/schemas";
 import { TGetRecordingsFunc, TGetRecordingsFuncV1 } from "@/types/recordings";
 import { TGetDialerConfigFn } from "@/types/types";
+import { LoginSchemaType } from "@/schemas";
+
+export async function login(data: LoginSchemaType) {
+  const response = await axios.post(import.meta.env.VITE_FLASK_API + "/auth/login", data);
+  return response;
+}
 
 export const validateSession = async (): Promise<AxiosResponse> => {
   try {
@@ -64,16 +70,7 @@ export const sendTranscribeRequest = (url: string) => {
   });
 };
 
-// function removeNullUndefinedWithReduce(obj) {
-//   return Object.entries(obj).reduce((acc, [key, value]) => {
-//     if (value !== null && value !== undefined && value !== "") {
-//       acc[key] = typeof value === "object" ? removeNullUndefinedWithReduce(value) : value;
-//     }
-//     return acc;
-//   }, {});
-// }
-
-export const getRecordingsV1: TGetRecordingsFuncV1 = async (requiredParams, filterParams, pagination) => {
+export const getrecordings: TGetRecordingsFuncV1 = async (requiredParams, filterParams, pagination) => {
   try {
     console.log({ requiredParams, filterParams, pagination });
     const response = await apiFlask.post("/portal/recordings", { ...requiredParams, ...filterParams, ...pagination });

@@ -1,28 +1,27 @@
-import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import RecordingsTable from "./components/RecordingsTable";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@/hooks/reduxHooks";
-import { getRecordingsV1 } from "@/lib/services";
+import { getrecordings } from "@/lib/services";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 import RequiredParamsForm from "./components/RequiredParamsForm";
 import FilterParamsForm from "./components/FilterParamsForm";
-import PaginationV1 from "./components/PaginationV1";
+import Pagination from "./components/Pagination";
 
-export const recordsQueryKey = "recordingsV1";
+export const recordsQueryKey = "recordings";
 
 function Recordings() {
-  const { dialer, requiredParams, filterParams, pagination } = useAppSelector((state) => state.recordingsV1);
+  const { dialer, requiredParams, filterParams, pagination } = useAppSelector((state) => state.recordings);
   const {
     data: recordings,
     isLoading,
     isError,
     error,
-    isSuccess,
   } = useQuery({
     queryKey: [recordsQueryKey],
     queryFn: async () => {
-      const response = await getRecordingsV1(requiredParams, filterParams, pagination);
+      const response = await getrecordings(requiredParams, filterParams, pagination);
       return response;
     },
     enabled: false,
@@ -42,7 +41,6 @@ function Recordings() {
       <Card className="p-2">
         {/* <CardTitle>cardtitle</CardTitle> */}
         {/* <CardHeader>Dialer Name: {dialer}</CardHeader> */}
-        <CardDescription>{/* <FilterSheet /> */}</CardDescription>
         {isLoading && <LinearProgress />}
         <FilterParamsForm />
 
@@ -51,7 +49,7 @@ function Recordings() {
           {recordings?.data?.length && (
             <>
               {/* <FilterParamsForm />   */}
-              <PaginationV1 meta={recordings} />
+              <Pagination meta={recordings} />
               <RecordingsTable data={recordings.data} dialerName={dialer} />
             </>
           )}

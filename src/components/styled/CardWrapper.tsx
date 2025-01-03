@@ -12,13 +12,7 @@ interface CardWrapperProps {
   showSocial?: boolean;
 }
 
-export const CardWrapper: React.FC<CardWrapperProps> = ({
-  children,
-  headerLabel,
-  backButtonLabel,
-  backButtonHref,
-  showSocial,
-}) => {
+export const CardWrapper: React.FC<CardWrapperProps> = ({ children, headerLabel, backButtonLabel, backButtonHref }) => {
   return (
     <Card className="w-[400px] shadow-md">
       <CardHeader>{headerLabel}</CardHeader>

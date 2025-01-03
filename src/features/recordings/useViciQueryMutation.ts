@@ -1,10 +1,10 @@
 import { ViciFilterParamsType, ViciRequiredParamsType } from "@/schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { recordsQueryKey } from "./Recordings";
-import { getRecordingsV1 } from "@/lib/services";
+import { getrecordings } from "@/lib/services";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { TPagination } from "@/types/types";
-import { setPageCount } from "./recordingsSliceV2";
+import { setPageCount } from "./recordingsSlice";
 
 type MutationFNProps = {
   requiredForm?: ViciRequiredParamsType;
@@ -14,7 +14,7 @@ type MutationFNProps = {
 
 export function useViciQueryMutation() {
   const dispatch = useAppDispatch();
-  const { requiredParams, filterParams, pagination } = useAppSelector((state) => state.recordingsV1);
+  const { requiredParams, filterParams, pagination } = useAppSelector((state) => state.recordings);
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async ({ requiredForm, filterForm, paginationForm }: MutationFNProps) => {
@@ -25,14 +25,14 @@ export function useViciQueryMutation() {
       const viciPaginParams = paginationForm || { ...pagination, page: 1 };
       // console.log("====useViciQueryform====");
       // console.log({ viciReqParams, viciFiltParams, viciPaginParams });
-      const response = await getRecordingsV1(viciReqParams, viciFiltParams, viciPaginParams);
+      const response = await getrecordings(viciReqParams, viciFiltParams, viciPaginParams);
       return response;
     },
     onMutate: (variables) => {
       queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
       return variables;
     },
-    onSuccess: (newData, variables, context) => {
+    onSuccess: (newData) => {
       // console.log({ variables, context });
       dispatch(setPageCount(Number(newData.total_records)));
       // queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });

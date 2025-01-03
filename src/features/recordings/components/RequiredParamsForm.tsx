@@ -10,8 +10,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useViciQueryMutation } from "../useViciQueryMutation";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { setDialer, setIsFilterPopoverOpen, setRequiredParams } from "../recordingsSliceV2";
+import { useAppDispatch } from "@/hooks/reduxHooks";
+import { setDialer, setIsFilterPopoverOpen, setRequiredParams } from "../recordingsSlice";
 
 const testValues = {
   dialer_url: "stsolution.i5.tel",
@@ -21,7 +21,6 @@ const testValues = {
   folder_name: "vicidial",
 };
 function RequiredParamsForm() {
-  const { isFilterPopoverOpen } = useAppSelector((state) => state.recordingsV1);
   const queryMutation = useViciQueryMutation();
   const dispatch = useAppDispatch();
 
@@ -37,7 +36,6 @@ function RequiredParamsForm() {
 
   const {
     data: dialers,
-    isSuccess,
     isError: isDialersError,
     error: dialersError,
   } = useQuery({
@@ -45,13 +43,6 @@ function RequiredParamsForm() {
     queryFn: getDialerConfig,
     enabled: true,
   });
-
-  // useEffect(() => {
-  //   if (isSuccess && dialers && dialers.length > 0) {
-  //     const dialer = dialers[-1];
-  //     form.reset({ dialer_url: dialer.url, user: dialer.user, pass: dialer.pass });
-  //   }
-  // }, [dialers, form, isSuccess]);
 
   const onSubmit = (data: ViciRequiredParamsType) => {
     console.log("Form Submit Triggered", { data });
@@ -136,20 +127,7 @@ function RequiredParamsForm() {
               </FormItem>
             )}
           />
-          {/* DATE */}
-          {/* <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date</FormLabel>
-                <FormControl>
-                  <Input {...field} disabled={queryMutation.isPending} placeholder="YYYY-MM-DD" type="date" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
+
           {/* SUBMIT BUTTON */}
           <Button type="submit" disabled={queryMutation.isPending}>
             Apply Filter

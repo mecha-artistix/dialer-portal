@@ -1,12 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { persistStore } from "redux-persist";
-
-import persistedReducer from "./rootReducer";
 
 import { userReducer } from "./userSlice";
-import { recordingsReducer } from "@/features/recordings/recordingsSlice";
 import { dialersReducer } from "@/features/dashboard/dialerSlice";
-import { recordingsReducerV1 } from "@/features/recordings/recordingsSliceV2";
+import { recordingsReducer } from "@/features/recordings/recordingsSlice";
+// import { persistStore } from "redux-persist";
+// import persistedReducer from "./rootReducer";
 // const store = configureStore({
 //   reducer: persistedReducer,
 // });
@@ -16,9 +14,8 @@ import { recordingsReducerV1 } from "@/features/recordings/recordingsSliceV2";
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    recordings: recordingsReducer,
     dialers: dialersReducer,
-    recordingsV1: recordingsReducerV1,
+    recordings: recordingsReducer,
   },
 });
 

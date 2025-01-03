@@ -12,7 +12,7 @@ import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui
 import { Checkbox } from "@/components/ui/checkbox";
 import { statusOptions } from "../constants";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { setFilterParams, setIsFilterPopoverOpen } from "../recordingsSliceV2";
+import { setFilterParams, setIsFilterPopoverOpen } from "../recordingsSlice";
 import {
   Dialog,
   DialogContent,
@@ -24,15 +24,15 @@ import {
 } from "@/components/ui/dialog";
 import { ServerResponse } from "@/components/styled/ServerResponse";
 
-const testValues = {
-  date: "2024-10-24",
-  folder_name: "vicidial",
-  agent_user: "1001",
-  status: ["A"],
-};
+// const testValues = {
+//   date: "2024-10-24",
+//   folder_name: "vicidial",
+//   agent_user: "1001",
+//   status: ["A"],
+// };
 
 function FilterParamsForm() {
-  const { filterParams, isFilterPopoverOpen } = useAppSelector((state) => state.recordingsV1);
+  const { filterParams, isFilterPopoverOpen } = useAppSelector((state) => state.recordings);
   const dispatch = useAppDispatch();
   // const [open, setOpen] = useState(false);
   const filterMutation = useViciQueryMutation();
@@ -42,13 +42,12 @@ function FilterParamsForm() {
       date: filterParams.date,
       agent_user: filterParams.agent_user,
       status: filterParams.status,
-      folder_name: filterParams.folder_name,
       phone_number: filterParams.phone_number,
     },
   });
 
   const clearFiltersHandler = () => {
-    form.reset({ agent_user: "", date: "", folder_name: "", phone_number: "", status: [] });
+    form.reset({ agent_user: "", date: "", phone_number: "", status: [] });
   };
 
   const onSubmitHandler = (data: ViciFilterParamsType) => {
@@ -207,27 +206,6 @@ function FilterParamsForm() {
                       </FormItem>
                     )}
                   />
-
-                  {/* FOLDER NAME */}
-                  {/* <FormField
-                    control={form.control}
-                    name="folder_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Folder Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            disabled={filterMutation.isPending}
-                            placeholder="vicidial"
-                            type="text"
-                            className="input-sm"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
                 </div>
               </DialogDescription>
               {filterMutation.isError && (

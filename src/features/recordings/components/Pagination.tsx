@@ -1,68 +1,81 @@
 import { Button } from "@/components/ui/button";
-import { useAppDispatch } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 // import { getRecordings } from "@/lib/services";
 import { cn } from "@/lib/utils";
-import { setPerPage } from "../recordingsSlice";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
-
-import { RecordingsQueryKey, useViciRecords } from "../useViciRecordings";
+import { useEffect } from "react";
+import { useViciQueryMutation } from "../useViciQueryMutation";
+import { setNextPage, setPerPage, setPrevPage } from "../recordingsSlice";
+import { TRecording, TViciResponse } from "@/types/recordings";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { LinearProgress } from "@/components/ui/LinearProgress";
 // import { useQuery } from '@tanstack/react-query';
 
 type Props = {
-  className: string;
-  meta: Record<string, any>;
-  recordingsQueryKey: RecordingsQueryKey;
+  className?: string;
+  meta: TViciResponse<TRecording>;
 };
 
-export default function Pagination({ className, meta, recordingsQueryKey }: Props) {
-  const mutation = useViciRecords(recordingsQueryKey);
-  const [pagination, setPagination] = useState({ page: 1, per_page: 50 });
+export default function Pagination({ className, meta }: Props) {
+  const paginMutation = useViciQueryMutation();
+  const { pagination } = useAppSelector((state) => state.recordings);
   const dispatch = useAppDispatch();
+  // const [pagination, setPagination] = useState({ page: 1, per_page: 50 });
 
   useEffect(() => {
-    mutation.mutate({ pagination });
+    console.log(pagination);
+    paginMutation.mutate({ paginationForm: pagination });
   }, [pagination]);
 
   return (
-    <div className={cn("flex gap-2 sticky top-0 bg-gray-200 rounded-sm p-2 z-50", className)}>
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
-        disabled={mutation.isPending || Boolean(pagination.page == 1)}
-      >
-        Previous
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        // onClick={() => dispatch(setNextPage())}
-        onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
-        disabled={mutation.isPending || Boolean(pagination.page == meta.total)}
-      >
-        Next
-      </Button>
-      <div className="flex gap-2 items-center text-sm">
-        <p>Page Size</p>
-        <div>
-          <Input
-            type="number"
-            value={pagination.per_page}
-            onChange={(e) => dispatch(setPerPage(e.target.value))}
-            onClick={(e) => setPagination({ ...pagination, per_page: Number(e.target.value) })}
-            name="per_page"
-          />
-        </div>
-        {/* <div>
+    <>
+      <div className={cn("flex gap-2 bg-gray-200 rounded-sm p-2 z-50", className)}>
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => dispatch(setPrevPage())}
+          disabled={paginMutation.isPending || Boolean(pagination.page == 1)}
+        >
+          <ChevronLeft />
+        </Button>
+        <Button
+          size="icon"
+          variant="outline"
+          // onClick={() => dispatch(setNextPage())}
+          onClick={() => dispatch(setNextPage())}
+          disabled={paginMutation.isPending || Boolean(pagination.page == meta.total_pages)}
+        >
+          <ChevronRight />
+        </Button>
+        <div className="flex gap-2 items-center">
+          <p>Page Size</p>
+          <div>
+            <Input
+              type="text"
+              value={pagination.per_page}
+              onChange={(e) => dispatch(setPerPage(Number(e.target.value)))}
+              // onClick={(e) => setPagination({ ...pagination, per_page: Number(e.target.value) })}
+              name="per_page"
+              className="h-6 w-7 p-0 rounded-none"
+            />
+          </div>
+          {/* <div>
           <FilterSelect />
         </div> */}
+
+          {meta && (
+            <span>
+              <strong>Total Recordings:</strong> {meta.total_records} <strong>Page: </strong>
+              {meta.current_page}/{meta.total_pages}
+            </span>
+          )}
+        </div>
       </div>
-      {meta && (
-        <p>
-          Total: {meta.total} Page: {meta.current}/{meta.pages}{" "}
-        </p>
+      {paginMutation.isPending && (
+        <div className="w-full">
+          <LinearProgress />
+        </div>
       )}
-    </div>
+    </>
   );
 }

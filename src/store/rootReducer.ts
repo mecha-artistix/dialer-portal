@@ -1,7 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import counterReducer from "./counterSlice";
 import { userReducer } from "./userSlice";
 import { recordingsReducer } from "@/features/recordings/recordingsSlice";
 import { dialersReducer } from "@/features/account/dialerSlice";
@@ -14,7 +13,6 @@ const persistConfig = {
 
 // Combine reducers
 const rootReducer = combineReducers({
-  counter: counterReducer,
   user: userReducer,
   recordings: recordingsReducer,
   dialers: dialersReducer,

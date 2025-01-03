@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { login } from "@/store/userSlice";
+// import { login } from "@/store/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { LoginSchema, LoginSchemaType } from "@/schemas";
@@ -12,6 +12,7 @@ import { LinkBtn } from "@/components/styled/LinkBtn";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { TServerResponse } from "@/types/server_response";
+import useLogin from "../useLogin";
 
 /*
 {
@@ -22,7 +23,7 @@ import { TServerResponse } from "@/types/server_response";
 */
 function LoginForm() {
   const [status, setStatus] = useState<TServerResponse>({ status: "", message: "" });
-
+  const { login, isLoggingIn } = useLogin();
   const dispatch = useAppDispatch();
   const userState = useAppSelector((state) => state.user);
   const navigate = useNavigate();
@@ -42,10 +43,15 @@ function LoginForm() {
   const onSubmit: SubmitHandler<LoginSchemaType> = async (data) => {
     // await delay(2000);
 
-    dispatch(login(data)).then(() => {
-      const updatedIsAuthenticated = userState.isAuthenticated;
-      console.log("Updated isAuthenticated:", updatedIsAuthenticated);
-      navigate(from, { replace: true });
+    // dispatch(login(data)).then(() => {
+    //   const updatedIsAuthenticated = userState.isAuthenticated;
+    //   console.log("Updated isAuthenticated:", updatedIsAuthenticated);
+    //   navigate(from, { replace: true });
+    // });
+    login(data, {
+      onSuccess: () => {
+        navigate(from, { replace: true });
+      },
     });
   };
 

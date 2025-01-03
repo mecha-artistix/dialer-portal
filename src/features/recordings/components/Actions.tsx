@@ -12,7 +12,7 @@ export const Actions: React.FC<IActions> = ({ url }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
 
-  const handleTranscribe = async (url) => {
+  const handleTranscribe = async (url: string) => {
     setLoading(true);
     setError(null);
 
@@ -30,6 +30,8 @@ export const Actions: React.FC<IActions> = ({ url }) => {
   const handlePlayClick = () => {
     setIsPlaying((prev) => (prev = !prev));
   };
+
+  // useEffect(() => {}, [error]);
 
   return (
     <div className="grid gap-2 grid-cols-2">

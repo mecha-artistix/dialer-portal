@@ -42,6 +42,7 @@ function FilterParamsForm() {
       date: filterParams.date,
       agent_user: filterParams.agent_user,
       status: filterParams.status,
+      lead_id: filterParams.lead_id,
       phone_number: filterParams.phone_number,
     },
   });
@@ -178,6 +179,28 @@ function FilterParamsForm() {
                             {...field}
                             disabled={filterMutation.isPending}
                             placeholder="Agent User ID"
+                            type="text"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* LEAD ID */}
+
+                  <FormField
+                    control={form.control}
+                    name="lead_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Lead Id</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="input-sm"
+                            {...field}
+                            disabled={filterMutation.isPending}
+                            placeholder="11191"
                             type="text"
                           />
                         </FormControl>

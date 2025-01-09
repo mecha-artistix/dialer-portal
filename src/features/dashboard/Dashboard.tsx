@@ -4,16 +4,15 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { DialersTable } from "./components/DialersTable";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { setDialers, setIsAddingDialer } from "./dialerSlice";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDialerConfig } from "@/lib/services";
 import { useEffect } from "react";
 import { LinearProgress } from "@/components/ui/LinearProgress";
 
 function Dashboard() {
+  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const { isAddingDialer } = useAppSelector((state) => state.dialers);
-
-  const { username } = useAppSelector((state) => state.user);
 
   const { data, isLoading, isSuccess } = useQuery({
     queryKey: ["dialers"],
@@ -21,6 +20,8 @@ function Dashboard() {
     enabled: true,
     retry: 0,
   });
+
+  const user = queryClient.getQueryData(["user"]);
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -31,7 +32,7 @@ function Dashboard() {
   return (
     <div>
       <h1 className="text-2xl">
-        Welcome, <strong>{username}</strong>
+        Welcome, <strong>{user?.username}</strong>
       </h1>
       <h4 className="text-xl">Available Dialers</h4>
       <div className="relative">

@@ -7,8 +7,8 @@ import { LinkBtn } from "./LinkBtn";
 interface CardWrapperProps {
   children: React.ReactNode;
   headerLabel: string;
-  backButtonHref: string;
-  backButtonLabel: string;
+  backButtonHref?: string;
+  backButtonLabel?: string;
   showSocial?: boolean;
 }
 
@@ -19,7 +19,7 @@ export const CardWrapper: React.FC<CardWrapperProps> = ({ children, headerLabel,
       <CardContent>{children}</CardContent>
       {/* {showSocial && <CardFooter>all rights reserved</CardFooter>} */}
       <CardFooter>
-        <LinkBtn href={backButtonHref} label={backButtonLabel} />
+        <LinkBtn href={backButtonHref || ""} label={backButtonLabel || ""} />
       </CardFooter>
     </Card>
   );

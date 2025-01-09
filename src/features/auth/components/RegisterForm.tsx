@@ -1,47 +1,26 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RegisterSchema, RegisterSchemaType } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import CardWrapper from "@/components/styled/CardWrapper";
-import { register } from "@/store/userSlice";
-import { useNavigate } from "react-router-dom";
 import { ServerResponse } from "@/components/styled/ServerResponse";
-import { useEffect } from "react";
+import useRegisterUser from "../useRegisterUser";
 
 function RegisterForm() {
-  const navigate = useNavigate();
-  const userSelector = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
   const form = useForm<RegisterSchemaType>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: { email: "", password: "", username: "" },
   });
-
+  const { register, isRegistering, isError, error } = useRegisterUser();
   function onSubmit(data: RegisterSchemaType) {
     const parsedData = RegisterSchema.parse(data);
-    dispatch(register(parsedData));
+    register(parsedData, { onSettled: () => form.reset() });
+    // dispatch(register(parsedData));
   }
 
-  useEffect(() => {
-    if (userSelector.isAuthenticated) {
-      navigate("/");
-    }
-  }, [userSelector.isAuthenticated]);
-
-  const {
-    formState: { isSubmitting, errors },
-  } = form;
-
   return (
-    <CardWrapper
-      headerLabel="Welcome!"
-      backButtonLabel="Already a member? Click here to login now"
-      backButtonHref="/login"
-      showSocial
-    >
+    <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* EMAIL */}
@@ -52,7 +31,7 @@ function RegisterForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Enter your Email" type="email" />
+                  <Input {...field} placeholder="Enter your Email" type="email" disabled={isRegistering} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -66,7 +45,7 @@ function RegisterForm() {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Enter your Username" type="text" disabled={userSelector.loading} />
+                  <Input {...field} placeholder="Enter your Username" type="text" disabled={isRegistering} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -80,7 +59,7 @@ function RegisterForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Enter your Email" type="password" disabled={userSelector.loading} />
+                  <Input {...field} placeholder="Enter your Email" type="password" disabled={isRegistering} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -88,13 +67,12 @@ function RegisterForm() {
           />
 
           {/* SUBMIT */}
-          <Button type="submit" className="w-full" disabled={userSelector.loading}>
-            {isSubmitting ? "Registering..." : "Register"}
+          <Button type="submit" className="w-full" disabled={isRegistering}>
+            {isRegistering ? "Registering..." : "Register"}
           </Button>
         </form>
       </Form>
-      <ServerResponse type="error" message={JSON.stringify(errors)} />
-    </CardWrapper>
+    </>
   );
 }
 

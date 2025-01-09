@@ -1,7 +1,8 @@
 import { apiFlask } from "@/lib/interceptors";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function useValidation() {
+  const queryClient = useQueryClient();
   const {
     data: user,
     isLoading: isValidating,
@@ -12,10 +13,14 @@ function useValidation() {
     queryKey: ["user"],
     queryFn: async () => {
       const res = await apiFlask.get("/auth/protected");
-      return res;
+      // Return a complete user object by merging with cached data
+      const cachedUser = queryClient.getQueryData(["user"]) || {};
+
+      return { ...cachedUser, id: res.data.id };
+      // return res;
     },
-    enabled: false, // Prevent auto-fetch on mount
-    refetchOnWindowFocus: false, // Disable auto-refetch on window focus
+    enabled: false,
+    refetchOnWindowFocus: false,
   });
 
   return { user, isValidating, refetch, isError, error };

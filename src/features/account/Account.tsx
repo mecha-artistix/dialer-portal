@@ -1,3 +1,9 @@
+import RegisterForm from "../auth/components/RegisterForm";
+
 export function Account() {
-  return <div>Account Page</div>;
+  return (
+    <div>
+      <RegisterForm />
+    </div>
+  );
 }

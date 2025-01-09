@@ -14,10 +14,10 @@ function useLogin() {
   } = useMutation({
     mutationFn: (data: LoginSchemaType) => loginAPI(data),
     onSuccess(data) {
-      console.log(data.data.user.id);
+      console.log(data.user.id);
       // save token to  local storage
-      queryClient.setQueryData(["user"], data.data.user.id);
-      localStorage.setItem("token", data.data.token);
+      queryClient.setQueryData(["user"], data.user);
+      localStorage.setItem("token", data.token);
       toast({
         title: "Success!",
         description: "successfully logged in.",

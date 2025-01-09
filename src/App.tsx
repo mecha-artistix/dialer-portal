@@ -10,7 +10,7 @@ import LoginForm from "./features/auth/components/LoginForm";
 import Recordings from "./features/recordings/Recordings";
 import ProtectedRoutes from "./ui/ProtectedRoutes";
 import { Toaster } from "@/components/ui/toaster";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
   {
@@ -38,7 +38,7 @@ function App() {
   return (
     <div>
       <QueryClientProvider client={queryClient}>
-        {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+        <ReactQueryDevtools initialIsOpen={true} />
         <RouterProvider router={router} />
         <Toaster />
       </QueryClientProvider>

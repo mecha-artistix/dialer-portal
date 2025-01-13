@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useLogout } from "@/features/auth/useMutation";
+import { useLogout } from "@/features/auth/useLogout";
 import { useNavigate } from "react-router-dom";
 
 function TopBar() {

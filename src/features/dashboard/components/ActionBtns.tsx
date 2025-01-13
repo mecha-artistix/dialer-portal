@@ -69,42 +69,6 @@ const ActionBtns: React.FC<ActionBtnsProps> = ({ data, isEditing, setIsEditing, 
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={() => navigate("/recordings-single-agent", { state: { formData: data } })}
-            >
-              {/* <Voicemail /> */}
-              Sing
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Get Agent Recordings</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={() => navigate("/recordings-all-agents", { state: { formData: data } })}
-            >
-              {/* <Voicemail /> */}
-              All
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Get All Recordings</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
             {isEditing ? (
               <Button variant="outline" onClick={handleSave} size="icon" disabled={isSubmitting}>
                 <CheckCheck />

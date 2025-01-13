@@ -1,19 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { logout } from "@/store/userSlice";
+import { useLogout } from "@/features/auth/useMutation";
+import { useNavigate } from "react-router-dom";
 
 function TopBar() {
-  const userState = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
+  // const userState = useAppSelector((state) => state.user);
+  const { logout } = useLogout();
+  const navigate = useNavigate();
+  function handleLogout() {
+    logout(undefined, {
+      onSuccess: () => {
+        navigate("/login", { replace: true });
+      },
+    });
+  }
   return (
     <div className="flex items-center justify-between">
-      {userState.isAuthenticated ? (
-        <Button className="ml-auto" onClick={() => dispatch(logout())}>
-          Logout
-        </Button>
-      ) : (
-        <Button>Login</Button>
-      )}
+      <Button className="ml-auto" onClick={handleLogout}>
+        Logout
+      </Button>
     </div>
   );
 }

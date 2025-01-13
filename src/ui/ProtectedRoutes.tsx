@@ -13,6 +13,7 @@ const ProtectedRoutes = ({ children }: Props) => {
 
   useEffect(() => {
     refetch();
+    // console.log("refetch");
   }, [location.pathname, refetch]);
 
   if (isValidating) return <p>Validating...</p>;

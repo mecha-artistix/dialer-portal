@@ -109,19 +109,8 @@ export const getRecordings: TGetRecordingsFunc = async (data, pagination, filter
 };
 
 export const getDialerConfig: TGetDialerConfigFn = async () => {
-  try {
-    const response = await apiFlask("/portal/configure-dialer");
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        throw error.response.data;
-      } else if (error.request) {
-        throw { message: "No Response received from server" };
-      }
-    }
-    throw { message: "An unexpecter error occured" };
-  }
+  const response = await apiFlask("/portal/configure-dialer");
+  return response.data;
 };
 
 export const patchDialer = async (dialer_id: number, body: Omit<AddDialerFormType, "pass">) => {

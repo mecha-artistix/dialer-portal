@@ -4,30 +4,26 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { DialersTable } from "./components/DialersTable";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { setDialers, setIsAddingDialer } from "./dialerSlice";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getDialerConfig } from "@/lib/services";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { LinearProgress } from "@/components/ui/LinearProgress";
+import { useDialers } from "./useDialers";
 
 function Dashboard() {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const { isAddingDialer } = useAppSelector((state) => state.dialers);
-
-  const { data, isLoading, isSuccess } = useQuery({
-    queryKey: ["dialers"],
-    queryFn: () => getDialerConfig(),
-    enabled: true,
-    retry: 0,
-  });
+  const { dialers, isLoading, isSuccess, isError, error } = useDialers();
 
   const user = queryClient.getQueryData(["user"]);
-
+  console.log(user);
   useEffect(() => {
-    if (isSuccess && data) {
-      dispatch(setDialers(data));
+    if (isSuccess && dialers) {
+      dispatch(setDialers(dialers));
     }
-  }, [isSuccess, data, dispatch]);
+  }, [isSuccess, dialers, dispatch]);
+
+  if (isError) console.log(error);
 
   return (
     <div>
@@ -52,7 +48,8 @@ function Dashboard() {
       </div>
 
       {isLoading && <LinearProgress />}
-      {data && <DialersTable data={data} />}
+      {dialers && <DialersTable data={dialers} />}
+      {isError && <p>{JSON.stringify(error?.response?.data)}</p>}
     </div>
   );
 }

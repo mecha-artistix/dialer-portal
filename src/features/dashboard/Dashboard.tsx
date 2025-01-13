@@ -23,7 +23,9 @@ function Dashboard() {
     }
   }, [isSuccess, dialers, dispatch]);
 
-  if (isError) console.log(error);
+  if (isError) {
+    queryClient.invalidateQueries({ queryKey: ["dialers"] });
+  }
 
   return (
     <div>

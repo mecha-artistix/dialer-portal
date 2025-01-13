@@ -11,7 +11,7 @@ function SideBar() {
         Recordings
       </NavLink>
       <NavLink className="navLink" to="/account">
-        Account
+        Add User
       </NavLink>
     </div>
   );

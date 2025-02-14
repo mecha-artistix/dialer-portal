@@ -7,6 +7,7 @@ import RequiredParamsForm from "./components/RequiredParamsForm";
 import FilterParamsForm from "./components/FilterParamsForm";
 import Pagination from "./components/Pagination";
 import useRecordings from "./useRecordings";
+import ConfigurTranscriptionsForm from "../generate-transcription/components/ConfigurTranscriptionsForm";
 
 export const recordsQueryKey = "recordings";
 
@@ -23,7 +24,7 @@ function Recordings() {
         {/* <CardHeader>Dialer Name: {dialer}</CardHeader> */}
         {isLoading && <LinearProgress />}
         <FilterParamsForm />
-
+        <ConfigurTranscriptionsForm />
         <CardContent>
           {isError && <ServerResponse type="error" message={error?.message || JSON.stringify(error)} />}
           {recordings?.data && (

@@ -52,7 +52,6 @@ function FilterParamsForm() {
   };
 
   const onSubmitHandler = (data: ViciFilterParamsType) => {
-    console.log("Form Submit Triggered", { data });
     const parsedData = ViciFilterParams.parse(data);
     try {
       // const parsedData = ViciRequiredParams.parse(data);

@@ -27,22 +27,26 @@ apiFlask.interceptors.response.use(
   },
   (error) => {
     throw error;
-    // console.log("log from interceptor - ERROR", error);
-    // // Handle errors globally
-    // if (error.response) {
-    //   // Customize based on status code, for example
-    //   if (error.response.status === 401) {
-    //     console.log("Unauthorized - redirecting to login");
-    //     // store.dispatch(logout());
-    //     window.location.href = `/login?from=${encodeURIComponent(window.location.pathname)}`;
-    //   } else if (error.response.status === 500) {
-    //     console.log("Server error - try again later");
-    //   }
-    // } else if (error.request) {
-    //   console.log("Network error - please check your connection");
-    // }
-    // return Promise.reject(error);
   },
 );
 
 export { apiFlask };
+
+// (error) => {
+//   throw error;
+//   // console.log("log from interceptor - ERROR", error);
+//   // // Handle errors globally
+//   // if (error.response) {
+//   //   // Customize based on status code, for example
+//   //   if (error.response.status === 401) {
+//   //     console.log("Unauthorized - redirecting to login");
+//   //     // store.dispatch(logout());
+//   //     window.location.href = `/login?from=${encodeURIComponent(window.location.pathname)}`;
+//   //   } else if (error.response.status === 500) {
+//   //     console.log("Server error - try again later");
+//   //   }
+//   // } else if (error.request) {
+//   //   console.log("Network error - please check your connection");
+//   // }
+//   // return Promise.reject(error);
+// },

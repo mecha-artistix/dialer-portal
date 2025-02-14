@@ -7,7 +7,6 @@ import { LoginSchemaType } from "@/schemas";
 
 export async function login(data: LoginSchemaType) {
   const response = await axios.post(import.meta.env.VITE_FLASK_API + "/auth/login", data);
-  console.log(response);
   return response.data;
 }
 
@@ -73,7 +72,6 @@ export const sendTranscribeRequest = (url: string) => {
 
 export const getrecordings: TGetRecordingsFuncV1 = async (requiredParams, filterParams, pagination) => {
   try {
-    console.log({ requiredParams, filterParams, pagination });
     const response = await apiFlask.post("/portal/recordings", { ...requiredParams, ...filterParams, ...pagination });
     return response.data;
   } catch (error) {

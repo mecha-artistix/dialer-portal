@@ -1,4 +1,3 @@
-import { apiFlask } from "@/lib/interceptors";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 

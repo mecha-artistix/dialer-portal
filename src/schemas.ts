@@ -45,3 +45,11 @@ export const ViciFilterParams = z.object({
 });
 
 export type ViciFilterParamsType = z.infer<typeof ViciFilterParams>;
+
+export const TranscriptionsForm = z.object({
+  email: z.string().email(),
+  // status: z.string().optional(),
+  // dialer: z.string().optional(),
+});
+
+export type TranscriptionsFormType = z.infer<typeof TranscriptionsForm>;

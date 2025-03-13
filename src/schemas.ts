@@ -9,8 +9,8 @@ export const RegisterSchema = z.object({
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
 
 export const LoginSchema = z.object({
-  username: z.string({ message: "username is required" }),
-  password: z.string(),
+  username: z.string().min(1,{ message: "username is required" }),
+  password: z.string().min(1,{ message: "password is required" }),
 });
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>;

@@ -16,9 +16,10 @@ function Dashboard() {
   const { dialers, isLoading, isSuccess, isError, error } = useDialers();
 
   const user = queryClient.getQueryData(["user"]);
-  console.log(user);
+  
+
   useEffect(() => {
-    if (isSuccess && dialers) {
+    if (isSuccess  && dialers && dialers.length > 0) {
       dispatch(setDialers(dialers));
     }
   }, [isSuccess, dialers, dispatch]);
@@ -50,7 +51,8 @@ function Dashboard() {
       </div>
 
       {isLoading && <LinearProgress />}
-      {dialers && <DialersTable data={dialers} />}
+      {dialers && dialers?.length > 0 && <DialersTable data={dialers} />}
+      {dialers?.length == 0 && <p>You dont have any dialers configurations. Please add dialers to start testing</p>}
       {isError && <p>{JSON.stringify(error?.response?.data)}</p>}
     </div>
   );

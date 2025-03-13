@@ -9,6 +9,8 @@ type Props = {
 };
 
 export function DialersTable({ data }: Props) {
+  if (!data || data.length == 0) return null
+  
   return (
     <Card className="p-5">
       <CardTitle>Account Dialers</CardTitle>

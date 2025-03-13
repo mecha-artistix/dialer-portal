@@ -22,7 +22,7 @@ function RegisterForm() {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
           {/* EMAIL */}
           <FormField
             control={form.control}

@@ -7,6 +7,8 @@ export function useLogout() {
     onSuccess: () => {
       localStorage.removeItem("token");
       queryClient.setQueryData(["user"], null);
+      queryClient.setQueryData(["dialers"], null);
+      queryClient.setQueryData(["recordings"], null);
     },
   });
 

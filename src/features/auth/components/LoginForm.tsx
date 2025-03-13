@@ -25,7 +25,8 @@ function LoginForm() {
 
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
-    defaultValues: { username: "john_doe", password: "securepassword123" },
+    // defaultValues: { username: "john_doe", password: "securepassword123" },
+    defaultValues: { username: "", password: "" },
   });
 
   const onSubmit: SubmitHandler<LoginSchemaType> = async (data) => {

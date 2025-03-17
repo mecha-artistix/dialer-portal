@@ -33,6 +33,11 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
     mutationFn: (updatedData: AddDialerFormType) => apiFlask.put(`/portal/configure-dialer/${data.id}`, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dialers"] });
+      toast({
+        title: "Updated!",
+        description: "Your request was successfully submitted.",
+        variant: "success",
+      });
     },
     onMutate() {
       toast({
@@ -41,20 +46,13 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
         variant: "default",
       });
     },
-    onSettled(error) {
-      if (error) {
-        toast({
-          title: "Failed!",
-          description: "Your request was failed to update.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Updated!",
-          description: "Your request was successfully submitted.",
-          variant: "success",
-        });
-      }
+    onError(error) {
+      console.log({ error });
+      toast({
+        title: "Failed!",
+        description: "Your request was failed to update.",
+        variant: "destructive",
+      });
     },
   });
 

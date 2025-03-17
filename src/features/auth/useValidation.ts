@@ -28,6 +28,7 @@ function useValidation() {
     },
     enabled: false,
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   return { user, isValidating, refetch, isError, error };

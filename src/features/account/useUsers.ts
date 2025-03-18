@@ -14,6 +14,7 @@ function useUsers() {
       console.log({ user: response });
       return response;
     },
+    retry: 1,
   });
 
   return { users, isLoading, isError, error };

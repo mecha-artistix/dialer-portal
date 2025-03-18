@@ -87,7 +87,7 @@ export const DialerRow: React.FC<DialerProps> = ({ data }) => {
         ) : (
           <TableCell key={i}>
             <input
-              type={col.key === "pass" ? "password" : "text"}
+              // type={col.key === "pass" ? "password" : "text"}
               onChange={handleChange}
               value={inputVals[col.key] || ""}
               name={col.key}

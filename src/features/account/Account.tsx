@@ -4,7 +4,7 @@ import useUsers from "./useUsers";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export function Account() {
-  const { users, isLoading, error } = useUsers();
+  const { users, isLoading, isError, error } = useUsers();
   console.log(users, error);
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -26,6 +26,7 @@ export function Account() {
                   {/* <TableCell className="text-right">{invoice.totalAmount}</TableCell> */}
                 </TableRow>
               ))}
+            {isError && <p>{JSON.stringify(error?.response?.data?.error)}</p>}
           </TableBody>
         </Table>
       </div>

@@ -88,6 +88,7 @@ function RequiredParamsForm() {
                     <SelectContent>
                       {isDialersError && <SelectItem value="error">{`${dialersError}`}</SelectItem>}
                       {dialers &&
+                        dialers?.length > 0 &&
                         dialers?.map((el) => (
                           <SelectItem key={el.id} value={el.url}>
                             {el.name}

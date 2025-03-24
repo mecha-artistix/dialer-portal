@@ -87,11 +87,12 @@ function RequiredParamsForm() {
                     </SelectTrigger>
                     <SelectContent>
                       {isDialersError && <SelectItem value="error">{`${dialersError}`}</SelectItem>}
-                      {dialers?.map((el) => (
-                        <SelectItem key={el.id} value={el.url}>
-                          {el.name}
-                        </SelectItem>
-                      ))}
+                      {dialers &&
+                        dialers?.data.map((el) => (
+                          <SelectItem key={el.id} value={el.url}>
+                            {el.name}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </FormControl>

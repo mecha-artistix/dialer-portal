@@ -27,7 +27,7 @@ function Recordings() {
         <ConfigurTranscriptionsForm />
         <CardContent>
           {isError && <ServerResponse type="error" message={error?.message || JSON.stringify(error)} />}
-          {recordings?.data && (
+          {recordings && recordings?.data && (
             <>
               {/* <FilterParamsForm />   */}
               <Pagination meta={recordings} />

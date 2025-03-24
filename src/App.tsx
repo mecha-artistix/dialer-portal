@@ -10,6 +10,7 @@ import LoginForm from "./features/auth/components/LoginForm";
 import Recordings from "./features/recordings/Recordings";
 import ProtectedRoutes from "./ui/ProtectedRoutes";
 import { Toaster } from "@/components/ui/toaster";
+import Error from "./components/ui/error";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
@@ -27,9 +28,9 @@ const router = createBrowserRouter([
       </ProtectedRoutes>
     ),
     children: [
-      { path: "/", element: <Dashboard /> },
-      { path: "/account", element: <Account /> },
-      { path: "/recordings", element: <Recordings /> },
+      { path: "/", element: <Dashboard />, errorElement: <Error /> },
+      { path: "/account", element: <Account />, errorElement: <Error /> },
+      { path: "/recordings", element: <Recordings />, errorElement: <Error /> },
     ],
   },
 ]);

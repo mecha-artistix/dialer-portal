@@ -11,7 +11,8 @@ import Recordings from "./features/recordings/Recordings";
 import ProtectedRoutes from "./ui/ProtectedRoutes";
 import { Toaster } from "@/components/ui/toaster";
 import Error from "./components/ui/error";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Dispositions from "./features/dispositions/Dispositions";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Dashboard />, errorElement: <Error /> },
       { path: "/account", element: <Account />, errorElement: <Error /> },
       { path: "/recordings", element: <Recordings />, errorElement: <Error /> },
+      { path: "/dispositions", element: <Dispositions />, errorElement: <Error /> },
     ],
   },
 ]);
@@ -39,7 +41,7 @@ function App() {
   return (
     <div>
       <QueryClientProvider client={queryClient}>
-        {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+        <ReactQueryDevtools initialIsOpen={true} />
         <RouterProvider router={router} />
         <Toaster />
       </QueryClientProvider>

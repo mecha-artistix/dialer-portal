@@ -6,7 +6,9 @@ function SideBar() {
       <NavLink className="navLink" to="/">
         Dashboard
       </NavLink>
-
+      <NavLink className="navLink" to="/dispositions">
+        Dispositions
+      </NavLink>
       <NavLink className="navLink" to="/recordings">
         Recordings
       </NavLink>

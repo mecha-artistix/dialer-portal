@@ -12,7 +12,7 @@ import ProtectedRoutes from "./ui/ProtectedRoutes";
 import { Toaster } from "@/components/ui/toaster";
 import Error from "./components/ui/error";
 import Dispositions from "./features/dispositions/Dispositions";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
   {
@@ -41,7 +41,7 @@ function App() {
   return (
     <div>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={true} />
+        {/* <ReactQueryDevtools initialIsOpen={true} /> */}
         <RouterProvider router={router} />
         <Toaster />
       </QueryClientProvider>

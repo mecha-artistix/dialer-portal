@@ -11,11 +11,11 @@ function useDispositions() {
   } = useQuery({
     queryKey: ["dispositions"],
     queryFn: async () => {
-      const response = await apiFlask.get("/call-dispositions");
+      const response = await apiFlask.get("/dispositions");
 
       console.log({ response });
 
-      return response;
+      return response.data;
     },
     enabled: false,
     retry: 0,

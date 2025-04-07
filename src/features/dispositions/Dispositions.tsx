@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import StatBox from "./components/statbox";
 import useDispositions from "./useDispositions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +14,7 @@ function Dispositions() {
   }));
   return (
     <>
-      <button onClick={clickHandler}>Get</button>
+      <Button onClick={clickHandler}>Get campaigns</Button>
 
       <div className="flex flex-row"></div>
       {dispositions && (

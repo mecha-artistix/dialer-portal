@@ -4,28 +4,30 @@ import useDispositions from "./useDispositions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function Dispositions() {
-  const { dispositions, isError, error, refetch } = useDispositions();
-  const clickHandler = () => {
-    refetch();
-  };
+  const { dispositions, isError, error } = useDispositions();
+
   const campaigns = dispositions?.map(({ ["TOTAL CALLS"]: totalCalls, CAMPAIGN }) => ({
     totalCalls,
     CAMPAIGN,
   }));
   return (
     <>
-      <Button onClick={clickHandler}>Get campaigns</Button>
-
       <div className="flex flex-row"></div>
       {dispositions && (
-        <Tabs defaultValue="account" className="">
-          <TabsList>
+        <Tabs defaultValue="TOTAL" className="">
+          <TabsList className="bg-slate-200 p-2">
             {campaigns.map((dialer) => (
-              <TabsTrigger value={dialer.CAMPAIGN || "NAN"}>{dialer.CAMPAIGN || "NAN"}</TabsTrigger>
+              <TabsTrigger
+                key={dialer.CAMPAIGN || "NAN"}
+                value={dialer.CAMPAIGN || "NAN"}
+                className="border border-slate-300 rounded-sm gap-2"
+              >
+                {dialer.CAMPAIGN || "NAN"}
+              </TabsTrigger>
             ))}
           </TabsList>
           {dispositions.map((campaign) => (
-            <TabsContent value={campaign.CAMPAIGN || "NAN"}>
+            <TabsContent key={campaign.CAMPAIGN || "NAN"} value={campaign.CAMPAIGN || "NAN"}>
               <div>
                 <p>
                   Total Calls: <strong>{campaign["TOTAL CALLS"]}</strong>
@@ -34,7 +36,7 @@ function Dispositions() {
                   {Object.keys(campaign)
                     .filter((key) => key != "TOTAL CALLS" && key != "CAMPAIGN")
                     .map((key) => (
-                      <StatBox name={key} value={campaign[key]} />
+                      <StatBox key={key} name={key} value={campaign[key]} />
                     ))}
                 </div>
               </div>

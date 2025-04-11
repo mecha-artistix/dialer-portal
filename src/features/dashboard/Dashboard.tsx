@@ -1,67 +1,64 @@
-import ActionBar from "./components/ActionBar";
-import { AddDialerForm } from "./components/AddDialerForm";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { DialersTable } from "./components/DialersTable";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { setDialers, setIsAddingDialer } from "./dialerSlice";
-import { useQueryClient } from "@tanstack/react-query";
+import { DIALER_SERVER } from "@/lib/constants";
 import { useEffect } from "react";
-import { LinearProgress } from "@/components/ui/LinearProgress";
-import { useDialers } from "./useDialers";
+import Dispositions from "../dispositions/Dispositions";
 
-function Dashboard() {
-  const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
-  const { isAddingDialer } = useAppSelector((state) => state.dialers);
-  const { dialers, isLoading, isSuccess, isError, error } = useDialers();
+type Props = {};
 
-  const user = queryClient.getQueryData(["user"]);
-  
-
+export default function Dashboard({}: Props) {
   useEffect(() => {
-    if (isSuccess  && dialers && dialers.length > 0) {
-      dispatch(setDialers(dialers));
+    const iframe = document.getElementById("myIframe");
+    if (iframe && iframe.contentWindow) {
+      const iframeDoc = iframe.contentWindow.document;
+      iframe.onload = () => {
+        const el = iframeDoc.querySelector("table");
+        if (el) el.style.display = "none";
+      };
     }
-  }, [isSuccess, dialers, dispatch]);
+  }, []);
 
-  if (isError) {
-    queryClient.invalidateQueries({ queryKey: ["dialers"] });
-  }
+  const onIframeLoad = (event) => {
+    // Check if the iframe is loaded
+    try {
+      const iframe = event.target;
+      const style = document.createElement("style");
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.body.style.backgroundColor = "#1339b8";
+      console.log("Same origin access?", !!iframe.contentDocument);
+      if (iframe.contentDocument) {
+        console.log("Access granted to iframe content");
+        // Your style injection code here
+      }
+      style.textContent = `
+            .navigation-bar { display: none !important; }
+            #header { display: none !important; }
+            /* Add other selectors you want to hide */
+            body { background-color: #1339b8 !important; }
+            img { display: none !important; }
+          `;
+
+      // Only works if same-origin policy allows it
+      if (iframe.contentDocument) {
+        iframe.contentDocument.head.appendChild(style);
+      }
+    } catch (error) {
+      // Handle cross-origin errors
+      console.error("Could not modify iframe content due to cross-origin restrictions", error);
+    }
+  };
 
   return (
     <div>
-      <h1 className="text-2xl">
-        Welcome, <strong>{user?.username}</strong>
-      </h1>
-      <h4 className="text-xl">Available Dialers</h4>
-      <div className="relative">
-        <Collapsible open={isAddingDialer}>
-          <ActionBar>
-            <CollapsibleTrigger
-              onClick={() => dispatch(setIsAddingDialer(!isAddingDialer))}
-              className="bg-black p-2 text-white rounded-sm"
-            >
-              Add Dialer
-            </CollapsibleTrigger>
-          </ActionBar>
-          <CollapsibleContent className="absolute top-full left-0 z-50 mt-2 w-full max-w-md">
-            <AddDialerForm />
-          </CollapsibleContent>
-        </Collapsible>
+      <Dispositions />
+      <div>
+        <iframe
+          src={`http://${DIALER_SERVER}/vicidial/realtime_report.php`}
+          width="100%"
+          height="500"
+          style={{ border: "none" }}
+          title="Real Time Reports"
+          onLoad={onIframeLoad}
+        />
       </div>
-
-      {isLoading && <LinearProgress />}
-      {dialers && dialers?.length > 0 && <DialersTable data={dialers} />}
-      {dialers?.length == 0 && <p>You dont have any dialers configurations. Please add dialers to start testing</p>}
-      {isError && <p>{JSON.stringify(error?.response?.data)}</p>}
     </div>
   );
 }
-
-export default Dashboard;
-
-// {isError ? (
-//   <ServerResponse type="error" message={JSON.stringify(error)} />
-// ) : (
-//   <DialersTable data={data} isLoading={isLoading} />
-// )}

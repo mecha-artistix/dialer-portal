@@ -13,12 +13,11 @@ function useDispositions() {
     queryFn: async () => {
       const response = await apiFlask.get("/dispositions");
 
-      console.log({ response });
-
       return response.data;
     },
-    enabled: false,
+    enabled: true,
     retry: 0,
+    refetchInterval: 5000,
   });
 
   return {

@@ -18,4 +18,4 @@ RUN npm run build
 EXPOSE 9898
 
 # Command to run the application
-CMD ["npm", "start"]
+CMD ["npm", "dev"]

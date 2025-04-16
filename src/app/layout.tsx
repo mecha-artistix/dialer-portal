@@ -5,6 +5,7 @@ import "./globals.css";
 import SideBar from "@/components/ui/SideBar";
 import TopBar from "@/components/ui/TopBar";
 import Image from "next/image";
+import { CientProviders } from "@/utils/clientProviders";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,23 +30,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="grid grid-cols-[auto_1fr] grid-rows-[auto_1fr] h-screen">
-          <header className="p-2">
-            <TopBar />
-          </header>
-          <aside className="py-4 row-span-full px-4 flex flex-col gap-4 bg-amber-200">
-            <div className="text-center mx-auto bg-white px-2">
-              <Image src="/logo.png" width="150" height="150" alt="Logo" />
-            </div>
-            <SideBar />
-          </aside>
-          <main className="flex-1 bg-gray-100 p-6 overflow-y-auto">
-            <div className="container mx-auto">
-              {/* <RouteLoader /> */}
-              {children}
-            </div>
-          </main>
-        </div>
+        <CientProviders>
+          <div className="grid grid-cols-[auto_1fr] grid-rows-[auto_1fr] h-screen">
+            <header className="p-2">
+              <TopBar />
+            </header>
+            <aside className="py-4 row-span-full px-4 flex flex-col gap-4 bg-amber-200">
+              <div className="text-center mx-auto bg-white px-2">
+                <Image src="/logo.png" width="150" height="150" alt="Logo" />
+              </div>
+              <SideBar />
+            </aside>
+            <main className="flex-1 bg-gray-100 p-6 overflow-y-auto">
+              <div className="container mx-auto">
+                {/* <RouteLoader /> */}
+                {children}
+              </div>
+            </main>
+          </div>
+        </CientProviders>
       </body>
     </html>
   );

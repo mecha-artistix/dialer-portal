@@ -10,18 +10,6 @@ export const getRecordingsSA = async () => {
   const url = `${ROOT_URL}/vicidial/non_agent_api_V2.php?function=recording_status_filter&user=${DIALER_USER}&pass=${DIALER_PASSWORD}&header=YES&stage=tab&source=test&date=${"2025-04-15"}&agent_user=&duration=Y&page=1&per_page=50&status=&phone_number=&lead_id=${""}`;
   try {
     const response = await axios.get(url, { responseType: "text" });
-    // console.log({ response });
-    // const html = response.data;
-    // // extract plain text from the body
-    // const match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-    // const bodyText = match ? match[1].split("<")[0].trim() : "";
-    // // example: "ERROR: recording_lookup NO RECORDINGS FOUND - 6666|1013||2024-10-24|"
-    // const parts = bodyText.split(" - ");
-    // const message = parts[0];
-    // const data = parts[1]?.split("|");
-
-    // console.log({ message, data });
-    // return { message, data };
 
     const text = response.data.trim();
     console.log({ text });
@@ -31,7 +19,7 @@ export const getRecordingsSA = async () => {
     const dataLines = lines.slice(1, -1);
     const metaLine = lines[lines.length - 1];
 
-    const meta = {};
+    let meta = {};
     try {
       meta = JSON.parse(metaLine).meta || {};
     } catch (e) {
@@ -102,3 +90,16 @@ export const getRecordingsSA = async () => {
 
 
 */
+
+// console.log({ response });
+// const html = response.data;
+// // extract plain text from the body
+// const match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+// const bodyText = match ? match[1].split("<")[0].trim() : "";
+// // example: "ERROR: recording_lookup NO RECORDINGS FOUND - 6666|1013||2024-10-24|"
+// const parts = bodyText.split(" - ");
+// const message = parts[0];
+// const data = parts[1]?.split("|");
+
+// console.log({ message, data });
+// return { message, data };

@@ -34,3 +34,56 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+Login to MariaDB:
+
+bash
+Copy
+Edit
+sudo mysql
+Then run:
+
+sql
+Copy
+Edit
+CREATE USER 'dev_user'@'%' IDENTIFIED BY 'strong_password';
+GRANT ALL PRIVILEGES ON asterisk.\* TO 'dev_user'@'%';
+FLUSH PRIVILEGES;
+✅ 2. Update MariaDB config to allow remote connections
+Edit config file:
+
+bash
+Copy
+Edit
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+Find:
+
+ini
+Copy
+Edit
+bind-address = 127.0.0.1
+Change to:
+
+ini
+Copy
+Edit
+bind-address = 0.0.0.0
+Restart service:
+
+bash
+Copy
+Edit
+sudo systemctl restart mariadb
+✅ 3. Allow port 3306 in firewall
+If using UFW:
+
+bash
+Copy
+Edit
+sudo ufw allow 3306/tcp
+
+4.  Test connection from remote machine
+    bash
+    Copy
+    Edit
+    mysql -h your_server_ip -u dev_user -p

@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Install dependencies first (for better caching)
 COPY package.json package-lock.json* ./
+RUN npm install react@19 react-dom@19 --legacy-peer-deps && npm install
 RUN npm install
 
 # Copy the rest of the application

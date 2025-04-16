@@ -1,3 +1,5 @@
+"use server";
+
 function parseCSVToJSON(csv: string): Record<string, string>[] {
   const lines = csv.trim().split("\n");
 

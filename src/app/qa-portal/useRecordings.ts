@@ -1,26 +1,45 @@
+"use client";
+
+import { ViciFilterParamsType } from "@/utils/schemas";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 ("http://stsolution.i5.tel/vicidial/non_agent_api.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=hIzIJx2ZdU1Zk&agent_user=1013&date=2024-10-24&duration=Y&header=YES");
 //91.107.210.97/vicidial/non_agent_api_V2.php?function=recording_status_filter&user=6666&pass=DAR3UI49T5MV2&date=2025-04-15&agent_user=&duration=Y&header=YES&stage=tab&source=test&page=1&per_page=50&status=&phone_number=&lead_id=10160480
 
-const getrecordings = async () => {
-  const response = axios.get();
+const QUERYKEY = "recordings";
+
+const getrecordings = async (viciParams) => {
+  const ROOT_URL = process.env.ROOT_URL;
+  const DIALER_USER = process.env.DIALER_USER;
+  const DIALER_PASSWORD = process.env.DIALER_PASSWORD;
+
+  try {
+    const response = await axios.get(
+      `${ROOT_URL}/vicidial/non_agent_api_V2.php?function=recording_status_filter&user=${DIALER_USER}&pass=${DIALER_PASSWORD}&header=YES&stage=tab&source=test&date=${"2025-04-15"}&agent_user=&duration=Y&page=1&per_page=50&status=&phone_number=&lead_id=${""}`,
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        throw error.response.data; // Throw full error response
+      } else if (error.request) {
+        throw { message: "No response received from server." };
+      }
+    }
+    throw { message: "An unexpected error occurred." };
+  }
 };
 
-function useRecordings() {
-  //   const ROOT_URL = process.env.ROOT_URL;
-  const ROOT_URL =
-    "http://91.107.210.97/vicidial/non_agent_api.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=1013&date=2024-10-24&duration=Y&header=YES";
-
+export function useRecordings() {
   const {
     data: recordings,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["recordings"],
-    queryFn: async ({ data }) => {
-      const response = await axios.get(`${ROOT_URL}/api/recordings`, data);
+    queryKey: [QUERYKEY],
+    queryFn: async () => {
+      const response = await getrecordings();
       return response;
     },
     enabled: false,
@@ -36,14 +55,11 @@ function useRecordings() {
   return { recordings, isLoading, isError, error };
 }
 
-export default useRecordings;
-
-export function useMutateRecordings() {
+export function useRecordingsMutation() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async ({ viciFilterParams }) => {
-      const viciReqParams = requiredForm || requiredParams;
+    mutationFn: async (viciFilterParams: ViciFilterParamsType) => {
       if (!viciReqParams.dialer_url || !viciReqParams.user || !viciReqParams.pass)
         throw new Error("Select A Dialer First");
       const viciFiltParams = filterForm || filterParams;
@@ -54,19 +70,21 @@ export function useMutateRecordings() {
       return response;
     },
     onMutate: (variables) => {
-      queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [QUERYKEY] });
       return variables;
     },
     onSuccess: (newData) => {
       // console.log({ variables, context });
-      dispatch(setPageCount(Number(newData.total_records)));
-      // queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
-      queryClient.setQueryData([recordsQueryKey], newData);
+      //   dispatch(setPageCount(Number(newData.total_records)));
+      // queryClient.invalidateQueries({ queryKey: [QUERYKEY] });
+      queryClient.setQueryData([QUERYKEY], newData);
     },
     onError: (error) => {
       console.log({ error });
-      queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
-      queryClient.setQueryData([recordsQueryKey], { error });
+      queryClient.invalidateQueries({ queryKey: [QUERYKEY] });
+      queryClient.setQueryData([QUERYKEY], { error });
     },
   });
+
+  return mutation;
 }

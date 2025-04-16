@@ -3,14 +3,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-// import { Checkbox } from "@/components/ui/checkbox";
-// import { CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-// import { Command } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ViciFilterParams, ViciFilterParamsType } from "@/utils/schemas";
 import { useRecordingsMutation } from "../useRecordings";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Checkbox } from "@/components/ui/checkbox";
+import { statusOptions } from "@/lib/constants";
 
 // const filterParams = {};
 
@@ -79,7 +79,7 @@ function ViciFilterParamsForm() {
 
           {/* Status Filter */}
 
-          {/* <FormField
+          <FormField
             control={form.control}
             name="status"
             render={({ field }) => (
@@ -128,7 +128,7 @@ function ViciFilterParamsForm() {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
 
           {/* AGENT USER */}
 

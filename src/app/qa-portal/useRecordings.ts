@@ -8,10 +8,10 @@ import axios from "axios";
 
 const QUERYKEY = "recordings";
 
-const getrecordings = async (viciParams) => {
-  const ROOT_URL = process.env.ROOT_URL;
-  const DIALER_USER = process.env.DIALER_USER;
-  const DIALER_PASSWORD = process.env.DIALER_PASSWORD;
+const getrecordings = async (viciParams: ViciFilterParamsType) => {
+  const ROOT_URL = process.env.NEXT_PUBLIC_DIALER;
+  const DIALER_USER = process.env.NEXT_PUBLIC_DIALER_USER;
+  const DIALER_PASSWORD = process.env.NEXT_PUBLIC_DIALER_PASSWORD;
 
   try {
     const response = await axios.get(
@@ -60,10 +60,7 @@ export function useRecordingsMutation() {
 
   const mutation = useMutation({
     mutationFn: async (viciFilterParams: ViciFilterParamsType) => {
-      if (!viciReqParams.dialer_url || !viciReqParams.user || !viciReqParams.pass)
-        throw new Error("Select A Dialer First");
-      const viciFiltParams = filterForm || filterParams;
-      const viciPaginParams = paginationForm || { ...pagination, page: 1 };
+      //   const viciPaginParams = paginationForm || { ...pagination, page: 1 };
       // console.log("====useViciQueryform====");
       // console.log({ viciReqParams, viciFiltParams, viciPaginParams });
       const response = await getrecordings(viciFilterParams);

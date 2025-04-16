@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install dependencies first (for better caching)
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm install
 
 # Copy the rest of the application
 COPY . .
@@ -15,7 +15,7 @@ COPY . .
 RUN npm run build
 
 # Expose the port the app will run on
-EXPOSE 3000
+EXPOSE 9898
 
 # Command to run the application
 CMD ["npm", "start"]

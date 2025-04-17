@@ -56,20 +56,25 @@ const staticData = [
 
 async function page() {
   let data = [];
+
   try {
-    const res = await axios.post("http://91.107.210.97:9898/api/agents-performance");
-    data = res.data.data;
-    console.log(data);
+    const res = await fetch("http://91.107.210.97:9898/api/agents-performance", {
+      method: "POST",
+      cache: "no-store",
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch");
+
+    const result = await res.json();
+    data = result.data || [];
   } catch (error) {
     console.error("Error fetching data:", error);
-    data = { error };
   }
-
   return (
     <div>
       <p>Agents Performance</p>
       <div className="flex gap-2">
-        {data.length > 1 &&
+        {data.length > 0 &&
           data?.map((row) => (
             <div key={row.lead_id}>
               <Agent comment={row.comments} status={row.status} time={row.Duration} />

@@ -9,7 +9,7 @@ const staticData = [
     phone_number: "9489990785",
     Duration: null,
     campaign_id: "NewBot",
-    comments: "Chelsea",
+    comments: "TEST",
     status: "DNQ",
   },
   {
@@ -19,7 +19,7 @@ const staticData = [
     phone_number: "9489007700",
     Duration: 17,
     campaign_id: "NewBot",
-    comments: "Olivia",
+    comments: "TEST",
     status: "DAIR",
   },
   {
@@ -29,7 +29,7 @@ const staticData = [
     phone_number: "9489007700",
     Duration: 31,
     campaign_id: "NewBot",
-    comments: "Olivia",
+    comments: "TEST",
     status: "NP",
   },
   {
@@ -39,7 +39,7 @@ const staticData = [
     phone_number: "9489007316",
     Duration: 7,
     campaign_id: "NewBot",
-    comments: "Chris",
+    comments: "TEST",
     status: "DAIR",
   },
   {
@@ -49,7 +49,7 @@ const staticData = [
     phone_number: "9489007316",
     Duration: 17,
     campaign_id: "NewBot",
-    comments: "Chris",
+    comments: "TEST",
     status: "DAIR",
   },
 ];
@@ -83,7 +83,7 @@ async function page() {
         {data.length == 0 &&
           staticData?.map((row) => (
             <div key={row.lead_id}>
-              <Agent comment={row.comments} status={row.status} time={row.Duration} />
+              <Agent comment={row.comments} status={row.status} time={`${row.Duration}`} />
             </div>
           ))}
       </div>

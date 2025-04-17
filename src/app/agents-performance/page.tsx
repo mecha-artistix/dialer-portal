@@ -1,5 +1,5 @@
-import axios from "axios";
 import Agent from "./components/Agent";
+import { headers } from "next/headers";
 
 const staticData = [
   {
@@ -58,7 +58,7 @@ async function page() {
   let data = [];
 
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const host = headersList.get("host") || "localhost:9898";
     const protocol = host.includes("localhost") ? "http" : "https";
 

@@ -1,8 +1,8 @@
-import db from "@/lib/db";
+import pool from "@/lib/db";
 
 export async function POST(req) {
   try {
-    const [rows] = await db.query(`
+    const [rows] = await pool.query(`
       SELECT vl.call_date AS time, vl.user, vl.lead_id, vl.phone_number,
              vl.length_in_sec as Duration, vl.campaign_id, vlist.comments, vl.status
       FROM vicidial_log vl

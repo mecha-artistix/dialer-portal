@@ -1,7 +1,8 @@
-async function page() {
-  const res = await fetch("http://localhost:9898/api/agents-performance");
-  const data = await res.json();
+import axios from "axios";
 
+async function page() {
+  const res = await axios.post("http://localhost:9898/api/agents-performance");
+  const { data } = res;
   return (
     <div>
       <p>Agents Performance</p>

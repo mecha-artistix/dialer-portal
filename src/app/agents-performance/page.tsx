@@ -2,7 +2,7 @@ import axios from "axios";
 import Agent from "./components/Agent";
 
 async function page() {
-  let data = {};
+  let data = [];
   try {
     const res = await axios.post("http://localhost:9898/api/agents-performance");
     data = res.data.data;
@@ -18,14 +18,7 @@ async function page() {
       <div>
         {data?.map((row) => (
           <div key={row.lead_id}>
-            <Agent />
-            <p>{row.user}</p>
-            <p>{row.lead_id}</p>
-            <p>{row.phone_number}</p>
-            <p>{row.Duration}</p>
-            <p>{row.campaign_id}</p>
-            <p>{row.comments}</p>
-            <p>{row.status}</p>
+            <Agent comment={row.comments} status={row.status} time={row.Duration} />
           </div>
         ))}
       </div>

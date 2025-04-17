@@ -55,7 +55,7 @@ function ViciFilterParamsForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmitHandler)}>
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-end">
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6 items-end">
           {/* DATE */}
           <FormField
             control={form.control}
@@ -194,6 +194,22 @@ function ViciFilterParamsForm() {
               </FormItem>
             )}
           />
+
+          {/* SUBMIT BUTTON */}
+          <div className="flex gap-1">
+            <Button type="submit" variant="default" size="lg" disabled={recordingsMutation.isPending}>
+              {recordingsMutation.isPending ? "Applying..." : "Apply"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              disabled={recordingsMutation.isPending}
+              onClick={clearFiltersHandler}
+            >
+              Clear Filters
+            </Button>
+          </div>
         </div>
         {/* {recordingsMutation.isError && (
                 <ServerResponse
@@ -201,20 +217,6 @@ function ViciFilterParamsForm() {
                   message={recordingsMutation.error.message || JSON.stringify(recordingsMutation.error)}
                 />
               )} */}
-        {/* SUBMIT BUTTON */}
-
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          disabled={recordingsMutation.isPending}
-          onClick={clearFiltersHandler}
-        >
-          Clear Filters
-        </Button>
-        <Button type="submit" variant="default" size="lg" disabled={recordingsMutation.isPending}>
-          {recordingsMutation.isPending ? "Applying..." : "Apply"}
-        </Button>
       </form>
     </Form>
   );

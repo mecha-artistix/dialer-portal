@@ -1,9 +1,10 @@
 "use server";
 
+import { ViciFilterParamsType } from "@/utils/schemas";
 import axios from "axios";
 
-export const getRecordingsSA = async () => {
-  console.log("get recording requested");
+export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) => {
+  console.log("get recording requested ", { viciFilterParams });
   const ROOT_URL = process.env.NEXT_PUBLIC_DIALER;
   const DIALER_USER = process.env.NEXT_PUBLIC_DIALER_USER;
   const DIALER_PASSWORD = process.env.NEXT_PUBLIC_DIALER_PASSWORD;

@@ -8,7 +8,7 @@ function SideBar() {
 
         <SideBarLink href="qa-portal" to="QA portal" />
 
-        <SideBarLink href="audios-performance" to="audios performance" />
+        <SideBarLink href="agents-performance" to="agent performance" />
 
         <SideBarLink href="lists" to="lists" />
 

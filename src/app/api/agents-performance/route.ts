@@ -1,3 +1,5 @@
+import pool from "@/lib/db";
+
 export async function POST(req) {
   try {
     const [rows] = await pool.query(`

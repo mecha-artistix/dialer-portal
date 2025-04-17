@@ -57,7 +57,7 @@ const staticData = [
 async function page() {
   let data = [];
   try {
-    const res = await axios.post("http://localhost:9898/api/agents-performance");
+    const res = await axios.post("http://91.107.210.97:9898/api/agents-performance");
     data = res.data.data;
     console.log(data);
   } catch (error) {

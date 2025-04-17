@@ -1,5 +1,6 @@
 // src/app/global-setup.js
-import { initPool } from "@/lib/db";
+
+import { initPool } from "@/lib/dbPool";
 
 console.log("NextDialerPortal app starting up...");
 

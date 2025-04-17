@@ -64,7 +64,7 @@ async function page() {
 
     // Build absolute URL
     // const apiUrl = `${protocol}://${host}/api/agents-performance`;
-    const apiUrl = `http://localhost:3000/api/agents-performance`;
+    const apiUrl = `http://localhost:9898/api/agents-performance`;
     const res = await fetch(apiUrl, {
       method: "POST",
       cache: "no-store",

@@ -68,12 +68,19 @@ async function page() {
   return (
     <div>
       <p>Agents Performance</p>
-      <div className="flex">
-        {data?.map((row) => (
-          <div key={row.lead_id}>
-            <Agent comment={row.comments} status={row.status} time={row.Duration} />
-          </div>
-        ))}
+      <div className="flex gap-2">
+        {data.length > 1 &&
+          data?.map((row) => (
+            <div key={row.lead_id}>
+              <Agent comment={row.comments} status={row.status} time={row.Duration} />
+            </div>
+          ))}
+        {data.length == 0 &&
+          staticData?.map((row) => (
+            <div key={row.lead_id}>
+              <Agent comment={row.comments} status={row.status} time={row.Duration} />
+            </div>
+          ))}
       </div>
       <div>{JSON.stringify(data)}</div>
     </div>

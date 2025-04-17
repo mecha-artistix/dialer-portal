@@ -82,7 +82,6 @@ async function page() {
             </div>
           ))}
       </div>
-      <div>{JSON.stringify(data)}</div>
     </div>
   );
 }

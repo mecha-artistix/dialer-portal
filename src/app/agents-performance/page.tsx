@@ -58,7 +58,7 @@ async function page() {
   let data = [];
 
   try {
-    const res = await fetch("http://91.107.210.97:9898/api/agents-performance", {
+    const res = await fetch("/api/agents-performance", {
       method: "POST",
       cache: "no-store",
     });

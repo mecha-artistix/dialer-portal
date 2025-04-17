@@ -80,12 +80,12 @@ async function page() {
               <Agent comment={row.comments} status={row.status} time={row.Duration} />
             </div>
           ))}
-        {data.length == 0 &&
+        {/* {data.length == 0 &&
           staticData?.map((row) => (
             <div key={row.lead_id}>
               <Agent comment={row.comments} status={row.status} time={`${row.Duration}`} />
             </div>
-          ))}
+          ))} */}
       </div>
     </div>
   );

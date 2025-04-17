@@ -58,7 +58,13 @@ async function page() {
   let data = [];
 
   try {
-    const res = await fetch("/api/agents-performance", {
+    const headersList = headers();
+    const host = headersList.get("host") || "localhost:9898";
+    const protocol = host.includes("localhost") ? "http" : "https";
+
+    // Build absolute URL
+    const apiUrl = `${protocol}://${host}/api/agents-performance`;
+    const res = await fetch(apiUrl, {
       method: "POST",
       cache: "no-store",
     });

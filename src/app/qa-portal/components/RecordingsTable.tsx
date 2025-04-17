@@ -23,15 +23,17 @@ function RecordingsTable({ data }: Props) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row, i) => (
-          <TableRow key={i}>
+        {data.map((row) => (
+          <TableRow key={row.recording_id}>
+            {" "}
+            {/* or another truly unique field */}
             {RECORDINGS_COLUMNS.map((col) =>
               col.key === "actions" ? (
-                <TableCell key={`${col.key}`} className={`${col?.className}`}>
+                <TableCell key={`${col.key}-${row.recording_id}`} className={col?.className}>
                   <Actions url={`${row.location}`} />
                 </TableCell>
               ) : (
-                <TableCell key={`${col.key}`} className={`${col?.className}`}>
+                <TableCell key={`${col.key}-${row.recording_id}`} className={col?.className}>
                   {row[col.key]}
                 </TableCell>
               ),

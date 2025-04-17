@@ -6,6 +6,7 @@ import SideBar from "@/components/ui/SideBar";
 import TopBar from "@/components/ui/TopBar";
 import Image from "next/image";
 import { CientProviders } from "@/utils/clientProviders";
+import "@/app/global-setup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

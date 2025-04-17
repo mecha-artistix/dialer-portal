@@ -15,7 +15,7 @@ async function page() {
   return (
     <div>
       <p>Agents Performance</p>
-      <div>
+      <div className="flex">
         {data?.map((row) => (
           <div key={row.lead_id}>
             <Agent comment={row.comments} status={row.status} time={row.Duration} />

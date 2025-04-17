@@ -1,20 +1,20 @@
 import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "asterisk",
-  port: process.env.DB_PORT || 3306,
+  // Instead of host and port, use socketPath for direct socket connection
+  socketPath: "/run/mysql/mysql.sock",
+  user: "root",
+  password: "", // Update this if you have a password set
+  database: "asterisk",
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
 });
 
+// Test the connection
 pool
   .getConnection()
   .then((connection) => {
-    console.log("Database connected successfully");
+    console.log("Database connected successfully via socket");
     connection.release();
   })
   .catch((err) => {

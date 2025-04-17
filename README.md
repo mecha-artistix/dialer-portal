@@ -87,3 +87,11 @@ sudo ufw allow 3306/tcp
     Copy
     Edit
     mysql -h your_server_ip -u dev_user -p
+
+**run commands to prune dangling images and run the image**
+docker images
+docker container prune -f
+docker rmi ad07d907c502 c4c2f8ebddfe 39e5a44ce4dd 87b402c98a76 011d9e48507c de9c41d7b564
+git pull origin next-js
+docker build -t dialerportal:latest .
+docker run -p 9898:9898 dialerportal

@@ -1,11 +1,11 @@
 import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
-  // Instead of host and port, use socketPath for direct socket connection
-  socketPath: "/run/mysql/mysql.sock",
+  host: "127.0.0.1", // Use the actual IP instead of localhost
   user: "root",
-  password: "", // Update this if you have a password set
+  password: "", // Update if needed
   database: "asterisk",
+  port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
 });

@@ -1,7 +1,7 @@
 import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
-  host: "127.0.0.1", // Use the actual IP instead of localhost
+  host: "91.107.210.97",
   user: "root",
   password: "", // Update if needed
   database: "asterisk",

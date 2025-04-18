@@ -63,7 +63,7 @@ export const RECORDINGS_COLUMNS: { key: keyof TRecording | "actions"; title: str
   { key: "duration", title: "Duration (sec)", className: "" },
   // { key: "status", title: "Status" },
   { key: "user", title: "User", className: "" },
-  { key: "location", title: "Location", className: "" },
+  // { key: "location", title: "Location", className: "" },
   { key: "phone_number", title: "Phone Number", className: "" },
   { key: "actions", title: "Actions", className: "" },
 ];

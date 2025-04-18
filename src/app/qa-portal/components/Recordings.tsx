@@ -2,11 +2,16 @@
 
 import React from "react";
 import { useRecordings } from "../useRecordings";
+import RecordingsTable from "./RecordingsTable";
 
 function Recordings() {
   const { recordings } = useRecordings();
-  console.log({ recordings });
-  return <div>{JSON.stringify(recordings)}</div>;
+  return (
+    <div>
+      {recordings?.message && <p>recordings.message</p>}
+      {recordings?.data && <RecordingsTable data={recordings?.data} />}
+    </div>
+  );
 }
 
 export default Recordings;

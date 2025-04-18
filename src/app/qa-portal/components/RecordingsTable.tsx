@@ -9,8 +9,6 @@ import { useRecordings } from "../useRecordings";
 type Props = { data: TRecording[] };
 
 function RecordingsTable({ data }: Props) {
-  const { recordings } = useRecordings();
-
   return (
     // <div className="max-h-full overflow-auto">
     //   {mutation.isPending && <LinearProgress />}

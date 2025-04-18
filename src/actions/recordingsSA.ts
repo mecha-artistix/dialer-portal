@@ -21,15 +21,14 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
       "http://91.107.210.97/vicidial/non_agent_api.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES";
 
     const response = await fetch(url);
-    console.log({ response });
     const text = await response.text();
-    console.log(data);
-    // Check for VICIdial API errors
+
     if (text.startsWith("ERROR:")) {
-      // logger.error(`VICIdial API Error: ${text}`);
       return { message: text };
     }
+
     const data = parseVicidialResponse(text);
+    console.log(data); // move this after data is defined
 
     return { data };
   } catch (error) {

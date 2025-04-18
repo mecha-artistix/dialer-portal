@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import ViciFilterParams from "./components/ViciFilterParamsForm";
+import Recordings from "./components/Recordings";
 // import RecordingsTable from "./components/RecordingsTable";
 
 function page() {
@@ -11,7 +12,9 @@ function page() {
         <ViciFilterParams />
       </div>
       <Suspense>
-        <div className="max-h-full overflow-auto">{/* <RecordingsTable data={data} /> */}</div>
+        <div className="max-h-full overflow-auto">
+          <Recordings />
+        </div>
       </Suspense>
     </div>
   );

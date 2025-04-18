@@ -20,15 +20,15 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
 
   // logger.info(`User ${user_id} initiated a recordings lookup with data: ${JSON.stringify(viciFilterParams)}`);
 
-  // Extract environment variables
-  const dialer_url = process.env.NEXT_PUBLIC_DIALER;
-  const user = process.env.NEXT_PUBLIC_DIALER_USER;
-  const pass = process.env.NEXT_PUBLIC_DIALER_PASSWORD;
+  // // Extract environment variables
+  // const dialer_url = process.env.NEXT_PUBLIC_DIALER;
+  // const user = process.env.NEXT_PUBLIC_DIALER_USER;
+  // const pass = process.env.NEXT_PUBLIC_DIALER_PASSWORD;
 
   // Ensure required parameters exist
-  if (!dialer_url || !user || !pass) {
-    throw { message: "Missing required environment variables (DIALER, DIALER_USER, or DIALER_PASSWORD)" };
-  }
+  // if (!dialer_url || !user || !pass) {
+  //   throw { message: "Missing required environment variables (DIALER, DIALER_USER, or DIALER_PASSWORD)" };
+  // }
 
   // Process optional parameters with default values
   // const {
@@ -66,7 +66,7 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
 
   // Construct the URL
   // const vicidial_url = `http://${dialer_url}/${folder_name}/non_agent_api_V2.php`;
-  const vicidial_url = `http://91.107.210.97/vicidial/non_agent_api.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES`;
+  // const vicidial_url = `http://91.107.210.97/vicidial/non_agent_api.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES`;
 
   // Debug: Log the full URL
   // const queryParams = new URLSearchParams();
@@ -78,10 +78,13 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
 
   // const full_url = `${vicidial_url}?${queryParams.toString()}`;
   // logger.info(`User ${user_id} made request to ${full_url}`);
+  // Extract environment variables
 
+  const url =
+    "http://91.107.210.97/vicidial/non_agent_api.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES";
   try {
     // Request data from VICIdial API
-    const response = await axios.get(vicidial_url, { responseType: "text" });
+    const response = await axios.get(url, { responseType: "text" });
     const text = response.data.trim();
 
     // Check for VICIdial API errors

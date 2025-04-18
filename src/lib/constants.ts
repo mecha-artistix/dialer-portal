@@ -61,7 +61,7 @@ export const RECORDINGS_COLUMNS: { key: keyof TRecording | "actions"; title: str
   { key: "recording_id", title: "Recording Id", className: "" },
   { key: "start_time", title: "Start Time", className: "" },
   { key: "duration", title: "Duration (sec)", className: "" },
-  { key: "status", title: "Status" },
+  // { key: "status", title: "Status" },
   { key: "user", title: "User", className: "" },
   { key: "location", title: "Location", className: "" },
   { key: "phone_number", title: "Phone Number", className: "" },

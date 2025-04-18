@@ -11,7 +11,8 @@ const DispositionBox = ({ name, value }: Props) => {
   let bgColor = "";
   switch (name) {
     case "XFER":
-      bgColor = percentage > 50 ? "bg-green-500 text-white" : "bg-red-500 text-white";
+      // bgColor = percentage > 50 ? "bg-green-500 text-white" : "bg-red-500 text-white";
+      bgColor = "bg-red-500 text-white";
       break;
     case "DNC":
       bgColor = "bg-red-500 text-white";

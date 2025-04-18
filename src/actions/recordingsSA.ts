@@ -5,6 +5,92 @@ import axios from "axios";
 
 export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) => {
   console.log("get recording requested ", { viciFilterParams });
+
+  const ROOT_URL = process.env.NEXT_PUBLIC_DIALER;
+  const DIALER_USER = process.env.NEXT_PUBLIC_DIALER_USER;
+  const DIALER_PASSWORD = process.env.NEXT_PUBLIC_DIALER_PASSWORD;
+
+  if (!ROOT_URL || !DIALER_USER || !DIALER_PASSWORD) {
+    throw { message: "Missing dialer environment configuration." };
+  }
+
+  // const {
+  //   date = "",
+  //   agent_user = "",
+  //   // duration = "Y",
+  //   page = 1,
+  //   per_page = 50,
+  //   // statusFilter = "",
+  //   phone_number = "",
+  //   lead_id = "",
+  // } = viciFilterParams;
+
+  // const status = Array.isArray(statusFilter) ? statusFilter.join(",") : statusFilter || "";
+
+  // const params = new URLSearchParams({
+  //   function: "recording_status_filter",
+  //   user: DIALER_USER,
+  //   pass: DIALER_PASSWORD,
+  //   header: "YES",
+  //   stage: "tab",
+  //   source: "test",
+  //   date,
+  //   agent_user: agent_user.trim(),
+  //   duration,
+  //   page: String(page),
+  //   per_page: String(per_page),
+  //   status,
+  //   phone_number,
+  //   lead_id,
+  // });
+
+  // const url = `${ROOT_URL}/vicidial/non_agent_api_V2.php?${params.toString()}`;
+  const url = `${ROOT_URL}/vicidial/non_agent_api_V2.php?function=recording_status_filter&user=${DIALER_USER}&pass=${DIALER_PASSWORD}&header=YES&stage=tab&source=test&date=${"2025-04-15"}&agent_user=&duration=Y&page=1&per_page=50&status=&phone_number=&lead_id=${""}`;
+
+  try {
+    const response = await axios.get(url, { responseType: "text" });
+    const text = response.data.trim();
+
+    if (text.startsWith("ERROR:")) {
+      throw { message: text };
+    }
+
+    const lines = text.split("\n");
+    const headers = lines[0].split("|");
+    const dataLines = lines.slice(1, -1);
+    const metaLine = lines[lines.length - 1];
+
+    let meta = {};
+    try {
+      meta = JSON.parse(metaLine).meta || {};
+    } catch (e) {
+      console.error("Metadata parsing failed:", e);
+    }
+
+    const data = dataLines.map((line) => {
+      const values = line.split("|");
+      return Object.fromEntries(headers.map((key, i) => [key, values[i] ?? ""]));
+    });
+
+    return { data, ...meta };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.data) {
+        throw { message: error.response.data };
+      } else if (error.message) {
+        throw { message: error.message };
+      } else {
+        throw { message: "No response received from server." };
+      }
+    }
+    throw { message: error?.message || "An unexpected error occurred." };
+  }
+};
+
+/*
+
+export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) => {
+  console.log("get recording requested ", { viciFilterParams });
   const ROOT_URL = process.env.NEXT_PUBLIC_DIALER;
   const DIALER_USER = process.env.NEXT_PUBLIC_DIALER_USER;
   const DIALER_PASSWORD = process.env.NEXT_PUBLIC_DIALER_PASSWORD;

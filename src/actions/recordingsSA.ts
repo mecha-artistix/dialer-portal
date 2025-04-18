@@ -1,141 +1,38 @@
 "use server";
 
+import { ViciFilterParamsType } from "@/utils/schemas";
 import axios from "axios";
-// import { cookies } from 'next/headers';
-// import { logger } from '@/lib/logger'; // You'll need to create or import your logger
 
-export interface ViciFilterParamsType {
-  date?: string;
-  agent_user?: string;
-  duration?: string;
-  page?: number;
-  per_page?: number;
-  statusFilter?: string | string[];
-  phone_number?: string;
-  lead_id?: string;
-  folder_name?: string;
+function parseVicidialResponse(text) {
+  const lines = text.trim().split("\n");
+  const headers = lines[0].split(/\s+/);
+  return lines.slice(1).map((line) => {
+    const values = line.trim().split(/\s+/);
+    return headers.reduce((obj, key, i) => {
+      obj[key] = values[i];
+      return obj;
+    }, {});
+  });
 }
 
 export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) => {
-  /*
-  const user_id = cookies().get('user_id')?.value || 'unknown'; // Adapt based on your auth strategy
-  
-  logger.info(`User ${user_id} initiated a recordings lookup with data: ${JSON.stringify(viciFilterParams)}`);
-  
-  // Extract environment variables
-  const dialer_url = process.env.NEXT_PUBLIC_DIALER;
-  const user = process.env.NEXT_PUBLIC_DIALER_USER;
-  const pass = process.env.NEXT_PUBLIC_DIALER_PASSWORD;
-  
-  // Ensure required parameters exist
-  if (!dialer_url || !user || !pass) {
-    throw { message: "Missing required environment variables (DIALER, DIALER_USER, or DIALER_PASSWORD)" };
-  }
-  
-  // Process optional parameters with default values
-  const {
-    date = '',
-    agent_user = '',
-    duration = 'Y',
-    page = 1,
-    per_page = 100,
-    statusFilter = '',
-    phone_number = '',
-    lead_id = '',
-    folder_name = 'vicidial'
-  } = viciFilterParams;
-  
-  // Process statusFilter if it's an array
-  const status = Array.isArray(statusFilter) ? statusFilter.join(',') : statusFilter;
-  
-  // Prepare parameters for the VICIdial request
-  const vicidial_params = {
-    function: 'recording_status_filter',
-    user,
-    pass,
-    date,
-    agent_user: agent_user.trim(),
-    duration,
-    header: 'YES',
-    stage: 'tab', // This is important - it indicates tab-separated format
-    source: 'test',
-    page,
-    per_page,
-    status,
-    phone_number,
-    lead_id
-  };
-  
-  // Construct the URL
-  const vicidial_url = `http://${dialer_url}/${folder_name}/non_agent_api_V2.php`;
-  
-  // Debug: Log the full URL
-  const queryParams = new URLSearchParams();
-  for (const [key, value] of Object.entries(vicidial_params)) {
-    if (value !== undefined && value !== null) {
-      queryParams.append(key, String(value));
-    }
-  }
-  
-  const full_url = `${vicidial_url}?${queryParams.toString()}`;
-  logger.info(`User ${user_id} made request to ${full_url}`);
-  */
   try {
     const url =
       "http://91.107.210.97/vicidial/non_agent_api.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES";
-    // Request data from VICIdial API
-    const response = await axios.get(url, { responseType: "text" });
-    console.log({ response });
-    const text = response.data.trim();
 
+    const response = await fetch(url);
+    console.log({ response });
+    const text = await response.text();
+    console.log(data);
     // Check for VICIdial API errors
     if (text.startsWith("ERROR:")) {
       // logger.error(`VICIdial API Error: ${text}`);
-      throw { message: text };
+      return { message: text };
     }
+    const data = parseVicidialResponse(text);
 
-    // Process the response - handling tab-separated values
-    const lines = text.split("\n");
-
-    // First line contains the column headers
-    const headers = lines[0].split("\t");
-
-    // Data lines are all but the last line (which contains metadata)
-    const dataLines = lines.slice(1, -1);
-    const metaLine = lines[lines.length - 1];
-
-    // Parse metadata
-    let meta = {};
-    try {
-      meta = JSON.parse(metaLine).meta || {};
-      // logger.info(`User ${user_id} successfully fetched recordings page ${meta.current_page || 'unknown'} out of ${meta.total_pages || 'unknown'} where total recordings are ${meta.total_records || 'unknown'}.`);
-    } catch (e) {
-      // logger.error(`Metadata parsing failed: ${e}`);
-    }
-
-    // Parse tab-separated data lines into proper objects
-    const data = dataLines.map((line) => {
-      const values = line.split("\t");
-      const rowObject = {};
-
-      headers.forEach((header, index) => {
-        rowObject[header] = values[index] || "";
-      });
-
-      return rowObject;
-    });
-    // console.log({ data, meta });
-    return { data, ...meta };
+    return { data };
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        // logger.error(`VICIdial API Error: ${JSON.stringify(error.response.data)}`);
-        throw error.response.data;
-      } else if (error.request) {
-        // logger.error(`No response received from server`);
-        throw { message: "No response received from server." };
-      }
-    }
     // logger.error(`User ${user_id} encountered an error during recordings lookup: ${error}`);
     throw { message: "An unexpected error occurred." };
   }

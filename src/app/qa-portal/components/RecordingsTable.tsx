@@ -4,10 +4,13 @@ import { RECORDINGS_COLUMNS } from "@/lib/constants";
 // import { LinearProgress } from "@/components/ui/LinearProgress";
 import Actions from "./Actions";
 import { TRecording } from "@/types/recordings";
+import { useRecordings } from "../useRecordings";
 
 type Props = { data: TRecording[] };
 
 function RecordingsTable({ data }: Props) {
+  const { recordings } = useRecordings();
+
   return (
     // <div className="max-h-full overflow-auto">
     //   {mutation.isPending && <LinearProgress />}

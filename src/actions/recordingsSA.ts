@@ -85,6 +85,7 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
       "http://91.107.210.97/vicidial/non_agent_api.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES";
     // Request data from VICIdial API
     const response = await axios.get(url, { responseType: "text" });
+    console.log({ response });
     const text = response.data.trim();
 
     // Check for VICIdial API errors
@@ -123,7 +124,7 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
 
       return rowObject;
     });
-    console.log({ data, meta });
+    // console.log({ data, meta });
     return { data, ...meta };
   } catch (error) {
     if (axios.isAxiosError(error)) {

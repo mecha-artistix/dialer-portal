@@ -11,11 +11,11 @@ function parseVicidialResponse(text) {
       user: parts[2],
       recording_id: parts[3],
       lead_id: parts[4],
-      location: parts[parts.length - 1], // last value is always location
+      duration: parts[parts.length - 2],
+      location: parts[parts.length - 1],
     };
   });
 }
-
 export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) => {
   try {
     const url =

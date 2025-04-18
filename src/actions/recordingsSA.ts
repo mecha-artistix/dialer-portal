@@ -1,17 +1,18 @@
 "use server";
 
 import { ViciFilterParamsType } from "@/utils/schemas";
-import axios from "axios";
 
 function parseVicidialResponse(text) {
-  const lines = text.trim().split("\n");
-  const headers = lines[0].split(/\s+/);
-  return lines.slice(1).map((line) => {
-    const values = line.trim().split(/\s+/);
-    return headers.reduce((obj, key, i) => {
-      obj[key] = values[i];
-      return obj;
-    }, {});
+  const lines = text.trim().split("\n").slice(1); // skip header
+  return lines.map((line) => {
+    const parts = line.trim().split(/\s+/);
+    return {
+      start_time: `${parts[0]} ${parts[1]}`,
+      user: parts[2],
+      recording_id: parts[3],
+      lead_id: parts[4],
+      location: parts[parts.length - 1], // last value is always location
+    };
   });
 }
 

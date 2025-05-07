@@ -4,7 +4,6 @@ import { RECORDINGS_COLUMNS } from "@/lib/constants";
 // import { LinearProgress } from "@/components/ui/LinearProgress";
 import Actions from "./Actions";
 import { TRecording } from "@/types/recordings";
-import { useRecordings } from "../useRecordings";
 
 type Props = { data: TRecording[] };
 

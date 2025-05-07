@@ -19,11 +19,11 @@ function ViciFilterParamsForm() {
   const form = useForm<ViciFilterParamsType>({
     resolver: zodResolver(ViciFilterParams),
     defaultValues: {
-      date: "filterParams?.date",
-      agent_user: "filterParams.agent_user",
+      date: "",
+      agent_user: "",
       status: [""],
-      lead_id: "filterParams.lead_id",
-      phone_number: "filterParams.phone_number",
+      lead_id: "",
+      phone_number: "",
     },
   });
 

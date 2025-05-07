@@ -1,6 +1,6 @@
 import { getCallDispoReportSA } from "@/actions/dispositionsSA";
 import DispoTabs from "./components/DispoTabs";
-import { DIALER_SERVER } from "@/lib/constants";
+// import { DIALER_SERVER } from "@/lib/constants";
 
 async function page() {
   const dispoReport = await getCallDispoReportSA();
@@ -12,7 +12,7 @@ async function page() {
       {dispoReport.status === "failed" && <p>Server Failed to respond dispositions report</p>}
       <div>
         <iframe
-          src={`http://${DIALER_SERVER}/vicidial/realtime_report.php`}
+          src={`http://${process.env.NEXT_PUBLIC_SERVER}/vicidial/realtime_report.php`}
           width="100%"
           height="500"
           style={{ border: "none" }}

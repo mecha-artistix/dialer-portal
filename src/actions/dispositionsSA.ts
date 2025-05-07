@@ -21,8 +21,7 @@ function parseCSVToJSON(csv: string): Record<string, string>[] {
 }
 
 export async function getCallDispoReportSA() {
-  const url =
-    "http://91.107.210.97/vicidial/non_agent_api_V2.php?function=call_dispo_report&user=6666&pass=DAR3UI49T5MV2&campaigns=---ALL---&status_breakdown=1&show_percentages=1&statuses=---ALL---&user_groups=---ALL---&search_archived_data=checked";
+  const url = `http://${process.env.NEXT_PUBLIC_SERVER}/vicidial/non_agent_api_V2.php?function=call_dispo_report&user=6666&pass=DAR3UI49T5MV2&campaigns=---ALL---&status_breakdown=1&show_percentages=1&statuses=---ALL---&user_groups=---ALL---&search_archived_data=checked`;
   try {
     const res = await fetch(url);
     const text = await res.text();

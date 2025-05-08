@@ -57,8 +57,9 @@ export function useRecordingsMutation() {
     },
     onError: (error) => {
       console.log({ error });
-      queryClient.invalidateQueries({ queryKey: [QUERYKEY] });
-      queryClient.setQueryData([QUERYKEY], { error });
+      queryClient.setQueryData([QUERYKEY], () => {
+        throw error; // or: return { error: true, message: error.message }
+      });
     },
   });
 

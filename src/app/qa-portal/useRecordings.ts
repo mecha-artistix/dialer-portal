@@ -23,12 +23,12 @@ export function useRecordings() {
     },
     enabled: false,
     retry: 0,
-    select: (data) => {
-      if (data?.message) {
-        throw data.message;
-      }
-      return data;
-    },
+    // select: (data) => {
+    //   if (data?.message) {
+    //     throw new Error(data.message);
+    //   }
+    //   return data;
+    // },
   });
 
   return { recordings, isLoading, isError, error };

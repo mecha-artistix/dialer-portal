@@ -95,3 +95,4 @@ docker rmi ad07d907c502 c4c2f8ebddfe 39e5a44ce4dd 87b402c98a76 011d9e48507c de9c
 git pull origin next-js
 docker build -t dialerportal:latest .
 docker run -p 9898:9898 dialerportal
+docker run -v $(pwd)/src:/app/src -p 9898:9898 dialerportal

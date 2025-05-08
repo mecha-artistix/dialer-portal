@@ -5,11 +5,10 @@ import { useRecordings } from "../useRecordings";
 import RecordingsTable from "./RecordingsTable";
 
 function Recordings() {
-  const { recordings } = useRecordings();
+  const { recordings, isError, error } = useRecordings();
   return (
     <div>
-      {recordings?.message && <p>recordings.message</p>}
-
+      {isError && <p>Error: {error?.message}</p>}
       {recordings?.data && <RecordingsTable data={recordings?.data?.data} />}
     </div>
   );

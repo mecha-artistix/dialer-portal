@@ -24,7 +24,7 @@ function parseVicidialResponse(text) {
       user: parts[1],
       recording_id: parts[2],
       lead_id: parts[3],
-      duration: parts[4],
+      length_in_sec: parts[4],
       location: parts[5],
       status: parts[6],
       phone_number: parts[7],

@@ -14,6 +14,8 @@ export type TRecording = {
   user: string;
   recording_id: string;
   lead_id: string;
-  duration: string;
+  length_in_sec: string;
   location: string;
+  status: string;
+  phone_number: string;
 };

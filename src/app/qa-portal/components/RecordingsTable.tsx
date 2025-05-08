@@ -24,8 +24,8 @@ function RecordingsTable({ data }: Props) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row) => (
-          <TableRow key={row.recording_id}>
+        {data.map((row, i) => (
+          <TableRow key={row.recording_id + i}>
             {/* or another truly unique field */}
             {RECORDINGS_COLUMNS.map((col) =>
               col.key === "actions" ? (

@@ -5,20 +5,33 @@ import { ViciFilterParamsType } from "@/utils/schemas";
 
 function parseVicidialResponse(text) {
   const lines = text.trim().split("\n").slice(1);
-  return lines.map((line) => {
-    const parts = line.trim().split("|");
+
+  const metaLine = lines[lines.length - 1];
+  let meta = {};
+  let dataLines = lines;
+  // Check if the last line is JSON
+  if (metaLine.startsWith("{") && metaLine.endsWith("}")) {
+    meta = JSON.parse(metaLine);
+    dataLines = lines.slice(1, -1); // skip header and meta
+  } else {
+    dataLines = lines.slice(1); // only skip header
+  }
+
+  const data = dataLines.map((line) => {
+    const parts = line.split("|");
     return {
       start_time: parts[0],
       user: parts[1],
       recording_id: parts[2],
       lead_id: parts[3],
-      length_in_sec: parts[4],
       duration: parts[4],
       location: parts[5],
       status: parts[6],
       phone_number: parts[7],
     };
   });
+
+  return { data, meta };
 }
 
 export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) => {
@@ -52,7 +65,7 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
 
     const response = await fetch(url);
     const text = await response.text();
-    console.log("recordings ", text);
+    // console.log("recordings ", text);
     if (text.startsWith("ERROR:")) {
       return { message: text };
     }

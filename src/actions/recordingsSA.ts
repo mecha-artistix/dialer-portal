@@ -49,7 +49,7 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
 
     const response = await fetch(url);
     const text = await response.text();
-
+    console.log("recordings ", text);
     if (text.startsWith("ERROR:")) {
       return { message: text };
     }

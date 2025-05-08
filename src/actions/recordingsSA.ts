@@ -4,19 +4,20 @@
 import { ViciFilterParamsType } from "@/utils/schemas";
 
 function parseVicidialResponse(text) {
-  const lines = text.trim().split("\n").slice(1); // skip header
+  const lines = text.trim().split("\n").slice(1);
   return lines.map((line) => {
-    const parts = line.trim().split(/\s+/);
+    const parts = line.trim().split("|");
     return {
-      start_time: `${parts[0]} ${parts[1]}`,
-      user: parts[2],
-      recording_id: parts[3],
-      lead_id: parts[4],
-      duration: parts[parts.length - 2],
-      location: parts[parts.length - 1],
+      start_time: parts[0],
+      user: parts[6],
+      recording_id: parts[2],
+      lead_id: parts[3],
+      duration: parts[4],
+      location: parts[5],
     };
   });
 }
+
 export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) => {
   const { date, agent_user, lead_id, phone_number } = viciFilterParams;
   const ROOT_URL = process.env.NEXT_PUBLIC_DIALER;

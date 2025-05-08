@@ -8,6 +8,7 @@ import { TRecording } from "@/types/recordings";
 type Props = { data: TRecording[] };
 
 function RecordingsTable({ data }: Props) {
+  console.log("RecordingsTable data", data);
   return (
     // <div className="max-h-full overflow-auto">
     //   {mutation.isPending && <LinearProgress />}
@@ -25,7 +26,6 @@ function RecordingsTable({ data }: Props) {
       <TableBody>
         {data.map((row) => (
           <TableRow key={row.recording_id}>
-            {" "}
             {/* or another truly unique field */}
             {RECORDINGS_COLUMNS.map((col) =>
               col.key === "actions" ? (

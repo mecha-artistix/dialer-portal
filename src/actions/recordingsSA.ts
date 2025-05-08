@@ -3,7 +3,7 @@
 //   "http://91.107.210.97/vicidial/non_agent_api_V2.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES";
 import { ViciFilterParamsType } from "@/utils/schemas";
 
-function parseVicidialResponse(text) {
+function parseVicidialResponse(text: string) {
   const lines = text.trim().split("\n").slice(1);
 
   const metaLine = lines[lines.length - 1];

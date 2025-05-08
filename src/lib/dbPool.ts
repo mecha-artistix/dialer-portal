@@ -5,11 +5,11 @@ let globalPool = null;
 
 // Connection pool configuration
 const dbConfig = {
-  host: "91.107.210.97",
-  user: "root",
-  password: "your_secure_password", // Update if needed
-  database: "asterisk",
-  port: 3306,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

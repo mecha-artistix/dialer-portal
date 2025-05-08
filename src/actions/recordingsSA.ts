@@ -18,8 +18,7 @@ function parseVicidialResponse(text) {
   });
 }
 export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) => {
-  const { date, agent_user, status: statusFilter, lead_id, phone_number } = viciFilterParams;
-  const status = Array.isArray(statusFilter) ? statusFilter.join(",") : statusFilter || "";
+  const { date, agent_user, lead_id, phone_number } = viciFilterParams;
   const ROOT_URL = process.env.NEXT_PUBLIC_DIALER;
   const DIALER_USER = process.env.NEXT_PUBLIC_DIALER_USER;
   const DIALER_PASSWORD = process.env.NEXT_PUBLIC_DIALER_PASSWORD;
@@ -27,25 +26,26 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
   if (!ROOT_URL || !DIALER_USER || !DIALER_PASSWORD) {
     throw { message: "Missing dialer environment configuration." };
   }
-  // const params = new URLSearchParams({
-  //   function: "recording_status_filter",
-  //   user: DIALER_USER,
-  //   pass: DIALER_PASSWORD,
-  //   header: "YES",
-  //   stage: "tab",
-  //   source: "test",
-  //   date: `${data}` | "",
-  //   agent_user: `${agent_user}` | "",
-  //   duration: "Y",
-  //   page: "1",
-  //   per_page: "50",
-  //   status: status | "",
-  //   phone_number: `${phone_number}` | "",
-  //   lead_id: `${lead_id}` | "",
-  // });
-  // const url = `${ROOT_URL}/vicidial/non_agent_api_V2.php?${params.toString()}`;
+  const params = new URLSearchParams({
+    function: "recording_status_filter",
+    user: DIALER_USER,
+    pass: DIALER_PASSWORD,
+    header: "YES",
+    stage: "tab",
+    source: "test",
+    date: `${date}`,
+    agent_user: `${agent_user}`,
+    duration: "Y",
+    page: "1",
+    per_page: "50",
+    phone_number: `${phone_number}`,
+    lead_id: `${lead_id}`,
+  });
+
   try {
-    const url = `http://${process.env.NEXT_PUBLIC_SERVER}/vicidial/non_agent_api_V2.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES`;
+    // const url = `http://${process.env.NEXT_PUBLIC_SERVER}/vicidial/non_agent_api_V2.php?source=test&function=recording_lookup&stage=tab&user=6666&pass=DAR3UI49T5MV2&agent_user=9001&date=2025-04-18&duration=Y&header=YES`;
+    const url = `http://${process.env.NEXT_PUBLIC_SERVER}/vicidial/non_agent_api_V2.php?${params.toString()}`;
+
     const response = await fetch(url);
     const text = await response.text();
 

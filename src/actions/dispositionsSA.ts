@@ -26,7 +26,6 @@ export async function getCallDispoReportSA() {
     const res = await fetch(url);
     const text = await res.text();
     const data = parseCSVToJSON(text);
-    console.log({ data });
     return { status: "success", data };
   } catch (error) {
     return { status: "failed" };

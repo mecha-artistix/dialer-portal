@@ -39,7 +39,7 @@ export const ViciFilterParams = z.object({
     // .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
     .optional(),
   agent_user: z.string().optional(),
-  status: z.array(z.string()).optional().nullable(),
+  // status: z.array(z.string()).optional().nullable(),
   lead_id: z.string().optional(),
   phone_number: z.string().optional(),
 });

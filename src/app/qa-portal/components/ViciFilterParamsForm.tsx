@@ -21,14 +21,15 @@ function ViciFilterParamsForm() {
     defaultValues: {
       date: "",
       agent_user: "",
-      status: [""],
+      // status: [""],
       lead_id: "",
       phone_number: "",
     },
   });
 
   const clearFiltersHandler = () => {
-    form.reset({ agent_user: "", date: "", phone_number: "", status: [] });
+    // form.reset({ agent_user: "", date: "", phone_number: "", status: [] });
+    form.reset({ agent_user: "", date: "", phone_number: "" });
   };
   const recordingsMutation = useRecordingsMutation();
   const onSubmitHandler = (data: ViciFilterParamsType) => {
@@ -79,7 +80,7 @@ function ViciFilterParamsForm() {
 
           {/* Status Filter */}
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="status"
             render={({ field }) => (
@@ -128,7 +129,7 @@ function ViciFilterParamsForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           {/* AGENT USER */}
 

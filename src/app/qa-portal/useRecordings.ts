@@ -18,6 +18,7 @@ export function useRecordings() {
     queryKey: [QUERYKEY],
     queryFn: async () => {
       const response = await getRecordingsSA();
+      console.log(response);
       return response;
     },
     enabled: false,

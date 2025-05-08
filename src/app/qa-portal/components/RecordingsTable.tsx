@@ -8,7 +8,6 @@ import { TRecording } from "@/types/recordings";
 type Props = { data: TRecording[] };
 
 function RecordingsTable({ data }: Props) {
-  console.log("RecordingsTable data", data);
   return (
     // <div className="max-h-full overflow-auto">
     //   {mutation.isPending && <LinearProgress />}

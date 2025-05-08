@@ -9,11 +9,14 @@ function parseVicidialResponse(text) {
     const parts = line.trim().split("|");
     return {
       start_time: parts[0],
-      user: parts[6],
+      user: parts[1],
       recording_id: parts[2],
       lead_id: parts[3],
+      length_in_sec: parts[4],
       duration: parts[4],
       location: parts[5],
+      status: parts[6],
+      phone_number: parts[7],
     };
   });
 }

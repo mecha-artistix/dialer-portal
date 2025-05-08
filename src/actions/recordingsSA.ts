@@ -65,12 +65,13 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
 
     const response = await fetch(url);
     const text = await response.text();
-    // // console.log("recordings ", text);
+
     // if (text.startsWith("ERROR:")) {
-    //   return { message: text };
+    //   throw new Error(text);
     // }
+
     if (text.startsWith("ERROR:")) {
-      throw new Error(text);
+      return { message: text };
     }
     const data = parseVicidialResponse(text);
 
@@ -81,3 +82,8 @@ export const getRecordingsSA = async (viciFilterParams: ViciFilterParamsType) =>
     throw new Error(message);
   }
 };
+
+// // console.log("recordings ", text);
+// if (text.startsWith("ERROR:")) {
+//   return { message: text };
+// }

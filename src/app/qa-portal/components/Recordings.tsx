@@ -9,6 +9,7 @@ function Recordings() {
   return (
     <div>
       {recordings?.message && <p>recordings.message</p>}
+
       {recordings?.data && <RecordingsTable data={recordings?.data?.data} />}
     </div>
   );

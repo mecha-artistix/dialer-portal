@@ -23,8 +23,6 @@ export function useViciQueryMutation() {
         throw new Error("Select A Dialer First");
       const viciFiltParams = filterForm || filterParams;
       const viciPaginParams = paginationForm || { ...pagination, page: 1 };
-      // console.log("====useViciQueryform====");
-      // console.log({ viciReqParams, viciFiltParams, viciPaginParams });
       const response = await getrecordings(viciReqParams, viciFiltParams, viciPaginParams);
       return response;
     },
@@ -33,9 +31,7 @@ export function useViciQueryMutation() {
       return variables;
     },
     onSuccess: (newData) => {
-      // console.log({ variables, context });
       dispatch(setPageCount(Number(newData.total_records)));
-      // queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
       queryClient.setQueryData([recordsQueryKey], newData);
     },
     onError: (error) => {
@@ -47,40 +43,3 @@ export function useViciQueryMutation() {
 
   return mutation;
 }
-
-// export function useQueryFormMutation() {
-//   const queryClient = useQueryClient();
-//   const queryMutation = useMutation({
-//     mutationFn: async (data: ViciRequiredParamsType) => {
-//       const response = await getRecordings(data);
-//       return response;
-//     },
-//     onSuccess: (newData) => {
-//       queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
-//       queryClient.setQueryData([recordsQueryKey], newData);
-//     },
-//     onError: (error) => {
-//       queryClient.setQueryData([recordsQueryKey], { error });
-//     },
-//   });
-//   return queryMutation;
-// }
-
-// export function useRecordingFilterMutation() {
-//   const queryClient = useQueryClient();
-//   const filterMutation = useMutation({
-//     mutationFn: async (filter: ViciFilterParamsType) => {
-//       const data = { ...setQueryData, ...filter };
-//       const response = await getRecordings(data);
-//       return response;
-//     },
-//     onSuccess: (newData) => {
-//       queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
-//       queryClient.setQueryData([recordsQueryKey], newData);
-//     },
-//     onError: (error) => {
-//       queryClient.setQueryData([recordsQueryKey], { error });
-//     },
-//   });
-//   return filterMutation;
-// }

@@ -1,4 +1,3 @@
-
 **_ CLIENT SIDE _**
 
 **_ Recordings Table _**
@@ -16,16 +15,16 @@ The popup state is controlled using state management library **REDUX**
 
 ```ts
 const onSubmit = (data: ViciRequiredParamsType) => {
-    console.log("Form Submit Triggered", { data });
-    const parsedData = ViciRequiredParams.parse(data);
-    try {
-        console.log("Parsed Form Data:", parsedData);
-        dispatch(setRequiredParams(parsedData));
-        // queryMutation.mutate({ requiredForm: data, filterForm: {} });
-        dispatch(setIsFilterPopoverOpen(true));
-    } catch (error) {
-        console.error("Form Submission Error:", error);
-    }
+  console.log("Form Submit Triggered", { data });
+  const parsedData = ViciRequiredParams.parse(data);
+  try {
+    console.log("Parsed Form Data:", parsedData);
+    dispatch(setRequiredParams(parsedData));
+    // queryMutation.mutate({ requiredForm: data, filterForm: {} });
+    dispatch(setIsFilterPopoverOpen(true));
+  } catch (error) {
+    console.error("Form Submission Error:", error);
+  }
 };
 ```
 
@@ -35,22 +34,22 @@ Submit action on filter form triggers React Query hook (mutation) which fetches 
 
 ```ts
 const onSubmitHandler = (data: ViciFilterParamsType) => {
-    const parsedData = ViciFilterParams.parse(data);
-    try {
-        console.log("Parsed Form Data:", parsedData);
-        dispatch(setFilterParams(parsedData));
-        filterMutation.mutate(
-            { filterForm: parsedData },
-            {
-                onSuccess: () => {
-                    dispatch(setIsFilterPopoverOpen(false));
-                },
-            },
-        );
-    } catch (error) {
-        console.error("Form Submission Error:", error);
-        // Optional: Add error toast or user notification
-    }
+  const parsedData = ViciFilterParams.parse(data);
+  try {
+    console.log("Parsed Form Data:", parsedData);
+    dispatch(setFilterParams(parsedData));
+    filterMutation.mutate(
+      { filterForm: parsedData },
+      {
+        onSuccess: () => {
+          dispatch(setIsFilterPopoverOpen(false));
+        },
+      },
+    );
+  } catch (error) {
+    console.error("Form Submission Error:", error);
+    // Optional: Add error toast or user notification
+  }
 };
 ```
 
@@ -59,35 +58,35 @@ Below hook is used to do the mutation and handle errors.
 
 ```ts
 export function useViciQueryMutation() {
-    const dispatch = useAppDispatch();
-    const { requiredParams, filterParams, pagination } = useAppSelector((state) => state.recordings);
-    const queryClient = useQueryClient();
-    const mutation = useMutation({
-        mutationFn: async ({ requiredForm, filterForm, paginationForm }: MutationFNProps) => {
-            const viciReqParams = requiredForm || requiredParams;
-            if (!viciReqParams.dialer_url || !viciReqParams.user || !viciReqParams.pass)
-                throw new Error("Select A Dialer First");
-            const viciFiltParams = filterForm || filterParams;
-            const viciPaginParams = paginationForm || { ...pagination, page: 1 };
-            const response = await getrecordings(viciReqParams, viciFiltParams, viciPaginParams);
-            return response;
-        },
-        onMutate: (variables) => {
-            queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
-            return variables;
-        },
-        onSuccess: (newData) => {
-            dispatch(setPageCount(Number(newData.total_records)));
-            queryClient.setQueryData([recordsQueryKey], newData);
-        },
-        onError: (error) => {
-            console.log({ error });
-            queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
-            queryClient.setQueryData([recordsQueryKey], { error });
-        },
-    });
+  const dispatch = useAppDispatch();
+  const { requiredParams, filterParams, pagination } = useAppSelector((state) => state.recordings);
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async ({ requiredForm, filterForm, paginationForm }: MutationFNProps) => {
+      const viciReqParams = requiredForm || requiredParams;
+      if (!viciReqParams.dialer_url || !viciReqParams.user || !viciReqParams.pass)
+        throw new Error("Select A Dialer First");
+      const viciFiltParams = filterForm || filterParams;
+      const viciPaginParams = paginationForm || { ...pagination, page: 1 };
+      const response = await getrecordings(viciReqParams, viciFiltParams, viciPaginParams);
+      return response;
+    },
+    onMutate: (variables) => {
+      queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
+      return variables;
+    },
+    onSuccess: (newData) => {
+      dispatch(setPageCount(Number(newData.total_records)));
+      queryClient.setQueryData([recordsQueryKey], newData);
+    },
+    onError: (error) => {
+      console.log({ error });
+      queryClient.invalidateQueries({ queryKey: [recordsQueryKey] });
+      queryClient.setQueryData([recordsQueryKey], { error });
+    },
+  });
 
-    return mutation;
+  return mutation;
 }
 ```
 
@@ -95,19 +94,19 @@ export function useViciQueryMutation() {
 
 ```ts
 export const getrecordings: TGetRecordingsFuncV1 = async (requiredParams, filterParams, pagination) => {
-    try {
-        const response = await apiFlask.post("/portal/recordings", { ...requiredParams, ...filterParams, ...pagination });
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            if (error.response) {
-                throw error.response.data;
-            } else if (error.request) {
-                throw { message: "No response received from server." };
-            }
-        }
-        throw { message: "An unexpected error occurred." };
+  try {
+    const response = await apiFlask.post("/portal/recordings", { ...requiredParams, ...filterParams, ...pagination });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        throw error.response.data;
+      } else if (error.request) {
+        throw { message: "No response received from server." };
+      }
     }
+    throw { message: "An unexpected error occurred." };
+  }
 };
 ```
 
@@ -121,8 +120,8 @@ We are handling pages using state management Redux. Every time a page is mutated
 
 ```ts
 useEffect(() => {
-    console.log(pagination);
-    paginMutation.mutate({ paginationForm: pagination });
+  console.log(pagination);
+  paginMutation.mutate({ paginationForm: pagination });
 }, [pagination]);
 ```
 
@@ -226,4 +225,70 @@ def recordingsApi():
     except ValueError as ve:
         logger.error(f"Value error: {ve}")
         return jsonify({"error": str(ve)}), 500
+```
+
+**TRANSCRIPTIOIN**
+
+# src/features/recordings/components/Actions.tsx
+
+clicking the button call handleTranscribe function which in turn executes sendTranscribeRequest along with the url string which it gets from the api response part inside of the row it is in.
+
+```ts
+const handleTranscribe = async (url: string) => {
+  setLoading(true);
+  setError(null);
+
+  try {
+    const result = await sendTranscribeRequest(url);
+    console.log(result); // Handle success if needed
+  } catch (err) {
+    console.error("Error submitting form:", err);
+    setError("Failed to submit form");
+  } finally {
+    setLoading(false);
+  }
+};
+```
+
+sendTranscribeRequest returns a promise which creates a form element (DOM Manipulation) with action attribute set to flask api and target set to \_blank to trigger new tab when response is received from the server
+
+after form is created we create the input feild for the url and a button to submit the form. once the form is submitted we remove it from the DOM immidiately.
+
+# src/lib/services.ts
+
+```ts
+export const sendTranscribeRequest = (url: string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log("Submitting to /upload with URL:", url);
+
+      // Create a form element
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "http://qaportal.dialer360.com:5001/upload";
+      form.target = "_blank";
+
+      // Create an input for the URL
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "url";
+      input.value = url;
+
+      // Append the input to the form
+      form.appendChild(input);
+
+      // Append the form to the body and submit it
+      document.body.appendChild(form);
+
+      // Submit and resolve immediately since the request opens in a new tab
+      form.submit();
+      document.body.removeChild(form);
+
+      // Resolve promise once the form submission is initiated
+      resolve("Form submitted successfully");
+    } catch (error) {
+      reject(error); // Reject promise on any error
+    }
+  });
+};
 ```
